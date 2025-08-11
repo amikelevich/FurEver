@@ -1,11 +1,14 @@
-import "./App.css"
+import "./styles/App.css";
+import Navbar from "./components/Navbar";
+import Hero from "./components/MainPage";
+import Steps from "./components/Steps";
 
-const App = () => {
+export default function App() {
   return (
-    <div className="container">
-      Hello world!
+    <div className="app">
+      <Navbar />
+      <Hero />
+      <Steps />
     </div>
   );
-};
-
-export default App;
+}

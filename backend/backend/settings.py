@@ -84,8 +84,8 @@ DATABASES = {
 'NAME': 'postgres',
 'USER': 'postgres',
 'PASSWORD': 'newpassword',
-# 'HOST': 'postgres', # gdy uruchamiamy z wykorzystaniem docker-compose !!!
-'HOST': 'localhost', # gdy uruchamiamy lokalnie !!!
+'HOST': 'postgres', # gdy uruchamiamy z wykorzystaniem docker-compose !!!
+#'HOST': 'localhost', # gdy uruchamiamy lokalnie !!!
 'PORT': '5432',
 }
 }
