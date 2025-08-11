@@ -1,14 +1,26 @@
-import "./styles/App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/MainPage";
 import Steps from "./components/Steps";
+import Registration from "./pages/Register";
+import "./styles/App.css";
 
 export default function App() {
   return (
-    <div className="app">
+    <Router>
       <Navbar />
-      <Hero />
-      <Steps />
-    </div>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Hero />
+              <Steps />
+            </>
+          }
+        />
+        <Route path="/register" element={<Registration />} />
+      </Routes>
+    </Router>
   );
 }

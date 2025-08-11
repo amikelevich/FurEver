@@ -1,8 +1,11 @@
 import "./../styles/MainPage.css";
 import { FaHome } from "react-icons/fa";
 import dogImage from "../assets/dog.jpg";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
+  const navigate = useNavigate();
+
   return (
     <main className="main-section">
       <div className="text-content">
@@ -18,7 +21,9 @@ export default function Hero() {
         </p>
 
         <div className="buttons">
-          <button className="primary-btn">Utwórz konto</button>
+          <button className="primary-btn" onClick={() => navigate("/register")}>
+            Utwórz konto
+          </button>
           <button
             className="secondary-btn"
             onClick={() => {

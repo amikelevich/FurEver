@@ -1,16 +1,21 @@
+import { Link, useNavigate } from "react-router-dom";
 import "./../styles/Navbar.css";
 import logoImage from "../assets/logo.png";
+import NavbarLogo from "./NavbarLogo";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <img src={logoImage} alt="Logo" className="logo-img" />
-        <span className="navbar-title">FurEver</span>
+        <NavbarLogo logoImage={logoImage} />
       </div>
       <div className="navbar-right">
         <button className="login-btn">Zaloguj się</button>
-        <button className="register-btn">Zarejestruj się</button>
+        <button className="register-btn" onClick={() => navigate("/register")}>
+          Zarejestruj się
+        </button>
       </div>
     </nav>
   );

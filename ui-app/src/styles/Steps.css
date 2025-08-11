@@ -1,11 +1,12 @@
 .steps-vertical {
   width: 100vw;
-  height: 85vh;
+  height: auto;
   min-height: 500px;
   display: flex;
   flex-direction: column;
   text-align: center;
   margin-top: 20px;
+  margin-bottom: 65px;
 }
 
 .step {
