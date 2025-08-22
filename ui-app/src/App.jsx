@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/MainPage";
 import Steps from "./components/Steps";
 import Registration from "./pages/Register";
+import Login from "./pages/Login";
 import "./styles/App.css";
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
           }
         />
         <Route path="/register" element={<Registration />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );

@@ -12,7 +12,9 @@ export default function Navbar() {
         <NavbarLogo logoImage={logoImage} />
       </div>
       <div className="navbar-right">
-        <button className="login-btn">Zaloguj się</button>
+        <button className="login-btn" onClick={() => navigate("/login")}>
+          Zaloguj się
+        </button>
         <button className="register-btn" onClick={() => navigate("/register")}>
           Zarejestruj się
         </button>

@@ -4,7 +4,7 @@ import "../styles/Register.css";
 export default function Register() {
   return (
     <div className="register-container">
-      <h2>Cieszymy się, że jesteś z nami!</h2>
+      <h2>Rejestracja</h2>
       <form className="register-form">
         <label>
           Imię:
