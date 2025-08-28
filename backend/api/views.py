@@ -18,17 +18,18 @@ class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
-        # używamy naszego LoginSerializer z check_password
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)  # jeśli nie valid, DRF zwróci 400
+        serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
 
-        # generujemy tokeny JWT
         refresh = RefreshToken.for_user(user)
         return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-            'email': user.email,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "user": {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email
+            }
         })

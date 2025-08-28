@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 
-export default function Login() {
+export default function Login({ onLogin }) {
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     const { email, password } = e.target;
@@ -16,17 +19,35 @@ export default function Login() {
         }),
       });
 
-      const message = res.ok
-        ? "Zalogowano pomyślnie!"
-        : `Błąd logowania: ${JSON.stringify(await res.json())}`;
-
       if (res.ok) {
         const data = await res.json();
-        console.log("Token JWT:", data.access);
-        e.target.reset();
-      }
 
-      alert(message);
+        localStorage.setItem("token", data.access);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+          })
+        );
+
+        e.target.reset();
+
+        if (onLogin)
+          onLogin({
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+          });
+
+        navigate("/main");
+
+        alert("Zalogowano pomyślnie!");
+      } else {
+        const errorData = await res.json();
+        alert("Błąd logowania: " + JSON.stringify(errorData));
+      }
     } catch (err) {
       alert("Coś poszło nie tak: " + err.message);
     }

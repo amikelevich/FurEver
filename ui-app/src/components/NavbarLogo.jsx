@@ -1,13 +1,25 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./../styles/Navbar.css";
 
 export default function NavbarLogo({ logoImage }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleClick = (e) => {
     if (location.pathname === "/") {
       e.preventDefault();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        navigate("/main");
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    } else {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        e.preventDefault();
+        navigate("/main");
+      }
     }
   };
 
