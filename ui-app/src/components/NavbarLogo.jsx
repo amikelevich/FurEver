@@ -8,14 +8,14 @@ export default function NavbarLogo({ logoImage }) {
   const handleClick = (e) => {
     if (location.pathname === "/") {
       e.preventDefault();
-      const storedUser = localStorage.getItem("user");
+      const storedUser = sessionStorage.getItem("user");
       if (storedUser) {
         navigate("/main");
       } else {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } else {
-      const storedUser = localStorage.getItem("user");
+      const storedUser = sessionStorage.getItem("user");
       if (storedUser) {
         e.preventDefault();
         navigate("/main");

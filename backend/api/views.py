@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from .serializers import RegisterSerializer, LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from django.contrib.auth.hashers import check_password
-
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
@@ -30,6 +28,7 @@ class LoginView(generics.GenericAPIView):
                 "id": user.id,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
-                "email": user.email
+                "email": user.email,
+                "is_superuser": user.is_superuser
             }
         })

@@ -9,17 +9,17 @@ import Dashboard from "./pages/Dashboard";
 import "./styles/App.css";
 export default function App() {
   const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem("user");
+    const stored = sessionStorage.getItem("user");
     return stored ? JSON.parse(stored) : null;
   });
   const handleLogin = (userData) => {
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+    sessionStorage.setItem("user", JSON.stringify(userData));
   };
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
   };
   return (
     <Router>

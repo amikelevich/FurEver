@@ -9,44 +9,30 @@ export default function Login({ onLogin }) {
     e.preventDefault();
     const { email, password } = e.target;
 
+    const payload = {
+      email: email.value,
+      password: password.value,
+    };
+
     try {
       const res = await fetch("http://localhost:8000/api/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email.value,
-          password: password.value,
-        }),
+        body: JSON.stringify(payload),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        const data = await res.json();
-
         localStorage.setItem("token", data.access);
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            first_name: data.first_name,
-            last_name: data.last_name,
-            email: data.email,
-          })
-        );
+        localStorage.setItem("user", JSON.stringify(data.user));
 
-        e.target.reset();
-
-        if (onLogin)
-          onLogin({
-            first_name: data.first_name,
-            last_name: data.last_name,
-            email: data.email,
-          });
+        if (onLogin) onLogin(data.user);
 
         navigate("/main");
-
         alert("Zalogowano pomyślnie!");
       } else {
-        const errorData = await res.json();
-        alert("Błąd logowania: " + JSON.stringify(errorData));
+        alert("Błąd logowania: " + JSON.stringify(data));
       }
     } catch (err) {
       alert("Coś poszło nie tak: " + err.message);

@@ -13,9 +13,9 @@ export default function Navbar({ user, onLogout }) {
   };
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = sessionStorage.getItem("user");
     if (storedUser && !user) {
-      console.log("Znaleziono usera w localStorage:", JSON.parse(storedUser));
+      console.log("Znaleziono usera w sessionStorage:", JSON.parse(storedUser));
     }
   }, [user]);
 
