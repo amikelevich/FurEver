@@ -6,6 +6,7 @@ import Steps from "./components/Steps";
 import Registration from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import DashboardAdmin from "./pages/DashboardAdmin";
 import "./styles/App.css";
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -38,7 +39,8 @@ export default function App() {
         />{" "}
         <Route path="/register" element={<Registration />} />{" "}
         <Route path="/login" element={<Login onLogin={handleLogin} />} />{" "}
-        <Route path="/main" element={<Dashboard />} />{" "}
+        <Route path="/dashboard" element={<Dashboard />} />{" "}
+        <Route path="/dashboard_admin" element={<DashboardAdmin />} />{" "}
       </Routes>{" "}
     </Router>
   );

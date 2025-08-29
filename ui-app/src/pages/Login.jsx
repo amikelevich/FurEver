@@ -29,7 +29,12 @@ export default function Login({ onLogin }) {
 
         if (onLogin) onLogin(data.user);
 
-        navigate("/main");
+        if (data.user.is_superuser) {
+          navigate("/dashboard_admin");
+        } else {
+          navigate("/dashboard");
+        }
+
         alert("Zalogowano pomyślnie!");
       } else {
         alert("Błąd logowania: " + JSON.stringify(data));
