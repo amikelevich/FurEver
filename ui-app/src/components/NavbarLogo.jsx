@@ -6,20 +6,23 @@ export default function NavbarLogo({ logoImage }) {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
-    if (location.pathname === "/") {
-      e.preventDefault();
-      const storedUser = sessionStorage.getItem("user");
-      if (storedUser) {
-        navigate("/main");
-      } else {
+    const storedUser = sessionStorage.getItem("user");
+
+    if (!storedUser) {
+      if (location.pathname === "/") {
+        e.preventDefault();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
+      return;
+    }
+
+    e.preventDefault();
+    const user = JSON.parse(storedUser);
+
+    if (user.is_superuser) {
+      navigate("/dashboard_admin");
     } else {
-      const storedUser = sessionStorage.getItem("user");
-      if (storedUser) {
-        e.preventDefault();
-        navigate("/main");
-      }
+      navigate("/dashboard");
     }
   };
 
