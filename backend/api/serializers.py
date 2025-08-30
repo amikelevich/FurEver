@@ -1,3 +1,4 @@
+import base64
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -43,16 +44,24 @@ class LoginSerializer(serializers.Serializer):
         return data
     
 class AnimalImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = AnimalImage
-        fields = ["id", "image_data"]
+        fields = ["id", "image"]
+
+    def get_image(self, obj):
+        if obj.image_data:
+            return "data:image/jpeg;base64," + base64.b64encode(obj.image_data).decode()
+        return None
+
 
 class AnimalSerializer(serializers.ModelSerializer):
     images = AnimalImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Animal
-        fields = "__all__"
+        fields = ["id", "name", "age", "breed", "images", "short_traits"]
 
     def validate_short_traits(self, value):
         if not isinstance(value, list):

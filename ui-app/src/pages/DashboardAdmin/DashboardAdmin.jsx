@@ -22,7 +22,13 @@ export default function DashboardAdmin() {
         }`}
       >
         {activeTab === "animals" ? (
-          <AnimalsTab onAddClick={() => setShowForm(true)} />
+          <AnimalsTab
+            onAddClick={() => setShowForm(true)}
+            isAdmin={true}
+            onEdit={(animal) => console.log("Edit", animal)}
+            onAdopt={(animal) => console.log("Adopt", animal)}
+            onDetails={(animal) => console.log("Details", animal)}
+          />
         ) : (
           <ApplicationsTab />
         )}
