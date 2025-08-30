@@ -116,3 +116,7 @@ class Animal(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.breed or 'rasa nieznana'})"
+    
+class AnimalImage(models.Model):
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE, related_name="images")
+    image_data = models.BinaryField("Zdjęcie (binarnie)")

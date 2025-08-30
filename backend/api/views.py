@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from .serializers import RegisterSerializer, LoginSerializer, AnimalSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Animal
+from .models import Animal, AnimalImage
+from rest_framework.parsers import MultiPartParser, FormParser
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -35,5 +36,18 @@ class LoginView(generics.GenericAPIView):
         })
     
 class AnimalViewSet(viewsets.ModelViewSet):
-    queryset = Animal.objects.all().order_by("-created_at")
+    queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
+    parser_classes = (MultiPartParser, FormParser)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        animal = serializer.save()
+
+        images = request.FILES.getlist("images")
+        for img in images:
+            AnimalImage.objects.create(animal=animal, image_data=img.read())
+
+        response_serializer = self.get_serializer(animal)
+        return Response(response_serializer.data, status=201)

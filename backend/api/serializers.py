@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
-from .models import Animal
+from .models import Animal, AnimalImage
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
@@ -42,7 +42,19 @@ class LoginSerializer(serializers.Serializer):
         data['user'] = user
         return data
     
+class AnimalImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AnimalImage
+        fields = ["id", "image_data"]
+
 class AnimalSerializer(serializers.ModelSerializer):
+    images = AnimalImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Animal
         fields = "__all__"
+
+    def validate_short_traits(self, value):
+        if not isinstance(value, list):
+            raise serializers.ValidationError("short_traits musi być listą")
+        return value

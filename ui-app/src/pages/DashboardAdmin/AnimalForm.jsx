@@ -22,6 +22,8 @@ export default function AnimalForm({ onClose }) {
     adoption_date: "",
   });
 
+  const [images, setImages] = useState([]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -33,11 +35,22 @@ export default function AnimalForm({ onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const data = new FormData();
+
+      for (let key in formData) {
+        if (key === "short_traits") {
+          data.append(key, JSON.stringify(formData[key]));
+        } else {
+          data.append(key, formData[key]);
+        }
+      }
+      images.forEach((img) => data.append("images", img));
+
       const response = await fetch("http://localhost:8000/api/animals/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: data,
       });
+
       if (response.ok) {
         alert("Zwierzę zostało dodane ✅");
         onClose();
@@ -80,6 +93,14 @@ export default function AnimalForm({ onClose }) {
           value={formData.name}
           onChange={handleChange}
           required
+        />
+
+        <small>Dodaj zdjęcia zwierzęcia.</small>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => setImages([...e.target.files])}
         />
 
         <div className="checkbox-group">
