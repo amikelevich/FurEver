@@ -6,7 +6,7 @@ import Steps from "./components/Steps";
 import Registration from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import DashboardAdmin from "./pages/DashboardAdmin";
+import DashboardAdmin from "./pages/DashboardAdmin/DashboardAdmin";
 import "./styles/App.css";
 export default function App() {
   const [user, setUser] = useState(() => {

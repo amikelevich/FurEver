@@ -34,9 +34,7 @@ class Animal(models.Model):
         ("likes_company", "Lubi towarzystwo"),
         ("independent", "Niezależne"),
     ]
-    short_traits = models.CharField(
-        "Krótka charakterystyka", max_length=50, choices=SHORT_TRAITS_CHOICES
-    )
+    short_traits = models.JSONField("Krótka charakterystyka", default=list, blank=True)
 
     description = models.TextField("Opis", blank=True, null=True)
 

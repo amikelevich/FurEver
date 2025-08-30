@@ -1,8 +1,9 @@
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .serializers import RegisterSerializer, LoginSerializer
+from .serializers import RegisterSerializer, LoginSerializer, AnimalSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import Animal
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -32,3 +33,7 @@ class LoginView(generics.GenericAPIView):
                 "is_superuser": user.is_superuser
             }
         })
+    
+class AnimalViewSet(viewsets.ModelViewSet):
+    queryset = Animal.objects.all().order_by("-created_at")
+    serializer_class = AnimalSerializer
