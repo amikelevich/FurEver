@@ -1,5 +1,6 @@
 import "../styles/AnimalCard.css";
 import catShadow from "../assets/cat_shadow.png";
+import { useNavigate } from "react-router-dom";
 
 export default function AnimalCard({
   animal,
@@ -8,6 +9,8 @@ export default function AnimalCard({
   onAdopt,
   onDetails,
 }) {
+  const navigate = useNavigate();
+
   return (
     <div className="animal-card">
       {animal.images?.length > 0 ? (
@@ -35,11 +38,13 @@ export default function AnimalCard({
       <div className="animal-card-actions">
         {isAdmin ? (
           <>
-            <button onClick={() => onEdit(animal)}>Edytuj</button>
+            <button onClick={() => onAdopt(animal)}>Edytuj</button>
             <button onClick={() => onAdopt(animal)}>Adopcja</button>
           </>
         ) : (
-          <button onClick={() => onDetails(animal)}>Zobacz szczegóły</button>
+          <button onClick={() => navigate(`/animals/${animal.id}`)}>
+            Zobacz szczegóły
+          </button>
         )}
       </div>
     </div>

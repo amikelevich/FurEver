@@ -58,12 +58,24 @@ class AnimalImageSerializer(serializers.ModelSerializer):
 
 class AnimalSerializer(serializers.ModelSerializer):
     images = AnimalImageSerializer(many=True, read_only=True)
+    short_traits_display = serializers.SerializerMethodField()
 
     class Meta:
         model = Animal
-        fields = ["id", "name", "age", "breed", "images", "short_traits"]
+        fields = [
+            'id', 'name', 'short_traits', 'short_traits_display', 'description',
+            'gender', 'age', 'breed', 'location',
+            'human_friendly', 'animal_friendly', 'best_home',
+            'sterilized', 'vaccinated', 'dewormed', 'chipped',
+            'health_status', 'examinations', 'last_vet_visit', 'adoption_date',
+            'images'
+        ]
 
     def validate_short_traits(self, value):
         if not isinstance(value, list):
             raise serializers.ValidationError("short_traits musi być listą")
         return value
+    
+    def get_short_traits_display(self, obj):
+        trait_map = dict(obj.SHORT_TRAITS_CHOICES)
+        return [trait_map.get(trait, trait) for trait in obj.short_traits]

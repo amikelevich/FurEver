@@ -1,0 +1,144 @@
+.animal-page {
+  width: 100%;
+  max-width: 100%;
+  margin: 50px auto 0 auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #000;
+  box-sizing: border-box;
+}
+
+.animal-page h2 {
+  font-size: 28px;
+  margin-bottom: 5px;
+  color: #000;
+}
+
+.animal-age {
+  font-size: 16px;
+  color: #000;
+}
+
+.animal-traits {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.trait-badge {
+  background: #7b5cd6;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 50px;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.animal-content {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.animal-boxes {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  flex: 1;
+  min-width: 0;
+}
+
+.animal-box {
+  flex: 1;
+  min-width: 200px;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  color: #000;
+}
+
+.animal-box h3 {
+  margin-bottom: 8px;
+  color: #000;
+}
+
+.animal-images {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 5px 0;
+}
+
+.animal-images img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.animal-actions {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.animal-actions p {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.adopt-btn,
+.ask-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s;
+  color: #fff;
+}
+
+.adopt-btn {
+  background: #7b5cd6;
+}
+
+.adopt-btn:hover {
+  background: #5a3dbd;
+}
+
+.ask-btn {
+  background: #00a86b;
+}
+
+.ask-btn:hover {
+  background: #008f5a;
+}
+
+@media (max-width: 900px) {
+  .animal-content {
+    flex-direction: column;
+    align-items: center;
+  }
+  .animal-boxes {
+    flex-direction: column;
+    width: 100%;
+  }
+  .animal-image {
+    width: 100%;
+    height: 250px;
+    margin-top: 20px;
+  }
+}
