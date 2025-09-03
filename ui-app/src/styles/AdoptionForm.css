@@ -1,0 +1,69 @@
+.adoption-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.adoption-modal {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  width: 400px;
+  position: relative;
+}
+
+.adoption-modal h2 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.adoption-modal input,
+.adoption-modal textarea {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.adoption-modal textarea {
+  resize: none;
+  height: 60px;
+}
+
+.animal-info-box {
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.adoption-modal button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background: #7b5cd6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.adoption-modal button[type="submit"]:hover {
+  background: #5a3bb8;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}

@@ -1,10 +1,26 @@
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
-from django.contrib.auth.models import User
-from .serializers import RegisterSerializer, LoginSerializer, AnimalSerializer
+from django.contrib.auth import get_user_model
+from .serializers import AdoptionApplicationSerializer, RegisterSerializer, LoginSerializer, AnimalSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Animal, AnimalImage
+from .models import AdoptionApplication, Animal, AnimalImage
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
+User = get_user_model()
+
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+        })
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -51,3 +67,24 @@ class AnimalViewSet(viewsets.ModelViewSet):
 
         response_serializer = self.get_serializer(animal)
         return Response(response_serializer.data, status=201)
+
+class AdoptionApplicationViewSet(viewsets.ModelViewSet):
+    serializer_class = AdoptionApplicationSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return AdoptionApplication.objects.all().order_by("-submitted_at")
+        return AdoptionApplication.objects.filter(user=user).order_by("-submitted_at")
+
+    def perform_create(self, serializer):
+        print("request.user:", self.request.user, type(self.request.user))
+        serializer.save(user=self.request.user)
+
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve", "create"]:
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]

@@ -1,9 +1,11 @@
 import base64
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 
-from .models import Animal, AnimalImage
+from .models import AdoptionApplication, Animal, AnimalImage
+
+User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
@@ -36,7 +38,8 @@ class LoginSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise serializers.ValidationError("Niepoprawny email lub hasło")
 
-        user = authenticate(username=user_obj.username, password=password)
+        user = authenticate(request=self.context.get('request'), email=email, password=password)
+
         if not user:
             raise serializers.ValidationError("Niepoprawny email lub hasło")
 
@@ -79,3 +82,32 @@ class AnimalSerializer(serializers.ModelSerializer):
     def get_short_traits_display(self, obj):
         trait_map = dict(obj.SHORT_TRAITS_CHOICES)
         return [trait_map.get(trait, trait) for trait in obj.short_traits]
+    
+class AdoptionApplicationSerializer(serializers.ModelSerializer):
+    user_email = serializers.ReadOnlyField(source="user.email")
+    user_first_name = serializers.ReadOnlyField(source="user.first_name")
+    user_last_name = serializers.ReadOnlyField(source="user.last_name")
+    animal_name = serializers.ReadOnlyField(source="animal.name")
+    animal_breed = serializers.ReadOnlyField(source="animal.breed")
+    animal_location = serializers.ReadOnlyField(source="animal.location")
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = AdoptionApplication
+        fields = [
+            "id",
+            "user",
+            "user_email",
+            "user_first_name",
+            "user_last_name",
+            "phone_number",
+            "address",
+            "animal",
+            "animal_name",
+            "animal_breed",
+            "animal_location",
+            "submitted_at",
+            "decision",
+            "adoption_date",
+        ]
+        read_only_fields = ["submitted_at"]

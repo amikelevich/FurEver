@@ -1,10 +1,35 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
+from django.contrib.auth.models import BaseUserManager
+from backend import settings
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Users must have an email')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(email, password, **extra_fields)
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
 
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+    objects = CustomUserManager()
 
     groups = models.ManyToManyField(
         Group,
@@ -120,3 +145,45 @@ class Animal(models.Model):
 class AnimalImage(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE, related_name="images")
     image_data = models.BinaryField("Zdjęcie (binarnie)")
+    phone_number = models.CharField("Numer telefonu", max_length=20, blank=True, null=True)
+    address = models.TextField("Adres", blank=True, null=True)
+
+class AdoptionApplication(models.Model):
+    DECISION_CHOICES = [
+        ("pending", "Oczekuje na decyzję"),
+        ("approved", "Zatwierdzony"),
+        ("rejected", "Odrzucony"),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="adoption_applications",
+        verbose_name="Użytkownik"
+    )
+    animal = models.ForeignKey(
+        Animal,
+        on_delete=models.CASCADE,
+        related_name="adoption_applications",
+        verbose_name="Zwierzę"
+    )
+    phone_number = models.CharField("Numer telefonu", max_length=20, blank=True)  # <---
+    address = models.TextField("Adres", blank=True)  # <---
+    submitted_at = models.DateTimeField(
+        "Data złożenia wniosku",
+        auto_now_add=True
+    )
+    decision = models.CharField(
+        "Decyzja",
+        max_length=20,
+        choices=DECISION_CHOICES,
+        default="pending"
+    )
+    adoption_date = models.DateField(
+        "Data adopcji",
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return f"Wniosek: {self.user.email} -> {self.animal.name} ({self.get_decision_display()})"

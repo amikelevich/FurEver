@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../styles/AnimalPage.css";
 import catShadow from "../assets/cat_shadow.png";
+import AdoptionForm from "../components/AdoptionForm";
 
 export default function AnimalPage() {
   const { id } = useParams();
   const [animal, setAnimal] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:8000/api/animals/${id}/`)
@@ -112,7 +114,15 @@ export default function AnimalPage() {
       <div className="animal-actions">
         <p>Zainteresowany?</p>
         <div className="buttons">
-          <button className="adopt-btn">Zgłoś chęć adopcji</button>
+          <button className="adopt-btn" onClick={() => setShowForm(true)}>
+            Zgłoś chęć adopcji
+          </button>
+          {showForm && animal.id && (
+            <AdoptionForm
+              animalId={animal.id}
+              onClose={() => setShowForm(false)}
+            />
+          )}
           <button className="ask-btn">Zadaj pytanie</button>
         </div>
       </div>
