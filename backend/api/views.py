@@ -125,3 +125,10 @@ class AdoptionApplicationViewSet(viewsets.ModelViewSet):
             )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+class MyAdoptionsViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = AdoptionApplicationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return AdoptionApplication.objects.filter(user=self.request.user).order_by("-submitted_at")

@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import DashboardAdmin from "./pages/DashboardAdmin/DashboardAdmin";
 import AnimalsTab from "./pages/DashboardAdmin/AnimalsTab";
 import AnimalPage from "./pages/AnimalPage";
+import MyAdoptions from "./components/MyAdoptions";
 import "./styles/App.css";
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -45,6 +46,7 @@ export default function App() {
         <Route path="/dashboard_admin" element={<DashboardAdmin />} />{" "}
         <Route path="/animals" element={<AnimalsTab />} />
         <Route path="/animals/:id" element={<AnimalPage />} />
+        <Route path="/adoptions" element={<MyAdoptions />} />
       </Routes>{" "}
     </Router>
   );

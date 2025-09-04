@@ -91,6 +91,7 @@ class AdoptionApplicationSerializer(serializers.ModelSerializer):
     animal_breed = serializers.ReadOnlyField(source="animal.breed")
     animal_location = serializers.ReadOnlyField(source="animal.location")
     user = serializers.PrimaryKeyRelatedField(read_only=True)
+    animal = AnimalSerializer(read_only=True)
 
     class Meta:
         model = AdoptionApplication

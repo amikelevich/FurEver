@@ -1,0 +1,25 @@
+.my-adoptions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.adoption-item {
+  display: flex;
+  gap: 15px;
+  background: #f4f5f7;
+  padding: 10px;
+  border-radius: 8px;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.adoption-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.adoption-info p {
+  margin: 3px 0;
+}
