@@ -1,0 +1,53 @@
+.applications-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Helvetica, sans-serif;
+  color: #333;
+}
+
+.applications-container h2 {
+  margin-bottom: 20px;
+  color: #7b5cd6;
+}
+
+.application-item {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.application-item strong {
+  color: #7b5cd6;
+}
+
+.application-item hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 10px 0 0 0;
+}
+
+.approve-btn {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.approve-btn:hover {
+  background-color: #45a049;
+}
+
+.approved-message {
+  color: green;
+  font-weight: bold;
+  margin-top: 5px;
+}
