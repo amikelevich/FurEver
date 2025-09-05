@@ -62,6 +62,8 @@ class AnimalImageSerializer(serializers.ModelSerializer):
 class AnimalSerializer(serializers.ModelSerializer):
     images = AnimalImageSerializer(many=True, read_only=True)
     short_traits_display = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Animal
@@ -71,7 +73,8 @@ class AnimalSerializer(serializers.ModelSerializer):
             'human_friendly', 'animal_friendly', 'best_home',
             'sterilized', 'vaccinated', 'dewormed', 'chipped',
             'health_status', 'examinations', 'last_vet_visit', 'adoption_date',
-            'images'
+            'images',
+            'likes_count', 'is_liked',
         ]
 
     def validate_short_traits(self, value):
@@ -82,6 +85,17 @@ class AnimalSerializer(serializers.ModelSerializer):
     def get_short_traits_display(self, obj):
         trait_map = dict(obj.SHORT_TRAITS_CHOICES)
         return [trait_map.get(trait, trait) for trait in obj.short_traits]
+
+    def get_likes_count(self, obj):
+        return obj.liked_by.count()
+
+    def get_is_liked(self, obj):
+        user = self.context.get('request').user
+        if user.is_authenticated:
+            return user in obj.liked_by.all()
+        return False
+
+            
     
 class AdoptionApplicationSerializer(serializers.ModelSerializer):
     user_email = serializers.ReadOnlyField(source="user.email")

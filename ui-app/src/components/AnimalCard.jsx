@@ -1,12 +1,38 @@
+import { useEffect, useState } from "react";
 import "../styles/AnimalCard.css";
 import catShadow from "../assets/cat_shadow.png";
 import { useNavigate } from "react-router-dom";
 
-export default function AnimalCard({ animal, isAdmin, onEdit, onApprove }) {
+export default function AnimalCard({
+  animal,
+  isAdmin,
+  onEdit,
+  onApprove,
+  onLikeToggle,
+  isLiked,
+}) {
   const navigate = useNavigate();
+  const [liked, setLiked] = useState(isLiked || false);
+
+  useEffect(() => {
+    setLiked(isLiked);
+  }, [isLiked]);
+
+  const handleLikeClick = (e) => {
+    e.stopPropagation();
+    const newLiked = !liked;
+    setLiked(newLiked);
+    onLikeToggle(animal.id, newLiked);
+  };
 
   return (
     <div className="animal-card">
+      {!isAdmin && (
+        <button className="like-button" onClick={handleLikeClick}>
+          <span className={`heart ${liked ? "liked" : ""}`}>&#9825;</span>
+        </button>
+      )}
+
       {animal.images?.length > 0 ? (
         <div className="animal-images">
           {animal.images.map((img, index) => (

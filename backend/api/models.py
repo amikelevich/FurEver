@@ -139,6 +139,13 @@ class Animal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    liked_by = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="liked_animals",
+        blank=True,
+        verbose_name="Polubione przez"
+    )
+
     def __str__(self):
         return f"{self.name} ({self.breed or 'rasa nieznana'})"
     

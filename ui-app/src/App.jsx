@@ -10,6 +10,7 @@ import DashboardAdmin from "./pages/DashboardAdmin/DashboardAdmin";
 import AnimalsTab from "./pages/DashboardAdmin/AnimalsTab";
 import AnimalPage from "./pages/AnimalPage";
 import MyAdoptions from "./components/MyAdoptions";
+import FavoritesTab from "./components/FavoritesTab";
 import "./styles/App.css";
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -47,6 +48,10 @@ export default function App() {
         <Route path="/animals" element={<AnimalsTab />} />
         <Route path="/animals/:id" element={<AnimalPage />} />
         <Route path="/adoptions" element={<MyAdoptions />} />
+        <Route
+          path="/favorites"
+          element={<FavoritesTab isAdmin={user?.is_admin} />}
+        />
       </Routes>{" "}
     </Router>
   );

@@ -8,11 +8,14 @@ export default function AnimalsTab({ onAddClick, isAdmin, onEdit }) {
 
   const fetchAnimals = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/animals/");
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:8000/api/animals/", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       const data = await res.json();
       setAnimals(data);
     } catch (err) {
-      console.error("Błąd przy pobieraniu zwierząt:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -51,6 +54,35 @@ export default function AnimalsTab({ onAddClick, isAdmin, onEdit }) {
     }
   };
 
+  const onLikeToggle = async (animalId, liked) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Brak tokenu. Zaloguj się, aby polubić.");
+
+      const url = `http://localhost:8000/api/animals/${animalId}/${
+        liked ? "like" : "unlike"
+      }/`;
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Błąd przy polubieniu zwierzęcia");
+      }
+
+      fetchAnimals();
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
   return (
     <div className="animals-tab">
       {isAdmin && (
@@ -72,6 +104,8 @@ export default function AnimalsTab({ onAddClick, isAdmin, onEdit }) {
               isAdmin={isAdmin}
               onEdit={onEdit}
               onApprove={() => approveAdoption(animal.id)}
+              onLikeToggle={onLikeToggle}
+              isLiked={animal.is_liked}
             />
           ))}
         </div>

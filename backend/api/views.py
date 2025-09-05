@@ -85,6 +85,28 @@ class AnimalViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    def like(self, request, pk=None):
+        animal = self.get_object()
+        animal.liked_by.add(request.user)
+        return Response({"message": "Dodano do ulubionych"}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    def unlike(self, request, pk=None):
+        animal = self.get_object()
+        animal.liked_by.remove(request.user)
+        return Response({"message": "Usunięto z ulubionych"}, status=status.HTTP_200_OK)
+    
+    def get_serializer_context(self):
+        return {"request": self.request}
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.query_params.get("favorites") and self.request.user.is_authenticated:
+            queryset = queryset.filter(liked_by=self.request.user)
+        return queryset
+
+
 class AdoptionApplicationViewSet(viewsets.ModelViewSet):
     serializer_class = AdoptionApplicationSerializer
 
