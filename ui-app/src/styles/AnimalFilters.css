@@ -1,0 +1,62 @@
+.animal-filters {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  max-width: 280px;
+  font-family: "Helvetica", sans-serif;
+}
+
+.animal-filters h3 {
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+}
+
+.filter-group p {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.filter-group button {
+  margin: 4px;
+  padding: 6px 12px;
+  border: 1px solid #7b5cd6;
+  background: #f9f9ff;
+  color: #333;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-group button:hover {
+  background: #edeaff;
+}
+
+.filter-group button.active {
+  background: #7b5cd6;
+  color: #fff;
+  border-color: #7b5cd6;
+}
+
+.filter-group select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #7b5cd6;
+  box-shadow: 0 0 4px rgba(123, 92, 214, 0.4);
+}

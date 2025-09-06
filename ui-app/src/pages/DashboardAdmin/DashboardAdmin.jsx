@@ -1,14 +1,23 @@
-import { useState } from "react";
-import "../../styles/DashboardAdmin.css";
+import { useState, useRef } from "react";
 import TabBar from "./TabBar";
 import AnimalsTab from "./AnimalsTab";
 import ApplicationsTab from "./ApplicationsTab";
 import AnimalForm from "./AnimalForm";
-import Modal from "./Modal";
+import "../../styles/DashboardAdmin.css";
 
 export default function DashboardAdmin() {
   const [activeTab, setActiveTab] = useState("animals");
   const [showForm, setShowForm] = useState(false);
+  const animalsTabRef = useRef(null);
+
+  const handleEdit = (animal) => {
+    console.log("Edit:", animal);
+  };
+
+  const handleAnimalAdded = () => {
+    setShowForm(false);
+    if (animalsTabRef.current) animalsTabRef.current.refreshAnimals();
+  };
 
   return (
     <div className="admin-dashboard">
@@ -23,11 +32,10 @@ export default function DashboardAdmin() {
       >
         {activeTab === "animals" ? (
           <AnimalsTab
+            ref={animalsTabRef}
             onAddClick={() => setShowForm(true)}
             isAdmin={true}
-            onEdit={(animal) => console.log("Edit", animal)}
-            onAdopt={(animal) => console.log("Adopt", animal)}
-            onDetails={(animal) => console.log("Details", animal)}
+            onEdit={handleEdit}
           />
         ) : (
           <ApplicationsTab />
@@ -35,9 +43,10 @@ export default function DashboardAdmin() {
       </div>
 
       {showForm && (
-        <Modal onClose={() => setShowForm(false)}>
-          <AnimalForm onClose={() => setShowForm(false)} />
-        </Modal>
+        <AnimalForm
+          onClose={() => setShowForm(false)}
+          onAdded={handleAnimalAdded}
+        />
       )}
     </div>
   );

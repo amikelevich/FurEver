@@ -64,11 +64,13 @@ class AnimalSerializer(serializers.ModelSerializer):
     short_traits_display = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
+    species_display = serializers.CharField(source="get_species_display", read_only=True)
 
     class Meta:
         model = Animal
         fields = [
-            'id', 'name', 'short_traits', 'short_traits_display', 'description',
+            'id', 'name', 'species', 'species_display', 
+            'short_traits', 'short_traits_display', 'description',
             'gender', 'age', 'breed', 'location',
             'human_friendly', 'animal_friendly', 'best_home',
             'sterilized', 'vaccinated', 'dewormed', 'chipped',

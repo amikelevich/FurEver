@@ -102,8 +102,39 @@ class AnimalViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.request.query_params.get("favorites") and self.request.user.is_authenticated:
-            queryset = queryset.filter(liked_by=self.request.user)
+        user = self.request.user
+
+        if self.request.query_params.get("favorites") and user.is_authenticated:
+            queryset = queryset.filter(liked_by=user)
+
+        species = self.request.query_params.get("species")
+        if species:
+            queryset = queryset.filter(species=species)
+
+        age = self.request.query_params.get("age")
+        if age == "young":
+            queryset = queryset.filter(age__lt=2)
+        elif age == "adult":
+            queryset = queryset.filter(age__gte=2, age__lte=7)
+        elif age == "senior":
+            queryset = queryset.filter(age__gt=7)
+
+        gender = self.request.query_params.get("gender")
+        if gender:
+            queryset = queryset.filter(gender=gender)
+
+        location = self.request.query_params.get("location")
+        if location:
+            queryset = queryset.filter(location=location)
+
+        short_trait = self.request.query_params.get("short_trait")
+        if short_trait:
+            queryset = queryset.filter(short_traits__contains=[short_trait])
+
+        breed = self.request.query_params.get("breed")
+        if breed:
+            queryset = queryset.filter(breed=breed)
+
         return queryset
 
 

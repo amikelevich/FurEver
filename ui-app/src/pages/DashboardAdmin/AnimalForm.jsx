@@ -1,8 +1,9 @@
 import { useState } from "react";
 
-export default function AnimalForm({ onClose }) {
+export default function AnimalForm({ onClose, onAdded = () => {} }) {
   const [formData, setFormData] = useState({
     name: "",
+    species: "",
     short_traits: [],
     description: "",
     gender: "unknown",
@@ -38,11 +39,9 @@ export default function AnimalForm({ onClose }) {
       const data = new FormData();
 
       for (let key in formData) {
-        if (key === "short_traits") {
+        if (key === "short_traits")
           data.append(key, JSON.stringify(formData[key]));
-        } else {
-          data.append(key, formData[key]);
-        }
+        else data.append(key, formData[key]);
       }
       images.forEach((img) => data.append("images", img));
 
@@ -53,6 +52,7 @@ export default function AnimalForm({ onClose }) {
 
       if (response.ok) {
         alert("Zwierzę zostało dodane ✅");
+        onAdded();
         onClose();
       } else {
         alert("Błąd przy dodawaniu zwierzęcia ❌");
@@ -94,6 +94,22 @@ export default function AnimalForm({ onClose }) {
           onChange={handleChange}
           required
         />
+
+        <small>Wybierz gatunek zwierzęcia.</small>
+        <select
+          name="species"
+          value={formData.species}
+          onChange={handleChange}
+          required
+        >
+          <option value="">--Gatunek--</option>
+          <option value="dog">Pies</option>
+          <option value="cat">Kot</option>
+          <option value="rabbit">Królik</option>
+          <option value="hamster">Chomik</option>
+          <option value="bird">Ptak</option>
+          <option value="other">Inne</option>
+        </select>
 
         <small>Dodaj zdjęcia zwierzęcia.</small>
         <input

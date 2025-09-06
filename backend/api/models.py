@@ -51,6 +51,16 @@ class User(AbstractUser):
 
 class Animal(models.Model):
     name = models.CharField("Imię", max_length=100)
+
+    SPECIES_CHOICES = [
+        ("dog", "Pies"),
+        ("cat", "Kot"),
+        ("rabbit", "Królik"),
+        ("hamster", "Chomik"),
+        ("bird", "Ptak"),
+        ("other", "Inne"),
+    ]
+    species = models.CharField("Gatunek", max_length=20, choices=SPECIES_CHOICES, default="other")
     
     SHORT_TRAITS_CHOICES = [
         ("calm", "Spokojny"),

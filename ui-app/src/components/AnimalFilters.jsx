@@ -1,0 +1,171 @@
+import { useEffect, useState } from "react";
+import "../styles/AnimalFilters.css";
+
+export default function AnimalFilters({ onFilterChange }) {
+  const [filters, setFilters] = useState({
+    species: null,
+    age: null,
+    gender: null,
+    location: null,
+    short_trait: null,
+    breed: null,
+  });
+
+  const [breeds, setBreeds] = useState([]);
+
+  const SPECIES_CHOICES = {
+    dog: "Pies",
+    cat: "Kot",
+    rabbit: "Królik",
+    hamster: "Chomik",
+    bird: "Ptak",
+    other: "Inne",
+  };
+
+  const GENDER_CHOICES = {
+    male: "Samiec",
+    female: "Samica",
+    unknown: "Nieznany",
+  };
+
+  const LOCATION_CHOICES = {
+    "shelter-Warsaw-Warszawska-15": "Schronisko w Warszawie",
+    "shelter-Krakow-Warszawska-15": "Schronisko w Krakowie",
+    "shelter-Poznan-Warszawska-15": "Schronisko w Poznaniu",
+    "foster-home": "Dom tymczasowy",
+  };
+
+  const SHORT_TRAITS_CHOICES = {
+    calm: "Spokojny",
+    afraid_of_loud_sounds: "Boi się głośnych dźwięków",
+    active: "Aktywny",
+    likes_company: "Lubi towarzystwo",
+    independent: "Niezależne",
+  };
+
+  const AGE_GROUPS = {
+    young: "Młody (<2 lata)",
+    adult: "Dorosły (2-7 lat)",
+    senior: "Starszy (8+ lat)",
+  };
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/animals/");
+        const data = await res.json();
+
+        setBreeds([...new Set(data.map((a) => a.breed).filter(Boolean))]);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchOptions();
+  }, []);
+
+  const handleClick = (type, value) => {
+    const newFilters = {
+      ...filters,
+      [type]: filters[type] === value ? null : value,
+    };
+    setFilters(newFilters);
+    onFilterChange(newFilters);
+  };
+
+  const handleSelect = (type, value) => {
+    const newFilters = { ...filters, [type]: value || null };
+    setFilters(newFilters);
+    onFilterChange(newFilters);
+  };
+
+  return (
+    <div className="animal-filters">
+      <h3>Filtry</h3>
+
+      <div className="filter-group">
+        <p>Gatunek:</p>
+        {Object.entries(SPECIES_CHOICES).map(([value, label]) => (
+          <button
+            key={value}
+            className={filters.species === value ? "active" : ""}
+            onClick={() => handleClick("species", value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="filter-group">
+        <p>Wiek:</p>
+        {Object.entries(AGE_GROUPS).map(([value, label]) => (
+          <button
+            key={value}
+            className={filters.age === value ? "active" : ""}
+            onClick={() => handleClick("age", value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="filter-group">
+        <p>Płeć:</p>
+        {Object.entries(GENDER_CHOICES).map(([value, label]) => (
+          <button
+            key={value}
+            className={filters.gender === value ? "active" : ""}
+            onClick={() => handleClick("gender", value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="filter-group">
+        <p>Miasto:</p>
+        <select
+          value={filters.location || ""}
+          onChange={(e) => handleSelect("location", e.target.value)}
+        >
+          <option value="">-- wybierz --</option>
+          {Object.entries(LOCATION_CHOICES).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="filter-group">
+        <p>Temperament:</p>
+        <select
+          value={filters.short_trait || ""}
+          onChange={(e) => handleSelect("short_trait", e.target.value)}
+        >
+          <option value="">-- wybierz --</option>
+          {Object.entries(SHORT_TRAITS_CHOICES).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="filter-group">
+        <p>Rasa:</p>
+        <select
+          value={filters.breed || ""}
+          onChange={(e) => handleSelect("breed", e.target.value)}
+        >
+          <option value="">-- wybierz --</option>
+          {breeds.map((b) => (
+            <option key={b} value={b}>
+              {b}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+}
