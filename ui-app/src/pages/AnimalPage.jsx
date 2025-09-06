@@ -114,9 +114,13 @@ export default function AnimalPage() {
       <div className="animal-actions">
         <p>Zainteresowany?</p>
         <div className="buttons">
-          <button className="adopt-btn" onClick={() => setShowForm(true)}>
-            Zgłoś chęć adopcji
-          </button>
+          {animal.adoption_date ? (
+            <span className="already-adopted">Zaadoptowany</span>
+          ) : (
+            <button className="adopt-btn" onClick={() => setShowForm(true)}>
+              Zgłoś chęć adopcji
+            </button>
+          )}
           {showForm && animal.id && (
             <AdoptionForm
               animalId={animal.id}

@@ -32,16 +32,14 @@ export default function ApplicationsTab() {
       const token = localStorage.getItem("token");
       const res = await fetch(
         `http://localhost:8000/api/adoption-applications/${id}/approve/`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { method: "POST", headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (!res.ok) throw new Error("Błąd podczas zatwierdzania wniosku");
+      const data = await res.json();
+      if (!res.ok)
+        throw new Error(data.error || "Błąd podczas zatwierdzania wniosku");
 
+      alert(data.success || "Wniosek zatwierdzony!");
       await fetchApplications();
     } catch (err) {
       console.error(err);

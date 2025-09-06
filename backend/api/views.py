@@ -159,25 +159,17 @@ class AdoptionApplicationViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
     
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["post"])
     def approve(self, request, pk=None):
-        try:
-            app = self.get_object()
-            animal = app.animal
-
-            app.decision = "approved"
-            app.adoption_date = timezone.now().date()
-            app.save()
-
-            animal.adoption_date = app.adoption_date
-            animal.save()
-
-            return Response(
-                {"message": "Wniosek zatwierdzony", "application": AdoptionApplicationSerializer(app).data},
-                status=status.HTTP_200_OK,
-            )
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        application = self.get_object()
+        if application.decision != "pending":
+            return Response({"error": "Wniosek już został rozpatrzony"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        application.decision = "approved"
+        application.adoption_date = timezone.now()
+        application.save()
+        
+        return Response({"success": "Wniosek zatwierdzony"}, status=status.HTTP_200_OK)
         
 class MyAdoptionsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = AdoptionApplicationSerializer

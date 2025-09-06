@@ -1,4 +1,5 @@
 import base64
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
@@ -107,7 +108,8 @@ class AdoptionApplicationSerializer(serializers.ModelSerializer):
     animal_breed = serializers.ReadOnlyField(source="animal.breed")
     animal_location = serializers.ReadOnlyField(source="animal.location")
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    animal = AnimalSerializer(read_only=True)
+    animal = serializers.PrimaryKeyRelatedField(queryset=Animal.objects.all(), write_only=True)
+    animal_info = AnimalSerializer(source="animal", read_only=True)
 
     class Meta:
         model = AdoptionApplication
@@ -120,6 +122,7 @@ class AdoptionApplicationSerializer(serializers.ModelSerializer):
             "phone_number",
             "address",
             "animal",
+            "animal_info",
             "animal_name",
             "animal_breed",
             "animal_location",
@@ -128,3 +131,9 @@ class AdoptionApplicationSerializer(serializers.ModelSerializer):
             "adoption_date",
         ]
         read_only_fields = ["submitted_at"]
+
+    def perform_create(self, serializer):
+        animal_id = self.request.data.get("animal")
+        raise serializers.ValidationError("Animal ID is required")
+        animal = get_object_or_404(Animal, id=animal_id)
+        serializer.save(user=self.request.user, animal=animal)
