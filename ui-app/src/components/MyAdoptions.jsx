@@ -37,18 +37,21 @@ export default function MyAdoptions() {
       <h2>Moje adopcje</h2>
       <ul>
         {adoptions.map((app) => {
-          const animal = app.animal || {};
+          const animal = app.animal_info || {};
           const animalName = animal.name || "-";
           const animalAge = animal.age || "-";
           const animalBreed = animal.breed || "-";
           const animalLocation = animal.location || "-";
 
-          const status = animal.adoption_date
+          const status = app.decision
+            ? app.decision === "approved"
+              ? "Zaadoptowana"
+              : app.decision === "pending"
+              ? "W trakcie"
+              : app.decision
+            : animal?.adoption_date
             ? "Zaadoptowana"
-            : app.decision === "pending"
-            ? "W trakcie"
-            : app.decision || "Nieznany";
-
+            : "Nieznany";
           return (
             <li key={app.id} className="adoption-item">
               <img

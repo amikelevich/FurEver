@@ -131,9 +131,3 @@ class AdoptionApplicationSerializer(serializers.ModelSerializer):
             "adoption_date",
         ]
         read_only_fields = ["submitted_at"]
-
-    def perform_create(self, serializer):
-        animal_id = self.request.data.get("animal")
-        raise serializers.ValidationError("Animal ID is required")
-        animal = get_object_or_404(Animal, id=animal_id)
-        serializer.save(user=self.request.user, animal=animal)
