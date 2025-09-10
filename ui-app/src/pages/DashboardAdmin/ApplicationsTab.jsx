@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/ApplicationsTab.css";
+import Pagination from "../../components/Pagination";
 
 export default function ApplicationsTab() {
   const [applications, setApplications] = useState([]);
   const [archivedApplications, setArchivedApplications] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentArchivedPage, setCurrentArchivedPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
   const fetchApplications = async () => {
     try {
@@ -97,6 +101,17 @@ export default function ApplicationsTab() {
     </div>
   );
 
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedApplications = applications.slice(startIndex, endIndex);
+
+  const archivedStartIndex = (currentArchivedPage - 1) * ITEMS_PER_PAGE;
+  const archivedEndIndex = archivedStartIndex + ITEMS_PER_PAGE;
+  const paginatedArchivedApplications = archivedApplications.slice(
+    archivedStartIndex,
+    archivedEndIndex
+  );
+
   return (
     <div className="applications-container">
       <h2>Wnioski o adopcję</h2>
@@ -105,13 +120,25 @@ export default function ApplicationsTab() {
       {applications.length === 0 ? (
         <p>Brak wniosków</p>
       ) : (
-        applications.map(renderApplication)
+        <>
+          {paginatedApplications.map(renderApplication)}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(applications.length / ITEMS_PER_PAGE)}
+            onPageChange={setCurrentPage}
+          />
+        </>
       )}
 
       {archivedApplications.length > 0 && (
         <>
           <h3>Archiwalne wnioski</h3>
-          {archivedApplications.map(renderApplication)}
+          {paginatedArchivedApplications.map(renderApplication)}
+          <Pagination
+            currentPage={currentArchivedPage}
+            totalPages={Math.ceil(archivedApplications.length / ITEMS_PER_PAGE)}
+            onPageChange={setCurrentArchivedPage}
+          />
         </>
       )}
     </div>

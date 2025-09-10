@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import AnimalCard from "../components/AnimalCard";
 import "../styles/AnimalCard.css";
+import Pagination from "../components/Pagination";
 
 export default function FavoritesTab({ isAdmin, onEdit }) {
   const [animals, setAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
   const fetchFavorites = async () => {
     try {
@@ -16,9 +19,17 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
         }
       );
       const data = await res.json();
-      setAnimals(data);
+
+      const today = new Date();
+      const availableAnimals = (data || []).filter(
+        (animal) =>
+          !animal.adoption_date || new Date(animal.adoption_date) >= today
+      );
+
+      setAnimals(availableAnimals);
     } catch (err) {
       console.error("Błąd przy pobieraniu ulubionych zwierząt:", err);
+      setAnimals([]);
     } finally {
       setLoading(false);
     }
@@ -54,26 +65,38 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
     }
   };
 
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedAnimals = animals.slice(startIndex, endIndex);
+
   return (
     <div className="animals-tab">
       <p>Twoje obserwowane zwierzęta</p>
       {loading ? (
         <p>Ładowanie...</p>
       ) : animals.length > 0 ? (
-        <div className="animal-list">
-          {animals.map((animal) => (
-            <AnimalCard
-              key={animal.id}
-              animal={animal}
-              isAdmin={isAdmin}
-              onEdit={onEdit}
-              onLikeToggle={onLikeToggle}
-              isLiked={animal.is_liked}
-            />
-          ))}
-        </div>
+        <>
+          <div className="animal-list">
+            {paginatedAnimals.map((animal) => (
+              <AnimalCard
+                key={animal.id}
+                animal={animal}
+                isAdmin={isAdmin}
+                onEdit={onEdit}
+                onLikeToggle={onLikeToggle}
+                isLiked={animal.is_liked}
+              />
+            ))}
+          </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(animals.length / ITEMS_PER_PAGE)}
+            onPageChange={setCurrentPage}
+          />
+        </>
       ) : (
-        <p>Brak obserwowanych zwierząt</p>
+        <p>Brak obserwowanych zwierząt dostępnych do adopcji</p>
       )}
     </div>
   );

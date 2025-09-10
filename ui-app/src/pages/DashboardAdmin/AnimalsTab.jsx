@@ -2,6 +2,7 @@ import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import AnimalCard from "../../components/AnimalCard";
 import AnimalFilters from "../../components/AnimalFilters";
 import "../../styles/AnimalCard.css";
+import Pagination from "../../components/Pagination";
 
 const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
   const [animals, setAnimals] = useState([]);
@@ -9,6 +10,22 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({});
   const [error, setError] = useState(null);
+  const ITEMS_PER_PAGE = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentArchivedPage, setCurrentArchivedPage] = useState(1);
+
+  const paginatedAnimals = animals.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const paginatedArchivedAnimals = archivedAnimals.slice(
+    (currentArchivedPage - 1) * ITEMS_PER_PAGE,
+    currentArchivedPage * ITEMS_PER_PAGE
+  );
+
+  const totalPages = Math.ceil(animals.length / ITEMS_PER_PAGE);
+  const totalArchivedPages = Math.ceil(archivedAnimals.length / ITEMS_PER_PAGE);
 
   const fetchAnimals = async (activeFilters = filters) => {
     setLoading(true);
@@ -30,7 +47,6 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
       if (!res.ok) throw new Error(`Błąd pobierania zwierząt: ${res.status}`);
 
       const data = await res.json();
-      console.log("Backend response:", data); // debug
 
       if (!Array.isArray(data)) throw new Error("Oczekiwano tablicy zwierząt");
 
@@ -145,28 +161,9 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
         ) : (
           <>
             {animals.length > 0 ? (
-              <div className="animal-list">
-                {animals.map((animal) => (
-                  <AnimalCard
-                    key={animal.id}
-                    animal={animal}
-                    isAdmin={isAdmin}
-                    onEdit={onEdit || (() => {})}
-                    onApprove={() => approveAdoption(animal.id)}
-                    onLikeToggle={onLikeToggle}
-                    isLiked={!!animal.is_liked}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p>Brak zwierząt dostępnych do adopcji</p>
-            )}
-
-            {isAdmin && archivedAnimals.length > 0 && (
               <>
-                <h4>Archiwalne zwierzęta</h4>
                 <div className="animal-list">
-                  {archivedAnimals.map((animal) => (
+                  {paginatedAnimals.map((animal) => (
                     <AnimalCard
                       key={animal.id}
                       animal={animal}
@@ -178,6 +175,37 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
                     />
                   ))}
                 </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </>
+            ) : (
+              <p>Brak zwierząt dostępnych do adopcji</p>
+            )}
+
+            {isAdmin && archivedAnimals.length > 0 && (
+              <>
+                <h4>Archiwalne zwierzęta</h4>
+                <div className="animal-list">
+                  {paginatedArchivedAnimals.map((animal) => (
+                    <AnimalCard
+                      key={animal.id}
+                      animal={animal}
+                      isAdmin={isAdmin}
+                      onEdit={onEdit || (() => {})}
+                      onApprove={() => approveAdoption(animal.id)}
+                      onLikeToggle={onLikeToggle}
+                      isLiked={!!animal.is_liked}
+                    />
+                  ))}
+                </div>
+                <Pagination
+                  currentPage={currentArchivedPage}
+                  totalPages={totalArchivedPages}
+                  onPageChange={setCurrentArchivedPage}
+                />
               </>
             )}
           </>
