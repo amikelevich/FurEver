@@ -5,14 +5,15 @@ import "../../styles/AnimalCard.css";
 
 const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
   const [animals, setAnimals] = useState([]);
+  const [archivedAnimals, setArchivedAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({});
   const [error, setError] = useState(null);
 
   const fetchAnimals = async (activeFilters = filters) => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
       const token = localStorage.getItem("token");
 
       const query = new URLSearchParams(
@@ -27,12 +28,34 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
       );
 
       if (!res.ok) throw new Error(`Błąd pobierania zwierząt: ${res.status}`);
+
       const data = await res.json();
-      setAnimals(Array.isArray(data) ? data : []);
+      console.log("Backend response:", data); // debug
+
+      if (!Array.isArray(data)) throw new Error("Oczekiwano tablicy zwierząt");
+
+      const today = new Date();
+      const available = [];
+      const archived = [];
+
+      data.forEach((animal) => {
+        const adoptionDate = animal.adoption_date
+          ? new Date(animal.adoption_date)
+          : null;
+        if (adoptionDate && adoptionDate < today) {
+          archived.push(animal);
+        } else {
+          available.push(animal);
+        }
+      });
+
+      setAnimals(available);
+      setArchivedAnimals(archived);
     } catch (err) {
       console.error(err);
       setError(err.message || "Nieoczekiwany błąd");
       setAnimals([]);
+      setArchivedAnimals([]);
     } finally {
       setLoading(false);
     }
@@ -119,22 +142,45 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
           <p>Ładowanie...</p>
         ) : error ? (
           <p style={{ color: "red" }}>{error}</p>
-        ) : animals.length > 0 ? (
-          <div className="animal-list">
-            {animals.map((animal) => (
-              <AnimalCard
-                key={animal.id}
-                animal={animal}
-                isAdmin={isAdmin}
-                onEdit={onEdit || (() => {})}
-                onApprove={() => approveAdoption(animal.id)}
-                onLikeToggle={onLikeToggle}
-                isLiked={!!animal.is_liked}
-              />
-            ))}
-          </div>
         ) : (
-          <p>Brak zwierząt</p>
+          <>
+            {animals.length > 0 ? (
+              <div className="animal-list">
+                {animals.map((animal) => (
+                  <AnimalCard
+                    key={animal.id}
+                    animal={animal}
+                    isAdmin={isAdmin}
+                    onEdit={onEdit || (() => {})}
+                    onApprove={() => approveAdoption(animal.id)}
+                    onLikeToggle={onLikeToggle}
+                    isLiked={!!animal.is_liked}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p>Brak zwierząt dostępnych do adopcji</p>
+            )}
+
+            {isAdmin && archivedAnimals.length > 0 && (
+              <>
+                <h4>Archiwalne zwierzęta</h4>
+                <div className="animal-list">
+                  {archivedAnimals.map((animal) => (
+                    <AnimalCard
+                      key={animal.id}
+                      animal={animal}
+                      isAdmin={isAdmin}
+                      onEdit={onEdit || (() => {})}
+                      onApprove={() => approveAdoption(animal.id)}
+                      onLikeToggle={onLikeToggle}
+                      isLiked={!!animal.is_liked}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
         )}
       </div>
 
