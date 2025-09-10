@@ -3,12 +3,14 @@ import { useParams } from "react-router-dom";
 import "../styles/AnimalPage.css";
 import catShadow from "../assets/cat_shadow.png";
 import AdoptionForm from "../components/AdoptionForm";
+import QuestionForm from "../components/QuestionForm";
 
 export default function AnimalPage() {
   const { id } = useParams();
   const [animal, setAnimal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showQuestionForm, setShowQuestionForm] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:8000/api/animals/${id}/`)
@@ -127,7 +129,16 @@ export default function AnimalPage() {
               onClose={() => setShowForm(false)}
             />
           )}
-          <button className="ask-btn">Zadaj pytanie</button>
+
+          <button className="ask-btn" onClick={() => setShowQuestionForm(true)}>
+            Zadaj pytanie
+          </button>
+          {showQuestionForm && animal.id && (
+            <QuestionForm
+              animalId={animal.id}
+              onClose={() => setShowQuestionForm(false)}
+            />
+          )}
         </div>
       </div>
     </div>

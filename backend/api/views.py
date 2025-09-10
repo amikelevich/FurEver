@@ -7,11 +7,34 @@ from .models import AdoptionApplication, Animal, AnimalImage
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from django.utils import timezone
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 User = get_user_model()
+
+@api_view(['POST'])
+def send_question_email(request):
+    data = request.data
+    subject = f"Pytanie od {data.get('first_name')} {data.get('last_name')}"
+    message = f"""
+    Imię: {data.get('first_name')}
+    Nazwisko: {data.get('last_name')}
+    Email: {data.get('email')}
+    Telefon: {data.get('phone')}
+    
+    Pytanie:
+    {data.get('question')}
+    """
+    recipient = ['adresdocelowy@przyklad.com']
+
+    try:
+        send_mail(subject, message, 'twójemail@przyklad.com', recipient)
+        return Response({'success': 'Email wysłany!'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class CurrentUserView(APIView):
     permission_classes = [IsAuthenticated]

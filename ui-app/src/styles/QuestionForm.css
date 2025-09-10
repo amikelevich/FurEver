@@ -1,0 +1,89 @@
+.question-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.question-modal {
+  background: #fff;
+  padding: 20px;
+  width: 420px;
+  max-width: 95%;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.question-modal h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.question-modal input,
+.question-modal textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.question-modal textarea {
+  resize: vertical;
+}
+
+.question-modal .form-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.question-modal button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.question-modal button[type="submit"] {
+  background: #7b5cd6;
+  color: #fff;
+  transition: background 0.2s;
+}
+
+.question-modal button[type="submit"]:hover {
+  background: #6849c4;
+}
+
+.question-modal button[type="button"] {
+  background: #eee;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.question-modal button[type="button"]:hover {
+  background: #ddd;
+}
+
+.close-btn {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
