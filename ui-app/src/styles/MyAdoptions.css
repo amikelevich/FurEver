@@ -23,3 +23,13 @@
 .adoption-info p {
   margin: 3px 0;
 }
+
+.my-adoptions h2,
+.my-adoptions h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.my-adoptions p {
+  color: #000;
+}

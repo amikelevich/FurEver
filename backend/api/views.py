@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import AdoptionApplication, Animal, AnimalImage
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.decorators import action, api_view, permission_classes
 from django.utils import timezone
 from django.core.mail import send_mail
@@ -178,6 +178,8 @@ class AdoptionApplicationViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ["list", "retrieve", "create"]:
             permission_classes = [IsAuthenticated]
+        elif self.action == "public_last_adoptions":
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
@@ -193,6 +195,12 @@ class AdoptionApplicationViewSet(viewsets.ModelViewSet):
         application.save()
         
         return Response({"success": "Wniosek zatwierdzony"}, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=["get"], permission_classes=[AllowAny])
+    def public_last_adoptions(self, request):
+        last_apps = AdoptionApplication.objects.filter(decision="approved").order_by("-adoption_date")[:10]
+        serializer = self.get_serializer(last_apps, many=True)
+        return Response(serializer.data)
         
 class MyAdoptionsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = AdoptionApplicationSerializer
