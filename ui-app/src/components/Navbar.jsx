@@ -1,15 +1,25 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./../styles/Navbar.css";
 import logoImage from "../assets/logo.png";
 import NavbarLogo from "./NavbarLogo";
 
 export default function Navbar({ user, onLogout }) {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleLogoutClick = () => {
     onLogout();
     navigate("/login");
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const trimmedQuery = searchQuery.trim();
+    if (trimmedQuery) {
+      navigate(`/animals/search?query=${encodeURIComponent(trimmedQuery)}`);
+      setSearchQuery("");
+    }
   };
 
   useEffect(() => {
@@ -28,11 +38,18 @@ export default function Navbar({ user, onLogout }) {
       <div className="navbar-right">
         {user ? (
           <>
-            <input
-              type="text"
-              placeholder="Szukaj zwierząt..."
-              className="search-bar"
-            />
+            <form onSubmit={handleSearchSubmit} className="search-form">
+              <input
+                type="text"
+                placeholder="Szukaj zwierząt..."
+                className="search-bar"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button type="submit" className="search-btn">
+                Szukaj
+              </button>
+            </form>
 
             <div className="dropdown">
               <button className="dropdown-btn">

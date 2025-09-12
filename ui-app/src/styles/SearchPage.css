@@ -1,0 +1,16 @@
+.search-page {
+  padding: 20px;
+  font-family: Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+.search-page h2 {
+  margin: 20px 0;
+  font-size: 22px;
+  color: #333;
+}
+
+.search-page p {
+  font-size: 16px;
+  color: #555;
+}

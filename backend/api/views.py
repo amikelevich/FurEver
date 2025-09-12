@@ -159,6 +159,16 @@ class AnimalViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(breed=breed)
 
         return queryset
+    
+    @action(detail=False, methods=["get"])
+    def search(self, request):
+        query = request.query_params.get("query", "").strip()
+        if not query:
+            return Response({"error": "Brak frazy do wyszukania"}, status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = self.get_queryset().filter(name__icontains=query)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AdoptionApplicationViewSet(viewsets.ModelViewSet):

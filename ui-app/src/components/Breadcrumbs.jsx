@@ -34,17 +34,17 @@ export default function Breadcrumbs({
         if (isLast && currentPageName) label = currentPageName;
 
         if (value === "animals") {
-          if (from === "favorites") {
-            label = "Obserwowane zwierzęta";
-          } else if (previousPageName) {
-            label = previousPageName;
-          }
+          if (from === "favorites") label = "Obserwowane zwierzęta";
+          else if (from === "search") label = "Wyszukane zwierzęta";
+          else if (previousPageName) label = previousPageName;
         }
 
         let to = `/${pathnames.slice(0, index + 1).join("/")}`;
-
-        if (value === "animals" && from === "favorites") {
-          to = "/favorites";
+        if (
+          value === "animals" &&
+          (from === "favorites" || from === "search")
+        ) {
+          to = from === "favorites" ? "/favorites" : "/animals/search";
         }
 
         return isLast ? (

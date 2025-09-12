@@ -143,3 +143,35 @@
 .dropdown-content button:hover {
   background-color: #e5e7eb;
 }
+
+.search-form {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  color: black;
+}
+
+.search-bar {
+  padding: 6px 10px;
+  border-radius: 6px 0 0 6px;
+  border: none;
+  outline: none;
+  width: 200px;
+  font-size: 14px;
+  color: black;
+}
+
+.search-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  background-color: #5a3dbd;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.search-btn:hover {
+  background-color: #482b9c;
+}

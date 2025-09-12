@@ -12,6 +12,7 @@ import AnimalPage from "./pages/AnimalPage";
 import MyAdoptions from "./components/MyAdoptions";
 import FavoritesTab from "./components/FavoritesTab";
 import Breadcrumbs from "./components/Breadcrumbs";
+import SearchPage from "./pages/SearchPage";
 import "./styles/App.css";
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -60,6 +61,14 @@ export default function App() {
         <Route
           path="/favorites"
           element={<FavoritesTab isAdmin={user?.is_admin} />}
+        />
+        <Route
+          path="/animals/search"
+          element={
+            <>
+              <SearchPage isAdmin={user?.is_admin} />
+            </>
+          }
         />
       </Routes>{" "}
     </Router>
