@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/ApplicationsTab.css";
 import Pagination from "../../components/Pagination";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 export default function ApplicationsTab() {
   const [applications, setApplications] = useState([]);
@@ -112,8 +113,12 @@ export default function ApplicationsTab() {
     archivedEndIndex
   );
 
+  const storedUser = sessionStorage.getItem("user");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+
   return (
     <div className="applications-container">
+      <Breadcrumbs user={user} currentPageName={"wnioski o adopcje"} />
       <h2>Wnioski o adopcję</h2>
 
       <h3>Aktualne wnioski</h3>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AnimalCard from "../components/AnimalCard";
 import "../styles/AnimalCard.css";
 import Pagination from "../components/Pagination";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 export default function FavoritesTab({ isAdmin, onEdit }) {
   const [animals, setAnimals] = useState([]);
@@ -68,9 +69,12 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const paginatedAnimals = animals.slice(startIndex, endIndex);
+  const storedUser = sessionStorage.getItem("user");
+  const user = storedUser ? JSON.parse(storedUser) : null;
 
   return (
     <div className="animals-tab">
+      <Breadcrumbs user={user} currentPageName={"obserwowane zwierzęta"} />
       <p>Twoje obserwowane zwierzęta</p>
       {loading ? (
         <p>Ładowanie...</p>
@@ -85,6 +89,7 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
                 onEdit={onEdit}
                 onLikeToggle={onLikeToggle}
                 isLiked={animal.is_liked}
+                source="favorites"
               />
             ))}
           </div>

@@ -10,6 +10,7 @@ export default function AnimalCard({
   onApprove,
   onLikeToggle,
   isLiked,
+  source,
 }) {
   const navigate = useNavigate();
   const [liked, setLiked] = useState(isLiked || false);
@@ -66,7 +67,11 @@ export default function AnimalCard({
             )}
           </>
         ) : (
-          <button onClick={() => navigate(`/animals/${animal.id}`)}>
+          <button
+            onClick={() =>
+              navigate(`/animals/${animal.id}`, { state: { from: source } })
+            }
+          >
             Zobacz szczegóły
           </button>
         )}

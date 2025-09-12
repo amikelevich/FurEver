@@ -11,6 +11,7 @@ import AnimalsTab from "./pages/DashboardAdmin/AnimalsTab";
 import AnimalPage from "./pages/AnimalPage";
 import MyAdoptions from "./components/MyAdoptions";
 import FavoritesTab from "./components/FavoritesTab";
+import Breadcrumbs from "./components/Breadcrumbs";
 import "./styles/App.css";
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -47,7 +48,15 @@ export default function App() {
         <Route path="/dashboard_admin" element={<DashboardAdmin />} />{" "}
         <Route path="/animals" element={<AnimalsTab />} />
         <Route path="/animals/:id" element={<AnimalPage />} />
-        <Route path="/adoptions" element={<MyAdoptions />} />
+        <Route
+          path="/adoptions"
+          element={
+            <>
+              <Breadcrumbs user={user} currentPageName="Adopcje" />
+              <MyAdoptions />
+            </>
+          }
+        />
         <Route
           path="/favorites"
           element={<FavoritesTab isAdmin={user?.is_admin} />}

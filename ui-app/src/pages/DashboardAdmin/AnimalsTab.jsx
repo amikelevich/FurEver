@@ -3,6 +3,7 @@ import AnimalCard from "../../components/AnimalCard";
 import AnimalFilters from "../../components/AnimalFilters";
 import "../../styles/AnimalCard.css";
 import Pagination from "../../components/Pagination";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
   const [animals, setAnimals] = useState([]);
@@ -143,9 +144,14 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
     }
   };
 
+  const storedUser = sessionStorage.getItem("user");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+
   return (
     <div className="animals-tab" style={{ display: "flex", gap: "20px" }}>
       <div style={{ flex: 3 }}>
+        <Breadcrumbs user={user} currentPageName={"lista zwierząt"} />
+
         {isAdmin && (
           <button className="add-animal-btn" onClick={onAddClick}>
             ➕ Dodaj zwierzę
@@ -172,6 +178,7 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
                       onApprove={() => approveAdoption(animal.id)}
                       onLikeToggle={onLikeToggle}
                       isLiked={!!animal.is_liked}
+                      source="animals"
                     />
                   ))}
                 </div>

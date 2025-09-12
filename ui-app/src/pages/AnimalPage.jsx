@@ -4,6 +4,7 @@ import "../styles/AnimalPage.css";
 import catShadow from "../assets/cat_shadow.png";
 import AdoptionForm from "../components/AdoptionForm";
 import QuestionForm from "../components/QuestionForm";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 export default function AnimalPage() {
   const { id } = useParams();
@@ -28,8 +29,12 @@ export default function AnimalPage() {
   if (loading) return <p>Ładowanie...</p>;
   if (!animal) return <p>Nie znaleziono zwierzaka</p>;
 
+  const storedUser = sessionStorage.getItem("user");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+
   return (
     <div className="animal-page">
+      <Breadcrumbs user={user} currentPageName={animal.name} />
       <h2>{animal.name}</h2>
       <p className="animal-age">Wiek: {animal.age}</p>
       <div className="animal-traits">
