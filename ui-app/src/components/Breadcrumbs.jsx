@@ -9,47 +9,35 @@ const routeNames = {
   favorites: "Obserwowane zwierzęta",
 };
 
-export default function Breadcrumbs({
-  user,
-  currentPageName,
-  previousPageName,
-}) {
+export default function Breadcrumbs({ user, currentPageName }) {
   const location = useLocation();
-  const from = location.state?.from;
   const pathnames = location.pathname.split("/").filter((x) => x);
 
-  const panelName = user?.is_admin
+  const panelName = user?.is_superuser
     ? "Panel administratora"
     : "Panel użytkownika";
+  const panelLink = user?.is_superuser ? "/dashboard_admin" : "/dashboard";
 
   return (
     <nav className="breadcrumbs">
-      <Link to={user?.is_admin ? "/dashboard_admin" : "/dashboard"}>
-        {panelName}
-      </Link>
+      <Link to={panelLink}>{panelName}</Link>
       {pathnames.map((value, index) => {
         const isLast = index === pathnames.length - 1;
         let label = routeNames[value] || value;
 
-        if (isLast && currentPageName) label = currentPageName;
-
+        let to;
         if (value === "animals") {
-          if (from === "favorites") label = "Obserwowane zwierzęta";
-          else if (from === "search") label = "Wyszukane zwierzęta";
-          else if (previousPageName) label = previousPageName;
+          to = user?.is_superuser ? "/dashboard_admin" : "/animals";
+        } else {
+          to = `/${pathnames.slice(0, index + 1).join("/")}`;
         }
 
-        let to = `/${pathnames.slice(0, index + 1).join("/")}`;
-        if (
-          value === "animals" &&
-          (from === "favorites" || from === "search")
-        ) {
-          to = from === "favorites" ? "/favorites" : "/animals/search";
+        if (isLast) {
+          if (currentPageName) label = currentPageName;
+          return <span key={to}> / {label}</span>;
         }
 
-        return isLast ? (
-          <span key={to}> / {label}</span>
-        ) : (
+        return (
           <span key={to}>
             {" / "}
             <Link to={to}>{label}</Link>

@@ -119,3 +119,23 @@
 .heart:hover {
   color: #e63946;
 }
+
+.see-more-card {
+  text-decoration: none;
+}
+
+.animal-card.arrow-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: #f4f4f4;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-height: 220px;
+}
+
+.animal-card.arrow-card:hover {
+  background: #ddd;
+}

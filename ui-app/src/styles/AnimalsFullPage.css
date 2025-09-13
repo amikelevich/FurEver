@@ -1,0 +1,32 @@
+.see-more-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 220px;
+  height: 320px;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  background-color: #fafafa;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.see-more-card:hover {
+  border-color: #7b5cd6;
+  background-color: #f0ebff;
+  transform: translateY(-3px);
+}
+
+.see-more-content {
+  text-align: center;
+  font-size: 18px;
+  color: #444;
+}
+
+.see-more-content .arrow {
+  font-size: 40px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+  color: #7b5cd6;
+}

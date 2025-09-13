@@ -13,6 +13,7 @@ import MyAdoptions from "./components/MyAdoptions";
 import FavoritesTab from "./components/FavoritesTab";
 import Breadcrumbs from "./components/Breadcrumbs";
 import SearchPage from "./pages/SearchPage";
+import AnimalsFullPage from "./pages/AnimalsFullPage";
 import "./styles/App.css";
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -49,6 +50,7 @@ export default function App() {
         <Route path="/dashboard_admin" element={<DashboardAdmin />} />{" "}
         <Route path="/animals" element={<AnimalsTab />} />
         <Route path="/animals/:id" element={<AnimalPage />} />
+        <Route path="/animals/full" element={<AnimalsFullPage />} />
         <Route
           path="/adoptions"
           element={

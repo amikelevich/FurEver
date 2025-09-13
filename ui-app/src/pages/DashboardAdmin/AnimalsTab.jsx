@@ -1,8 +1,8 @@
 import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
+import { useNavigate } from "react-router-dom";
 import AnimalCard from "../../components/AnimalCard";
 import AnimalFilters from "../../components/AnimalFilters";
 import "../../styles/AnimalCard.css";
-import Pagination from "../../components/Pagination";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
 const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
@@ -11,22 +11,7 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({});
   const [error, setError] = useState(null);
-  const ITEMS_PER_PAGE = 5;
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentArchivedPage, setCurrentArchivedPage] = useState(1);
-
-  const paginatedAnimals = animals.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
-  const paginatedArchivedAnimals = archivedAnimals.slice(
-    (currentArchivedPage - 1) * ITEMS_PER_PAGE,
-    currentArchivedPage * ITEMS_PER_PAGE
-  );
-
-  const totalPages = Math.ceil(animals.length / ITEMS_PER_PAGE);
-  const totalArchivedPages = Math.ceil(archivedAnimals.length / ITEMS_PER_PAGE);
+  const navigate = useNavigate();
 
   const fetchAnimals = async (activeFilters = filters) => {
     setLoading(true);
@@ -166,37 +151,37 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
           <p style={{ color: "red" }}>{error}</p>
         ) : (
           <>
-            {animals.length > 0 ? (
-              <>
-                <div className="animal-list">
-                  {paginatedAnimals.map((animal) => (
-                    <AnimalCard
-                      key={animal.id}
-                      animal={animal}
-                      isAdmin={isAdmin}
-                      onEdit={onEdit || (() => {})}
-                      onApprove={() => approveAdoption(animal.id)}
-                      onLikeToggle={onLikeToggle}
-                      isLiked={!!animal.is_liked}
-                      source="animals"
-                    />
-                  ))}
-                </div>
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage}
+            <div className="animal-list">
+              {animals.slice(0, 3).map((animal) => (
+                <AnimalCard
+                  key={animal.id}
+                  animal={animal}
+                  isAdmin={isAdmin}
+                  onEdit={onEdit || (() => {})}
+                  onApprove={() => approveAdoption(animal.id)}
+                  onLikeToggle={onLikeToggle}
+                  isLiked={!!animal.is_liked}
+                  source="animals"
                 />
-              </>
-            ) : (
-              <p>Brak zwierząt dostępnych do adopcji</p>
-            )}
+              ))}
+
+              {animals.length > 3 && (
+                <div
+                  className="see-more-card"
+                  onClick={() => navigate("/animals/full?category=active")}
+                >
+                  <div className="animal-card arrow-card">
+                    <span className="arrow">➡️</span>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {isAdmin && archivedAnimals.length > 0 && (
               <>
                 <h4>Archiwalne zwierzęta</h4>
                 <div className="animal-list">
-                  {paginatedArchivedAnimals.map((animal) => (
+                  {archivedAnimals.slice(0, 3).map((animal) => (
                     <AnimalCard
                       key={animal.id}
                       animal={animal}
@@ -207,12 +192,20 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
                       isLiked={!!animal.is_liked}
                     />
                   ))}
+
+                  {archivedAnimals.length > 3 && (
+                    <div
+                      className="see-more-card"
+                      onClick={() =>
+                        navigate("/animals/full?category=archived")
+                      }
+                    >
+                      <div className="animal-card arrow-card">
+                        <span className="arrow">➡️</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <Pagination
-                  currentPage={currentArchivedPage}
-                  totalPages={totalArchivedPages}
-                  onPageChange={setCurrentArchivedPage}
-                />
               </>
             )}
           </>
