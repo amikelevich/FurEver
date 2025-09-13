@@ -90,6 +90,7 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
                 onLikeToggle={onLikeToggle}
                 isLiked={animal.is_liked}
                 source="favorites"
+                onAnimalUpdated={fetchAnimals}
               />
             ))}
           </div>

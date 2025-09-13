@@ -1,19 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+import { useNavigate } from "react-router-dom";
 import "../styles/AnimalCard.css";
 import catShadow from "../assets/cat_shadow.png";
-import { useNavigate } from "react-router-dom";
+import AnimalForm from "../pages/DashboardAdmin/AnimalForm";
 
 export default function AnimalCard({
   animal,
   isAdmin,
-  onEdit,
   onApprove,
   onLikeToggle,
   isLiked,
   source,
+  onAnimalUpdated,
 }) {
-  const navigate = useNavigate();
   const [liked, setLiked] = useState(isLiked || false);
+  const [showForm, setShowForm] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLiked(isLiked);
@@ -24,6 +27,10 @@ export default function AnimalCard({
     const newLiked = !liked;
     setLiked(newLiked);
     onLikeToggle(animal.id, newLiked);
+  };
+
+  const handleFormClose = () => {
+    setShowForm(false);
   };
 
   return (
@@ -59,7 +66,7 @@ export default function AnimalCard({
       <div className="animal-card-actions">
         {isAdmin ? (
           <>
-            <button onClick={() => onEdit(animal)}>Edytuj</button>
+            <button onClick={() => setShowForm(true)}>Edytuj</button>
             {!animal.adoption_date ? (
               <button onClick={onApprove}>Adopcja</button>
             ) : (
@@ -76,6 +83,21 @@ export default function AnimalCard({
           </button>
         )}
       </div>
+
+      {showForm &&
+        ReactDOM.createPortal(
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <AnimalForm
+                onClose={handleFormClose}
+                animalToEdit={animal}
+                onAdded={() => setShowForm(false)}
+                onAnimalUpdated={onAnimalUpdated}
+              />
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

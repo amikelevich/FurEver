@@ -162,10 +162,11 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
                   onLikeToggle={onLikeToggle}
                   isLiked={!!animal.is_liked}
                   source="animals"
+                  onAnimalUpdated={fetchAnimals}
                 />
               ))}
 
-              {animals.length > 3 && (
+              {isAdmin && animals.length > 3 && (
                 <div
                   className="see-more-card"
                   onClick={() => navigate("/animals/full?category=active")}
@@ -190,6 +191,7 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
                       onApprove={() => approveAdoption(animal.id)}
                       onLikeToggle={onLikeToggle}
                       isLiked={!!animal.is_liked}
+                      onAnimalUpdated={fetchAnimals}
                     />
                   ))}
 

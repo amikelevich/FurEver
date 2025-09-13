@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function AnimalForm({ onClose, onAdded = () => {} }) {
+export default function AnimalForm({
+  onClose,
+  onAdded = () => {},
+  animalToEdit = null,
+  onAnimalUpdated,
+}) {
   const [formData, setFormData] = useState({
     name: "",
     species: "",
@@ -25,6 +30,32 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
 
   const [images, setImages] = useState([]);
 
+  useEffect(() => {
+    if (animalToEdit) {
+      setFormData({
+        name: animalToEdit.name || "",
+        species: animalToEdit.species || "",
+        short_traits: animalToEdit.short_traits || [],
+        description: animalToEdit.description || "",
+        gender: animalToEdit.gender || "unknown",
+        age: animalToEdit.age ?? "",
+        breed: animalToEdit.breed || "",
+        location: animalToEdit.location || "",
+        human_friendly: animalToEdit.human_friendly || "",
+        animal_friendly: animalToEdit.animal_friendly || "",
+        best_home: animalToEdit.best_home || "",
+        sterilized: animalToEdit.sterilized ?? false,
+        vaccinated: animalToEdit.vaccinated ?? false,
+        dewormed: animalToEdit.dewormed ?? false,
+        chipped: animalToEdit.chipped ?? false,
+        health_status: animalToEdit.health_status || "",
+        examinations: animalToEdit.examinations || "",
+        last_vet_visit: animalToEdit.last_vet_visit || "",
+        adoption_date: animalToEdit.adoption_date || "",
+      });
+    }
+  }, [animalToEdit]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -43,19 +74,28 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           data.append(key, JSON.stringify(formData[key]));
         else data.append(key, formData[key]);
       }
+
       images.forEach((img) => data.append("images", img));
 
-      const response = await fetch("http://localhost:8000/api/animals/", {
-        method: "POST",
-        body: data,
-      });
+      const url = animalToEdit
+        ? `http://localhost:8000/api/animals/${animalToEdit.id}/`
+        : "http://localhost:8000/api/animals/";
+
+      const method = animalToEdit ? "PUT" : "POST";
+
+      const response = await fetch(url, { method, body: data });
 
       if (response.ok) {
-        alert("Zwierzę zostało dodane ✅");
+        alert(
+          animalToEdit
+            ? "Zwierzę zostało zaktualizowane ✅"
+            : "Zwierzę zostało dodane ✅"
+        );
         onAdded();
         onClose();
+        if (onAnimalUpdated) onAnimalUpdated();
       } else {
-        alert("Błąd przy dodawaniu zwierzęcia ❌");
+        alert("Błąd przy zapisywaniu zwierzęcia ❌");
       }
     } catch (error) {
       console.error(error);
@@ -81,7 +121,7 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           fontWeight: 600,
         }}
       >
-        Dodaj zwierzę
+        {animalToEdit ? "Edytuj zwierzę" : "Dodaj zwierzę"}
       </h2>
 
       <form onSubmit={handleSubmit} className="animal-form">
@@ -160,7 +200,7 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           type="number"
           name="age"
           placeholder="Wiek (lata)"
-          value={formData.age}
+          value={formData.age || ""}
           onChange={handleChange}
         />
 
@@ -192,7 +232,7 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           <option value="foster-home">Dom tymczasowy</option>
         </select>
 
-        <small>Określ, jak zwierzę reaguje na ludzi.</small>
+        <small>Stosunek do ludzi:</small>
         <select
           name="human_friendly"
           value={formData.human_friendly}
@@ -204,7 +244,7 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           <option value="fearful">Boi się ludzi</option>
         </select>
 
-        <small>Określ, jak zwierzę reaguje na inne zwierzęta.</small>
+        <small>Stosunek do zwierząt:</small>
         <select
           name="animal_friendly"
           value={formData.animal_friendly}
@@ -216,7 +256,7 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           <option value="aggressive">Agresywny wobec innych zwierząt</option>
         </select>
 
-        <small>Wybierz najbardziej odpowiednie środowisko domowe.</small>
+        <small>Najlepszy dom:</small>
         <select
           name="best_home"
           value={formData.best_home}
@@ -228,7 +268,6 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           <option value="any">Dowolny dom</option>
         </select>
 
-        <small>Czy zwierzę jest wysterylizowane/kastrowane.</small>
         <label>
           <input
             type="checkbox"
@@ -239,7 +278,6 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           Sterylizacja/kastracja
         </label>
 
-        <small>Czy zwierzę posiada aktualne szczepienia.</small>
         <label>
           <input
             type="checkbox"
@@ -250,7 +288,6 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           Szczepienia
         </label>
 
-        <small>Czy zwierzę było odrobaczone.</small>
         <label>
           <input
             type="checkbox"
@@ -261,7 +298,6 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           Odrobaczenie
         </label>
 
-        <small>Czy zwierzę posiada mikroczip identyfikacyjny.</small>
         <label>
           <input
             type="checkbox"
@@ -272,7 +308,7 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           Mikroczip
         </label>
 
-        <small>Wybierz aktualny stan zdrowia zwierzęcia.</small>
+        <small>Stan zdrowia:</small>
         <select
           name="health_status"
           value={formData.health_status}
@@ -284,7 +320,7 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           <option value="chronic">Choroby przewlekłe</option>
         </select>
 
-        <small>Określ zakres przeprowadzonych badań.</small>
+        <small>Zakres badań:</small>
         <select
           name="examinations"
           value={formData.examinations}
@@ -296,7 +332,7 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           <option value="full">Pełne</option>
         </select>
 
-        <small>Data ostatniej wizyty u weterynarza.</small>
+        <small>Data ostatniej wizyty u weterynarza:</small>
         <input
           type="date"
           name="last_vet_visit"
@@ -304,7 +340,7 @@ export default function AnimalForm({ onClose, onAdded = () => {} }) {
           onChange={handleChange}
         />
 
-        <small>Data adopcji (jeśli już nastąpiła).</small>
+        <small>Data adopcji:</small>
         <input
           type="date"
           name="adoption_date"

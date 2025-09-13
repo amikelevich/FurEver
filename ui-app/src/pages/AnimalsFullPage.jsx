@@ -109,11 +109,12 @@ export default function AnimalsFullPage({ isAdmin, onEdit }) {
                 <AnimalCard
                   key={animal.id}
                   animal={animal}
-                  isAdmin={isAdmin}
+                  isAdmin={true}
                   onEdit={onEdit || (() => {})}
                   onLikeToggle={() => {}}
                   isLiked={!!animal.is_liked}
                   source="animals-full"
+                  onAnimalUpdated={fetchAnimals}
                 />
               ))}
 

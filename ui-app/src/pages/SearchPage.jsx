@@ -97,6 +97,7 @@ export default function SearchPage({ isAdmin, onEdit }) {
                 onLikeToggle={() => {}}
                 isLiked={animal.is_liked}
                 source="search"
+                onAnimalUpdated={fetchAnimals}
               />
             ))}
           </div>

@@ -139,3 +139,94 @@
 .animal-card.arrow-card:hover {
   background: #ddd;
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.animal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.animal-form input,
+.animal-form select,
+.animal-form textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.animal-form textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.form-buttons button {
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.form-buttons button[type="submit"] {
+  background-color: #7b5cd6;
+  color: #fff;
+}
+
+.form-buttons button[type="submit"]:hover {
+  background-color: #5e3fb5;
+}
+
+.form-buttons button[type="button"] {
+  background-color: #ccc;
+}
+
+.form-buttons button[type="button"]:hover {
+  background-color: #aaa;
+}
