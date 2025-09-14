@@ -166,7 +166,7 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
                 />
               ))}
 
-              {isAdmin && animals.length > 3 && (
+              {animals.length > 3 && (
                 <div
                   className="see-more-card"
                   onClick={() => navigate("/animals/full?category=active")}

@@ -6,7 +6,7 @@ import Pagination from "../components/Pagination";
 import Breadcrumbs from "../components/Breadcrumbs";
 import "../styles/AnimalsFullPage.css";
 
-export default function AnimalsFullPage({ isAdmin, onEdit }) {
+export default function AnimalsFullPage({ onEdit }) {
   const [animals, setAnimals] = useState([]);
   const [archivedAnimals, setArchivedAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,6 +79,7 @@ export default function AnimalsFullPage({ isAdmin, onEdit }) {
 
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
+  const isAdmin = !!user?.is_superuser;
 
   return (
     <div className="animals-full-page">
@@ -109,7 +110,7 @@ export default function AnimalsFullPage({ isAdmin, onEdit }) {
                 <AnimalCard
                   key={animal.id}
                   animal={animal}
-                  isAdmin={true}
+                  isAdmin={isAdmin}
                   onEdit={onEdit || (() => {})}
                   onLikeToggle={() => {}}
                   isLiked={!!animal.is_liked}
