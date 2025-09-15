@@ -1,62 +1,92 @@
 .animal-filters {
-  background: #fff;
-  border: 1px solid #ddd;
+  background-color: #fffbf3;
+  border: 2px solid #f0cfb8;
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  max-width: 280px;
-  font-family: "Helvetica", sans-serif;
+  color: #2c2c2c;
+  font-family: Helvetica, Arial, sans-serif;
+  box-shadow: 0 2px 6px rgba(139, 69, 19, 0.2);
+  position: fixed;
+  top: 80px;
+  right: 30px;
+  width: 430px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 
 .animal-filters h3 {
-  margin-bottom: 16px;
-  font-size: 18px;
+  color: #8b4513;
+  margin-bottom: 12px;
+  font-size: 20px;
   font-weight: bold;
-  color: #333;
+  border-bottom: 2px solid #f0cfb8;
+  padding-bottom: 6px;
 }
 
 .filter-group {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .filter-group p {
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #444;
+  font-weight: bold;
+  color: #556b2f;
+  margin-bottom: 6px;
 }
 
 .filter-group button {
   margin: 4px;
   padding: 6px 12px;
-  border: 1px solid #7b5cd6;
-  background: #f9f9ff;
-  color: #333;
+  border: 1px solid #f0cfb8;
   border-radius: 8px;
+  background-color: #f5f5dc;
+  color: #2c2c2c;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease-in-out;
 }
 
 .filter-group button:hover {
-  background: #edeaff;
+  background-color: #f0cfb8;
 }
 
 .filter-group button.active {
-  background: #7b5cd6;
+  background-color: #556b2f;
   color: #fff;
-  border-color: #7b5cd6;
+  border-color: #556b2f;
 }
 
 .filter-group select {
   width: 100%;
-  padding: 8px;
+  padding: 8px 12px;
+  border: 1px solid #f0cfb8;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  background-color: #f5f5dc;
+  color: #2c2c2c;
   font-size: 14px;
+  transition: all 0.2s ease-in-out;
+  appearance: none;
   cursor: pointer;
 }
 
 .filter-group select:focus {
   outline: none;
-  border-color: #7b5cd6;
-  box-shadow: 0 0 4px rgba(123, 92, 214, 0.4);
+  border-color: #8b4513;
+  background-color: #fffbf3;
+}
+
+.filter-group select option {
+  background-color: #f5f5dc;
+  color: #2c2c2c;
+  padding: 6px;
+}
+
+.filter-group select option:hover {
+  background-color: #f0cfb8;
+}
+
+.filter-group select::after {
+  content: "▼";
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  color: #556b2f;
 }

@@ -8,7 +8,7 @@
   gap: 40px;
   padding: 0 30px;
   box-sizing: border-box;
-  background-color: white;
+  background-color: #fffbf3;
 }
 
 .text-content {
@@ -21,19 +21,19 @@
   font-size: 48px;
   line-height: 1.1;
   margin: 0 0 18px;
-  color: #1f2b2a;
+  color: #556b2f;
 }
 
 .highlight-green {
-  color: #24360e;
+  color: #556b2f;
 }
 
 .highlight-orange {
-  color: #f7a45e;
+  color: #8b4513;
 }
 
 .hero-desc {
-  color: #55606a;
+  color: #8b4513;
   font-size: 20px;
   line-height: 1.6;
   margin-bottom: 22px;
@@ -46,25 +46,25 @@
 }
 
 .primary-btn {
-  background-color: #24360e;
-  color: white;
+  background-color: #556b2f;
+  color: #fffbf3;
   padding: 12px 28px;
   border-radius: 28px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(36, 54, 14, 0.12);
+  box-shadow: 0 6px 18px rgba(85, 107, 47, 0.12);
   font-size: 16px;
   transition: background-color 0.3s;
 }
 
 .primary-btn:hover {
-  background-color: #1b2808;
+  background-color: #8b4513;
 }
 
 .secondary-btn {
   background: transparent;
-  border: 2px solid #24360e;
-  color: #24360e;
+  border: 2px solid #556b2f;
+  color: #556b2f;
   padding: 12px 28px;
   border-radius: 28px;
   cursor: pointer;
@@ -73,8 +73,8 @@
 }
 
 .secondary-btn:hover {
-  background-color: #24360e;
-  color: white;
+  background-color: #556b2f;
+  color: #fffbf3;
 }
 
 .image-content {
@@ -83,7 +83,7 @@
   height: 300px;
   overflow: hidden;
   border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(85, 107, 47, 0.1);
 }
 
 .image-content img.dog-img {
@@ -91,13 +91,14 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: 15px;
 }
 
 .dog-img {
   width: 100%;
   max-width: 520px;
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgb(16 20 24 / 0.1);
+  box-shadow: 0 20px 40px rgba(85, 107, 47, 0.1);
   user-select: none;
 }
 
@@ -112,8 +113,8 @@
   position: absolute;
   left: 8px;
   bottom: 8px;
-  background: #c8e1d0;
-  color: #24360e;
+  background: #f5f5dc;
+  color: #556b2f;
   padding: 8px 12px;
   border-radius: 999px;
   display: flex;
@@ -121,5 +122,5 @@
   gap: 8px;
   font-weight: 600;
   font-size: 14px;
-  box-shadow: 0 8px 20px rgba(16, 20, 24, 0.06);
+  box-shadow: 0 8px 20px rgba(85, 107, 47, 0.06);
 }
