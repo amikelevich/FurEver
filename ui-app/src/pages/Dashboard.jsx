@@ -8,7 +8,6 @@ export default function Dashboard() {
         isAdmin={false}
         onDetails={(animal) => alert(`Szczegóły zwierzęcia: ${animal.name}`)}
       />
-      <p>Tu będą Twoje filtry.</p>
     </div>
   );
 }

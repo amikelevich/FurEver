@@ -13,7 +13,7 @@ const AnimalCategoryList = ({
 
   const displayedAnimals = animals.slice(0, 3);
   return (
-    <div>
+    <div style={{ color: "black" }}>
       <h3>{categoryKey}</h3>
       <div className="animal-list">
         {displayedAnimals.map((a) => (
@@ -27,7 +27,7 @@ const AnimalCategoryList = ({
             isLiked={!!a.is_liked}
           />
         ))}
-        {animals.length > 3 && (
+        {animals.length > 2 && (
           <div
             className="see-more-card"
             onClick={() => navigate(`/animals/full?category=${categoryKey}`)}

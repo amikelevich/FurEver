@@ -12,7 +12,7 @@ export default function AnimalsFullPage({ onEdit }) {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({});
   const [error, setError] = useState(null);
-  const ITEMS_PER_PAGE = 6;
+  const ITEMS_PER_PAGE = 12;
   const [currentPage, setCurrentPage] = useState(1);
 
   const [searchParams] = useSearchParams();

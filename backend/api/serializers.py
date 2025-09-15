@@ -77,7 +77,7 @@ class AnimalSerializer(serializers.ModelSerializer):
             'sterilized', 'vaccinated', 'dewormed', 'chipped',
             'health_status', 'examinations', 'last_vet_visit', 'adoption_date',
             'images',
-            'likes_count', 'is_liked',
+            'likes_count', 'is_liked', "created_at"
         ]
 
     def validate_short_traits(self, value):
