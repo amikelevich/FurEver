@@ -54,10 +54,10 @@ export default function App() {
         <Route
           path="/adoptions"
           element={
-            <>
+            <div style={{ paddingTop: "80px" }}>
               <Breadcrumbs user={user} currentPageName="Adopcje" />
               <MyAdoptions />
-            </>
+            </div>
           }
         />
         <Route

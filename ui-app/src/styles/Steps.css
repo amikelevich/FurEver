@@ -7,6 +7,7 @@
   text-align: center;
   margin-top: 20px;
   margin-bottom: 65px;
+  background-color: #fffbf3;
 }
 
 .step {
@@ -25,22 +26,22 @@
 }
 
 .icon-circle {
-  background-color: #a0c49d;
+  background-color: #556b2f;
   border-radius: 50%;
   width: 80px;
   height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(139, 69, 19, 0.1);
   margin-bottom: 12px;
   font-size: 36px;
-  color: white;
+  color: #fffbf3;
 }
 
 .step-number {
-  background-color: #f9b468;
-  color: white;
+  background-color: #f0cfb8;
+  color: #fffbf3;
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -62,12 +63,12 @@
 .step h3 {
   margin: 0 0 8px;
   font-size: 20px;
-  color: #24360e;
+  color: #8b4513;
 }
 
 .step p {
   margin: 0;
   font-size: 14px;
-  color: #55606a;
+  color: #556b2f;
   line-height: 1.4;
 }

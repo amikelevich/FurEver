@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/AnimalCard.css";
 import catShadow from "../assets/cat_shadow.png";
 import AnimalForm from "../pages/DashboardAdmin/AnimalForm";
+import { FaHeart, FaRegHeart, FaEdit, FaPaw } from "react-icons/fa";
 
 export default function AnimalCard({
   animal,
@@ -35,46 +36,50 @@ export default function AnimalCard({
 
   return (
     <div className="animal-card">
-      {!isAdmin && (
-        <button className="like-button" onClick={handleLikeClick}>
-          <span className={`heart ${liked ? "liked" : ""}`}>&#9825;</span>
-        </button>
-      )}
+      <div className="animal-image-wrapper">
+        {animal.images?.length > 0 ? (
+          <img src={animal.images[0].image} alt={animal.name} />
+        ) : (
+          <img src={catShadow} alt="Kot" />
+        )}
 
-      {animal.images?.length > 0 ? (
-        <div className="animal-images">
-          {animal.images.map((img, index) => (
-            <img
-              key={index}
-              src={img.image}
-              alt={`${animal.name} ${index + 1}`}
-            />
-          ))}
-        </div>
-      ) : (
-        <img src={catShadow} alt="Kot" />
-      )}
+        {!isAdmin && (
+          <button className="like-button" onClick={handleLikeClick}>
+            {liked ? (
+              <FaHeart className="heart-icon liked" />
+            ) : (
+              <FaRegHeart className="heart-icon" />
+            )}
+          </button>
+        )}
+      </div>
 
-      <h3>{animal.name}</h3>
-      <p>
-        <strong>Wiek:</strong> {animal.age}
-      </p>
-      <p>
-        <strong>Rasa:</strong> {animal.breed}
-      </p>
+      <div className="animal-info">
+        <h3>{animal.name}</h3>
+        <p className="breed">{animal.breed ? animal.breed : "nieznana rasa"}</p>
+        <p className="age">{animal.age + " lat"}</p>
+      </div>
 
       <div className="animal-card-actions">
         {isAdmin ? (
           <>
-            <button onClick={() => setShowForm(true)}>Edytuj</button>
+            <button
+              className="action-btn edit"
+              onClick={() => setShowForm(true)}
+            >
+              <FaEdit /> Edytuj
+            </button>
             {!animal.adoption_date ? (
-              <button onClick={onApprove}>Adopcja</button>
+              <button className="action-btn adopt" onClick={onApprove}>
+                <FaPaw /> Adopcja
+              </button>
             ) : (
               <span className="already-adopted">Zaadoptowany</span>
             )}
           </>
         ) : (
           <button
+            className="action-btn details"
             onClick={() =>
               navigate(`/animals/${animal.id}`, { state: { from: source } })
             }

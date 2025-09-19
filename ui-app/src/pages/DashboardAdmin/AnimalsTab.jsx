@@ -16,7 +16,7 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
     filters,
     setFilters,
     approveAdoption,
-    toggleLike,
+    fetchAnimals,
   } = useAnimals();
 
   const storedUser = sessionStorage.getItem("user");
@@ -46,6 +46,35 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
 
   const categories = categorizeAnimals(animals);
 
+  const onLikeToggle = async (animalId, liked) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Brak tokenu. Zaloguj się, aby polubić.");
+
+      const url = `http://localhost:8000/api/animals/${animalId}/${
+        liked ? "like" : "unlike"
+      }/`;
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Błąd przy polubieniu zwierzęcia");
+      }
+
+      fetchAnimals(filters);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
   return (
     <div className="animals-tab" style={{ display: "flex", gap: "20px" }}>
       <div style={{ flex: 3 }}>
@@ -57,8 +86,6 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
           </button>
         )}
 
-        <p>Lista zwierząt</p>
-
         {loading && <p>Ładowanie...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
 
@@ -69,7 +96,7 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
               isAdmin={isAdmin}
               onEdit={onEdit}
               onApprove={approveAdoption}
-              onLikeToggle={toggleLike}
+              onLikeToggle={onLikeToggle}
               categoryKey="Szukają domu najdłużej"
               navigate={navigate}
             />
@@ -78,7 +105,7 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
               isAdmin={isAdmin}
               onEdit={onEdit}
               onApprove={approveAdoption}
-              onLikeToggle={toggleLike}
+              onLikeToggle={onLikeToggle}
               categoryKey="Psy"
               navigate={navigate}
             />
@@ -87,7 +114,7 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
               isAdmin={isAdmin}
               onEdit={onEdit}
               onApprove={approveAdoption}
-              onLikeToggle={toggleLike}
+              onLikeToggle={onLikeToggle}
               categoryKey="Koty"
               navigate={navigate}
             />
@@ -96,7 +123,7 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
               isAdmin={isAdmin}
               onEdit={onEdit}
               onApprove={approveAdoption}
-              onLikeToggle={toggleLike}
+              onLikeToggle={onLikeToggle}
               categoryKey="Sterylizacja/kastracja"
               navigate={navigate}
             />
@@ -107,7 +134,7 @@ const AnimalsTab = forwardRef(({ onAddClick, isAdmin, onEdit }, ref) => {
                 isAdmin={isAdmin}
                 onEdit={onEdit}
                 onApprove={approveAdoption}
-                onLikeToggle={toggleLike}
+                onLikeToggle={onLikeToggle}
                 categoryKey="Archived"
                 navigate={navigate}
               />

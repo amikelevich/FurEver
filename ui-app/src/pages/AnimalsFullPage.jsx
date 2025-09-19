@@ -1,112 +1,120 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import AnimalCard from "../components/AnimalCard";
 import AnimalFilters from "../components/AnimalFilters";
-import Pagination from "../components/Pagination";
 import Breadcrumbs from "../components/Breadcrumbs";
 import "../styles/AnimalsFullPage.css";
 
 export default function AnimalsFullPage({ onEdit }) {
-  const [animals, setAnimals] = useState([]);
-  const [archivedAnimals, setArchivedAnimals] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const initialAnimals = location.state?.animals || [];
+  const categoryKey = location.state?.categoryKey || "all";
+
   const [filters, setFilters] = useState({});
-  const [error, setError] = useState(null);
-  const ITEMS_PER_PAGE = 12;
+  const [filteredAnimals, setFilteredAnimals] = useState(initialAnimals);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [searchParams] = useSearchParams();
-  const category = searchParams.get("category") || "active";
-
-  const fetchAnimals = async (activeFilters = filters) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const token = localStorage.getItem("token");
-      const query = new URLSearchParams(
-        Object.entries(activeFilters).filter(([_, v]) => v != null && v !== "")
-      ).toString();
-
-      const res = await fetch(
-        `http://localhost:8000/api/animals/${query ? `?${query}` : ""}`,
-        {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        }
-      );
-
-      if (!res.ok) throw new Error(`Błąd pobierania zwierząt: ${res.status}`);
-
-      const data = await res.json();
-      if (!Array.isArray(data)) throw new Error("Oczekiwano tablicy zwierząt");
-
-      const today = new Date();
-      const available = [];
-      const archived = [];
-
-      data.forEach((animal) => {
-        const adoptionDate = animal.adoption_date
-          ? new Date(animal.adoption_date)
-          : null;
-        if (adoptionDate && adoptionDate < today) archived.push(animal);
-        else available.push(animal);
-      });
-
-      setAnimals(available);
-      setArchivedAnimals(archived);
-    } catch (err) {
-      console.error(err);
-      setError(err.message || "Nieoczekiwany błąd");
-      setAnimals([]);
-      setArchivedAnimals([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAnimals(filters);
-  }, [filters]);
-
-  const displayedAnimals = category === "archived" ? archivedAnimals : animals;
-
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedAnimals = displayedAnimals.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
-  const totalPages = Math.ceil(displayedAnimals.length / ITEMS_PER_PAGE);
+  const ITEMS_PER_PAGE = 12;
 
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const isAdmin = !!user?.is_superuser;
 
+  const CATEGORY_LABELS = {
+    archived: "Archiwalne zwierzęta",
+    all: "Wszystkie zwierzęta",
+    longest_home: "Szukają domu najdłużej",
+    dogs: "Psy",
+    cats: "Koty",
+    sterilized: "Sterylizacja/kastracja",
+  };
+
+  const SHORT_TRAITS_CHOICES = {
+    calm: "Spokojny",
+    afraid_of_loud_sounds: "Boi się głośnych dźwięków",
+    active: "Aktywny",
+    likes_company: "Lubi towarzystwo",
+    independent: "Niezależne",
+  };
+
+  useEffect(() => {
+    let result = [...initialAnimals];
+
+    if (filters.species) {
+      result = result.filter(
+        (a) => a.species?.toLowerCase() === filters.species.toLowerCase()
+      );
+    }
+
+    if (filters.age) {
+      result = result.filter((a) => {
+        const age = Number(a.age) || 0;
+        if (filters.age === "young") return age < 2;
+        if (filters.age === "adult") return age >= 2 && age <= 7;
+        if (filters.age === "senior") return age >= 8;
+        return true;
+      });
+    }
+
+    if (filters.gender) {
+      result = result.filter(
+        (a) => a.gender?.toLowerCase() === filters.gender.toLowerCase()
+      );
+    }
+
+    if (filters.location) {
+      result = result.filter(
+        (a) => a.location?.toLowerCase() === filters.location.toLowerCase()
+      );
+    }
+
+    if (filters.short_trait) {
+      result = result.filter(
+        (a) =>
+          Array.isArray(a.short_traits_display) &&
+          a.short_traits_display.some(
+            (t) =>
+              t.toLowerCase() ===
+              SHORT_TRAITS_CHOICES[filters.short_trait].toLowerCase()
+          )
+      );
+    }
+
+    if (filters.breed) {
+      result = result.filter(
+        (a) => a.breed?.toLowerCase() === filters.breed.toLowerCase()
+      );
+    }
+
+    setFilteredAnimals(result);
+    setCurrentPage(1);
+  }, [filters, initialAnimals]);
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedAnimals = filteredAnimals.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
   return (
     <div className="animals-full-page">
       <Breadcrumbs
         user={user}
-        currentPageName={
-          category === "archived"
-            ? "Archiwalne zwierzęta"
-            : "Wszystkie zwierzęta"
-        }
+        currentPageName={CATEGORY_LABELS[categoryKey] || categoryKey}
       />
 
-      <h2>
-        {category === "archived"
-          ? "Archiwalne zwierzęta"
-          : "Wszystkie zwierzęta"}
+      <h2 className="category-name-full-page">
+        {CATEGORY_LABELS[categoryKey] || categoryKey}
       </h2>
 
-      <div className="content">
-        <div className="animal-list">
-          {loading ? (
-            <p>Ładowanie...</p>
-          ) : error ? (
-            <p style={{ color: "red" }}>{error}</p>
-          ) : displayedAnimals.length > 0 ? (
-            <>
-              {paginatedAnimals.map((animal) => (
+      <div className="content-wrapper">
+        <div className="filters">
+          <AnimalFilters onFilterChange={setFilters} />
+        </div>
+
+        <div className="animal-list-wrapper">
+          <div className="animal-list-inner">
+            {filteredAnimals.length > 0 ? (
+              paginatedAnimals.map((animal) => (
                 <AnimalCard
                   key={animal.id}
                   animal={animal}
@@ -115,23 +123,12 @@ export default function AnimalsFullPage({ onEdit }) {
                   onLikeToggle={() => {}}
                   isLiked={!!animal.is_liked}
                   source="animals-full"
-                  onAnimalUpdated={fetchAnimals}
                 />
-              ))}
-
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            </>
-          ) : (
-            <p>Brak zwierząt</p>
-          )}
-        </div>
-
-        <div className="filters">
-          <AnimalFilters onFilterChange={setFilters} />
+              ))
+            ) : (
+              <p>Brak zwierząt</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

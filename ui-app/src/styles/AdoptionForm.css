@@ -1,69 +1,126 @@
 .adoption-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
   z-index: 1000;
+  animation: fadeInOverlay 0.3s ease;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .adoption-modal {
-  background: white;
-  padding: 20px 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  width: 400px;
+  background: #fffbf3;
+  padding: 25px 30px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  width: 420px;
+  max-width: 100%;
+  margin: 0 auto;
   position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding-right: 45px;
+  transform: translateY(-20px);
+  animation: modalPop 0.35s forwards;
+}
+
+@keyframes modalPop {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(10px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 .adoption-modal h2 {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   text-align: center;
+  color: #556b2f;
+  font-size: 22px;
 }
 
 .adoption-modal input,
 .adoption-modal textarea {
   width: 100%;
-  padding: 8px 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1px solid #c7b79a;
+  border-radius: 10px;
+  background: #fffaf0;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  color: black;
+}
+
+.adoption-modal input:focus,
+.adoption-modal textarea:focus {
+  outline: none;
+  border-color: #556b2f;
 }
 
 .adoption-modal textarea {
-  resize: none;
-  height: 60px;
+  resize: vertical;
+  min-height: 70px;
 }
 
 .animal-info-box {
-  background: #f0f0f0;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 15px;
+  background: #f5f5dc;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  color: #556b2f;
+  width: 100%;
 }
 
 .adoption-modal button[type="submit"] {
   width: 100%;
-  padding: 10px;
-  background: #7b5cd6;
-  color: white;
+  padding: 12px;
+  background: #8bb174;
+  color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 15px;
+  transition: background 0.25s, transform 0.2s;
 }
 
 .adoption-modal button[type="submit"]:hover {
-  background: #5a3bb8;
+  background: #6e9b5c;
+  transform: translateY(-3px) scale(1.02);
 }
 
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 12px;
+  top: 12px;
+  right: 14px;
   background: transparent;
   border: none;
   font-size: 24px;
   cursor: pointer;
+  color: #8b4513;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.close-btn:hover {
+  color: #556b2f;
+  transform: scale(1.1);
 }

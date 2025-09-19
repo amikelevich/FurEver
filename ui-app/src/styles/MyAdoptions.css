@@ -1,35 +1,45 @@
 .my-adoptions ul {
   list-style: none;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
 }
 
 .adoption-item {
   display: flex;
   gap: 15px;
-  background: #f4f5f7;
+  background: #fffbf3;
   padding: 10px;
-  border-radius: 8px;
-  color: #000;
-  margin-bottom: 10px;
+  border-radius: 12px;
+  color: #556b2f;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+}
+
+.adoption-item:hover {
+  transform: translateY(-3px);
 }
 
 .adoption-image {
   width: 100px;
   height: 100px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid #f0cfb8;
 }
 
 .adoption-info p {
   margin: 3px 0;
+  color: #556b2f;
 }
 
 .my-adoptions h2,
 .my-adoptions h3 {
-  color: #333;
-  margin-bottom: 10px;
+  color: #556b2f;
+  margin-bottom: 12px;
 }
 
 .my-adoptions p {
-  color: #000;
+  color: #8b4513;
 }

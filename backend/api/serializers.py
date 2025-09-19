@@ -66,16 +66,27 @@ class AnimalSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
     species_display = serializers.CharField(source="get_species_display", read_only=True)
+    gender_display = serializers.CharField(source="get_gender_display", read_only=True)
+    human_friendly_display = serializers.CharField(source="get_human_friendly_display", read_only=True)
+    animal_friendly_display = serializers.CharField(source="get_animal_friendly_display", read_only=True)
+    best_home_display = serializers.CharField(source="get_best_home_display", read_only=True)
+    health_status_display = serializers.CharField(source="get_health_status_display", read_only=True)
+    examinations_display = serializers.CharField(source="get_examinations_display", read_only=True)
+    location_display = serializers.CharField(source="get_location_display", read_only=True)
 
     class Meta:
         model = Animal
         fields = [
             'id', 'name', 'species', 'species_display', 
             'short_traits', 'short_traits_display', 'description',
-            'gender', 'age', 'breed', 'location',
-            'human_friendly', 'animal_friendly', 'best_home',
+            'gender', 'gender_display', 'age', 'breed', 'location', 'location_display',
+            'human_friendly', 'human_friendly_display',
+            'animal_friendly', 'animal_friendly_display',
+            'best_home', 'best_home_display',
             'sterilized', 'vaccinated', 'dewormed', 'chipped',
-            'health_status', 'examinations', 'last_vet_visit', 'adoption_date',
+            'health_status', 'health_status_display',
+            'examinations', 'examinations_display',
+            'last_vet_visit', 'adoption_date',
             'images',
             'likes_count', 'is_liked', "created_at"
         ]

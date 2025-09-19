@@ -137,13 +137,15 @@ export default function AdoptionForm({ animalId, onClose }) {
 
         <div className="animal-info-box">
           <p>
-            <strong>Imię:</strong> {animal.name}
+            <strong>
+              {animal.name}, {animal.age} lat
+            </strong>
           </p>
           <p>
-            <strong>Rasa:</strong> {animal.breed || "nieznana"}
+            <strong>{animal.breed || "nieznana"}</strong>
           </p>
           <p>
-            <strong>Schronisko:</strong> {animal.location}
+            <strong>{animal.location_display}</strong>
           </p>
         </div>
 

@@ -11,19 +11,19 @@
 .pagination button {
   padding: 8px 14px;
   border: none;
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #f5f5dc;
+  color: #556b2f;
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(85, 107, 47, 0.2);
 }
 
 .pagination button:hover:not(:disabled) {
-  background-color: #7b5cd6;
-  color: #fff;
+  background-color: #556b2f;
+  color: #fff8e7;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(85, 107, 47, 0.4);
 }
 
 .pagination button:disabled {
@@ -32,14 +32,14 @@
 }
 
 .pagination button.active {
-  background: linear-gradient(135deg, #7b5cd6, #9a78f1);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #556b2f, #8b4513);
+  color: #fff8e7;
+  box-shadow: 0 4px 12px rgba(85, 107, 47, 0.4);
   transform: translateY(-2px);
 }
 
 .pagination .dots {
   padding: 8px 10px;
-  color: #999;
+  color: #8b4513;
   user-select: none;
 }

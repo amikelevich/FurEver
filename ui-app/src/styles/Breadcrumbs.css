@@ -1,0 +1,34 @@
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  font-family: "Helvetica", sans-serif;
+  font-size: 14px;
+  gap: 5px;
+  flex-wrap: wrap;
+  color: #556b2f;
+}
+
+.breadcrumbs a {
+  color: #8b4513;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumbs a:hover {
+  color: #556b2f;
+  text-decoration: underline;
+}
+
+.breadcrumbs span {
+  color: #556b2f;
+}
+
+.breadcrumbs span:last-child {
+  font-weight: 600;
+  color: #24360e;
+}
+
+.breadcrumbs a,
+.breadcrumbs span {
+  white-space: nowrap;
+}

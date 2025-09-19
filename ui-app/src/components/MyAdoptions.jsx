@@ -51,12 +51,12 @@ export default function MyAdoptions() {
     const animal = app.animal_info || {};
     const animalName = animal.name || "-";
     const animalAge = animal.age || "-";
-    const animalBreed = animal.breed || "-";
-    const animalLocation = animal.location || "-";
+    const animalBreed = animal.breed || "nieznana";
+    const animalLocation = animal.location_display || "-";
 
     const status =
       app.decision === "approved"
-        ? "Zaadoptowana"
+        ? "Zatwierdzona"
         : app.decision === "pending"
         ? "W trakcie"
         : "Niezatwierdzona";

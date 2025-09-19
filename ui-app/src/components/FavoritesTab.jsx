@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import AnimalCard from "../components/AnimalCard";
-import "../styles/AnimalCard.css";
+import "../styles/FavoritesTab.css";
 import Pagination from "../components/Pagination";
 import Breadcrumbs from "../components/Breadcrumbs";
+import useAnimals from "../hooks/useAnimal";
 
 export default function FavoritesTab({ isAdmin, onEdit }) {
-  const [animals, setAnimals] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = 15;
+  const { animals, loading, toggleLike } = useAnimals({ favorites: true });
 
   const fetchFavorites = async () => {
     try {
@@ -72,9 +72,15 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
+  console.log("animals:", animals);
+  console.log("onLikeToggle (should be function):", typeof onLikeToggle);
+
   return (
     <div className="animals-tab">
-      <Breadcrumbs user={user} currentPageName={"obserwowane zwierzęta"} />
+      <div className="favorites-breadcrumb-wrapper">
+        <Breadcrumbs user={user} currentPageName="obserwowane zwierzęta" />
+      </div>
+
       <p>Twoje obserwowane zwierzęta</p>
       {loading ? (
         <p>Ładowanie...</p>
@@ -87,10 +93,10 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
                 animal={animal}
                 isAdmin={isAdmin}
                 onEdit={onEdit}
-                onLikeToggle={onLikeToggle}
+                onLikeToggle={toggleLike}
                 isLiked={animal.is_liked}
                 source="favorites"
-                onAnimalUpdated={fetchAnimals}
+                onAnimalUpdated={fetchFavorites}
               />
             ))}
           </div>
