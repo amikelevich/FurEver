@@ -12,7 +12,7 @@ const AnimalCategoryList = ({
 }) => {
   if (!animals || animals.length === 0) return null;
 
-  const displayedAnimals = animals.slice(0, 2);
+  const displayedAnimals = isAdmin ? animals.slice(0, 4) : animals.slice(0, 2);
 
   const handleSeeMoreClick = () => {
     navigate(`/animals/full`, {
@@ -27,7 +27,7 @@ const AnimalCategoryList = ({
   return (
     <div className="animal-category">
       <h3 className="animal-category-header">{categoryKey}</h3>
-      <div className="animal-list">
+      <div className={`animal-list ${isAdmin ? "admin-list" : "user-list"}`}>
         {displayedAnimals.map((a) => (
           <AnimalCard
             key={a.id}
@@ -39,10 +39,12 @@ const AnimalCategoryList = ({
             isLiked={!!a.is_liked}
           />
         ))}
-        {animals.length > 2 && (
+        {animals.length > displayedAnimals.length && (
           <div className="see-more-card" onClick={handleSeeMoreClick}>
             <div className="arrow-card modern-arrow">
-              <span className="extra-count">+{animals.length - 2}</span>
+              <span className="extra-count">
+                +{animals.length - displayedAnimals.length}
+              </span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="36"

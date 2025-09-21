@@ -56,8 +56,17 @@ export default function Navbar({ user, onLogout }) {
                 Cześć, {user.first_name || "Użytkowniku"} ▼
               </button>
               <div className="dropdown-content">
-                <Link to="/adoptions">Moje adopcje</Link>
-                <Link to="/favorites">Obserwowane zwierzęta</Link>
+                {user.is_superuser ? (
+                  <>
+                    <Link to="/animals">Zwierzęta</Link>
+                    <Link to="/adoptions/admin">Adopcje</Link>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/favorites">Obserwowane zwierzęta</Link>
+                    <Link to="/adoptions">Moje adopcje</Link>
+                  </>
+                )}
                 <button onClick={handleLogoutClick} className="logout-btn">
                   Wyloguj się
                 </button>

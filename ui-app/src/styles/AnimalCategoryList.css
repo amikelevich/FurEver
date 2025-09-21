@@ -16,9 +16,15 @@
   align-items: stretch;
   overflow-x: auto;
   padding-bottom: 5px;
-
-  width: calc(100vw - 430px);
   box-sizing: border-box;
+}
+
+.user-list {
+  width: calc(100vw - 430px);
+}
+
+.admin-list {
+  width: 100%;
 }
 
 .animal-list > * {
