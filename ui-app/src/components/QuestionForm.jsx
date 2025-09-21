@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Toast from "./Toast";
 import "../styles/QuestionForm.css";
 
 export default function QuestionForm({ animalId, onClose }) {
@@ -9,11 +10,17 @@ export default function QuestionForm({ animalId, onClose }) {
     email: "",
     question: "",
   });
+  const [toast, setToast] = useState(null);
 
   const token = localStorage.getItem("token");
 
+  const showToast = (message, type) => {
+    setToast({ message, type });
+  };
+
+  const handleCloseToast = () => setToast(null);
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (!token) return;
 
     fetch("http://localhost:8000/api/users/me/", {
@@ -34,8 +41,8 @@ export default function QuestionForm({ animalId, onClose }) {
           email: data.email || "",
         }));
       })
-      .catch((err) => console.error(err));
-  }, []);
+      .catch((err) => showToast(err.message, "error"));
+  }, [token]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,6 +50,12 @@ export default function QuestionForm({ animalId, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const phonePattern = /^[\d+\- ]{7,15}$/;
+    if (!phonePattern.test(formData.phone)) {
+      showToast("Podaj poprawny numer telefonu.", "error");
+      return;
+    }
 
     fetch("http://localhost:8000/api/send-question-email/", {
       method: "POST",
@@ -57,17 +70,23 @@ export default function QuestionForm({ animalId, onClose }) {
         return res.json();
       })
       .then(() => {
-        alert("Pytanie wysłane!");
-        onClose();
+        showToast("Pytanie wysłane!", "success");
+        setTimeout(() => onClose(), 1000);
       })
-      .catch((err) => {
-        console.error(err);
-        alert("Nie udało się wysłać pytania");
+      .catch(() => {
+        showToast("Nie udało się wysłać pytania.", "error");
       });
   };
 
   return (
     <div className="question-overlay">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={handleCloseToast}
+        />
+      )}
       <div className="question-modal">
         <h3>Zadaj pytanie o zwierzaka</h3>
         <form onSubmit={handleSubmit}>

@@ -124,3 +124,10 @@
   color: #556b2f;
   transform: scale(1.1);
 }
+
+.adoption-modal input:disabled {
+  background: #e0e0d1;
+  color: #888888;
+  border-color: #b0b088;
+  cursor: not-allowed;
+}

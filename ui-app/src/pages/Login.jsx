@@ -1,9 +1,17 @@
-import React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Toast from "../components/Toast";
 import "../styles/Login.css";
 
 export default function Login({ onLogin }) {
   const navigate = useNavigate();
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type) => {
+    setToast({ message, type });
+  };
+
+  const handleCloseToast = () => setToast(null);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -29,24 +37,38 @@ export default function Login({ onLogin }) {
 
         if (onLogin) onLogin(data.user);
 
-        if (data.user.is_superuser) {
-          navigate("/dashboard_admin");
-        } else {
-          navigate("/dashboard");
-        }
+        showToast("Zalogowano pomyślnie!", "success");
 
-        alert("Zalogowano pomyślnie!");
+        setTimeout(() => {
+          if (data.user.is_superuser) {
+            navigate("/dashboard_admin");
+          } else {
+            navigate("/dashboard");
+          }
+        }, 1200);
       } else {
-        alert("Błąd logowania: " + JSON.stringify(data));
+        showToast(
+          "Błąd logowania: " + (data.detail || "spróbuj ponownie"),
+          "error"
+        );
       }
     } catch (err) {
-      alert("Coś poszło nie tak: " + err.message);
+      showToast("Coś poszło nie tak: " + err.message, "error");
     }
   };
 
   return (
     <div className="login-container">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={handleCloseToast}
+        />
+      )}
+
       <h2>Logowanie</h2>
+
       <form className="login-form" onSubmit={handleLogin}>
         <label>
           Email:

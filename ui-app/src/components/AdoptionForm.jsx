@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Toast from "./Toast";
 import "../styles/AdoptionForm.css";
 
 export default function AdoptionForm({ animalId, onClose }) {
@@ -7,9 +8,18 @@ export default function AdoptionForm({ animalId, onClose }) {
     last_name: "",
     email: "",
     phone_number: "",
-    address: "",
+    street: "",
+    houseNumber: "",
+    city: "",
   });
   const [animal, setAnimal] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type) => {
+    setToast({ message, type });
+  };
+
+  const handleCloseToast = () => setToast(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -33,12 +43,12 @@ export default function AdoptionForm({ animalId, onClose }) {
           email: data.email || "",
         }));
       })
-      .catch((err) => console.error(err));
+      .catch((err) => showToast(err.message, "error"));
 
     fetch(`http://localhost:8000/api/animals/${animalId}/`)
       .then((res) => res.json())
       .then((data) => setAnimal(data))
-      .catch((err) => console.error("Błąd przy pobieraniu zwierzaka:", err));
+      .catch(() => showToast("Błąd przy pobieraniu danych", "error"));
   }, [animalId]);
 
   const handleChange = (e) => {
@@ -50,9 +60,35 @@ export default function AdoptionForm({ animalId, onClose }) {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Musisz być zalogowany, aby złożyć wniosek.");
+      showToast("Musisz być zalogowany, aby złożyć wniosek.", "error");
       return;
     }
+
+    const phonePattern = /^[\d+\- ]{7,15}$/;
+    if (!phonePattern.test(formData.phone_number)) {
+      showToast("Podaj poprawny numer telefonu.", "error");
+      return;
+    }
+
+    if (!formData.street.trim()) {
+      showToast("Podaj nazwę ulicy.", "error");
+      return;
+    }
+
+    if (!/^\d+([\/\d]*)?$/.test(formData.houseNumber.trim())) {
+      showToast("Podaj poprawny numer domu/mieszkania.", "error");
+      return;
+    }
+
+    if (!/^\d{2}-\d{3}\s+\S+/.test(formData.city.trim())) {
+      showToast(
+        "Podaj poprawny kod pocztowy i miasto (np. 00-123 Warszawa).",
+        "error"
+      );
+      return;
+    }
+
+    const fullAddress = `${formData.street}, ${formData.houseNumber}, ${formData.city}`;
 
     fetch("http://localhost:8000/api/adoption-applications/", {
       method: "POST",
@@ -63,33 +99,21 @@ export default function AdoptionForm({ animalId, onClose }) {
       body: JSON.stringify({
         animal: animalId,
         phone_number: formData.phone_number,
-        address: formData.address,
+        address: fullAddress,
       }),
     })
       .then(async (res) => {
-        const contentType = res.headers.get("content-type");
-        if (res.ok) {
-          if (contentType && contentType.includes("application/json")) {
-            return res.json();
-          }
-          return {};
-        } else {
-          if (contentType && contentType.includes("application/json")) {
-            const data = await res.json();
-            throw new Error(JSON.stringify(data));
-          }
-          const text = await res.text();
-          throw new Error(text);
-        }
+        if (res.ok) return res.json();
+        const data = await res.json();
+        throw new Error(JSON.stringify(data));
       })
-      .then((data) => {
-        console.log("Wniosek złożony:", data);
-        alert("Wniosek został złożony!");
-        onClose();
+      .then(() => {
+        showToast("Wniosek został złożony!", "success");
+        setTimeout(() => onClose(), 1000);
       })
-      .catch((err) => {
-        console.error("Błąd przy wysyłaniu wniosku:", err);
-        alert("Nie udało się złożyć wniosku. Sprawdź dane i token.");
+      .catch(() => {
+        showToast("Nie udało się złożyć wniosku.", "error");
+        setTimeout(() => onClose(), 1000);
       });
   };
 
@@ -97,6 +121,14 @@ export default function AdoptionForm({ animalId, onClose }) {
 
   return (
     <div className="adoption-overlay">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={handleCloseToast}
+        />
+      )}
+
       <form onSubmit={handleSubmit} className="adoption-modal">
         <button type="button" className="close-btn" onClick={onClose}>
           &times;
@@ -128,11 +160,23 @@ export default function AdoptionForm({ animalId, onClose }) {
           onChange={handleChange}
           placeholder="Numer telefonu"
         />
-        <textarea
-          name="address"
-          value={formData.address}
+        <input
+          name="street"
+          value={formData.street}
           onChange={handleChange}
-          placeholder="Adres"
+          placeholder="ul. Krakowska"
+        />
+        <input
+          name="houseNumber"
+          value={formData.houseNumber}
+          onChange={handleChange}
+          placeholder="Numer domu/mieszkania (np. 15/3)"
+        />
+        <input
+          name="city"
+          value={formData.city}
+          onChange={handleChange}
+          placeholder="00-123 Warszawa"
         />
 
         <div className="animal-info-box">
