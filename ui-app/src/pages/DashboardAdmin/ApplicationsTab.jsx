@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import "../../styles/ApplicationsTab.css";
 import Pagination from "../../components/Pagination";
 import Breadcrumbs from "../../components/Breadcrumbs";
+import Toast from "../../components/Toast";
+import { useLocation } from "react-router-dom";
 
 export default function ApplicationsTab() {
   const [applications, setApplications] = useState([]);
   const [archivedApplications, setArchivedApplications] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentArchivedPage, setCurrentArchivedPage] = useState(1);
+  const [openSection, setOpenSection] = useState("current");
+  const [toast, setToast] = useState(null);
   const ITEMS_PER_PAGE = 5;
 
   const fetchApplications = async () => {
@@ -61,11 +65,17 @@ export default function ApplicationsTab() {
       if (!res.ok)
         throw new Error(data.error || "Błąd podczas zatwierdzania wniosku");
 
-      alert(data.success || "Wniosek zatwierdzony!");
+      setToast({
+        message: data.success || "Wniosek zatwierdzony!",
+        type: "success",
+      });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       await fetchApplications();
     } catch (err) {
       console.error(err);
-      alert(err.message);
+      setToast({ message: err.message, type: "error" });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   };
 
@@ -115,36 +125,84 @@ export default function ApplicationsTab() {
 
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
+  const location = useLocation();
+  const pathnames = location.pathname.split("/").filter((x) => x);
+  const topMargin = pathnames.includes("adoptions") ? 70 : 0;
 
   return (
-    <div className="applications-container">
+    <div
+      className="applications-container"
+      style={{ marginTop: `${topMargin}px` }}
+    >
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+          duration={1000} // 1 sekunda
+        />
+      )}
       <Breadcrumbs user={user} currentPageName={"wnioski o adopcje"} />
       <h2>Wnioski o adopcję</h2>
 
-      <h3>Aktualne wnioski</h3>
-      {applications.length === 0 ? (
-        <p>Brak wniosków</p>
-      ) : (
-        <>
-          {paginatedApplications.map(renderApplication)}
-          <Pagination
-            currentPage={currentPage}
-            totalPages={Math.ceil(applications.length / ITEMS_PER_PAGE)}
-            onPageChange={setCurrentPage}
-          />
-        </>
-      )}
+      <div className="applications-section">
+        <div
+          className="section-header"
+          onClick={() =>
+            setOpenSection(openSection === "current" ? null : "current")
+          }
+        >
+          <h3>Aktualne wnioski</h3>
+          <span className={`arrow ${openSection === "current" ? "open" : ""}`}>
+            ▼
+          </span>
+        </div>
+        {openSection === "current" && (
+          <div className="section-content">
+            {applications.length === 0 ? (
+              <p>Brak wniosków</p>
+            ) : (
+              <>
+                {paginatedApplications.map(renderApplication)}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(applications.length / ITEMS_PER_PAGE)}
+                  onPageChange={setCurrentPage}
+                />
+              </>
+            )}
+          </div>
+        )}
+      </div>
 
       {archivedApplications.length > 0 && (
-        <>
-          <h3>Archiwalne wnioski</h3>
-          {paginatedArchivedApplications.map(renderApplication)}
-          <Pagination
-            currentPage={currentArchivedPage}
-            totalPages={Math.ceil(archivedApplications.length / ITEMS_PER_PAGE)}
-            onPageChange={setCurrentArchivedPage}
-          />
-        </>
+        <div className="applications-section">
+          <div
+            className="section-header"
+            onClick={() =>
+              setOpenSection(openSection === "archived" ? null : "archived")
+            }
+          >
+            <h3>Archiwalne wnioski</h3>
+            <span
+              className={`arrow ${openSection === "archived" ? "open" : ""}`}
+            >
+              ▼
+            </span>
+          </div>
+          {openSection === "archived" && (
+            <div className="section-content">
+              {paginatedArchivedApplications.map(renderApplication)}
+              <Pagination
+                currentPage={currentArchivedPage}
+                totalPages={Math.ceil(
+                  archivedApplications.length / ITEMS_PER_PAGE
+                )}
+                onPageChange={setCurrentArchivedPage}
+              />
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
