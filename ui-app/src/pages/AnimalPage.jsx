@@ -50,7 +50,9 @@ export default function AnimalPage() {
         <div className="animal-boxes">
           <div className="animal-box">
             <h3>Opis</h3>
-            <p>{animal.description || "Brak opisu"}</p>
+            <p className="animal-description">
+              {animal.description || "Brak opisu"}
+            </p>
           </div>
 
           <div className="animal-box">
