@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import AnimalCard from "../components/AnimalCard";
 import AnimalFilters from "../components/AnimalFilters";
 import Breadcrumbs from "../components/Breadcrumbs";
+import Pagination from "../components/Pagination";
 import "../styles/AnimalsFullPage.css";
 
 export default function AnimalsFullPage({ onEdit }) {
@@ -129,6 +130,14 @@ export default function AnimalsFullPage({ onEdit }) {
               <p>Brak zwierząt</p>
             )}
           </div>
+
+          {filteredAnimals.length > ITEMS_PER_PAGE && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(filteredAnimals.length / ITEMS_PER_PAGE)}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </div>
