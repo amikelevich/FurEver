@@ -87,6 +87,93 @@
   color: #fff;
 }
 
+.animal-card-actions button.details {
+  background: linear-gradient(135deg, #556b2f, #8b4513);
+  color: #fff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(85, 107, 47, 0.3);
+  transition: all 0.25s ease;
+}
+
+.animal-card-actions button.details:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(85, 107, 47, 0.45);
+  background: linear-gradient(135deg, #445826, #6e3310);
+}
+
+.animal-card-actions button.details svg {
+  font-size: 16px;
+}
+
+.animal-card-actions button.edit {
+  background: linear-gradient(135deg, #556b2f, #8b4513);
+  color: #fff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(85, 107, 47, 0.3);
+  transition: all 0.25s ease;
+}
+
+.animal-card-actions button.edit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(85, 107, 47, 0.45);
+  background: linear-gradient(135deg, #445826, #6e3310);
+}
+
+.animal-card-actions button.adopt {
+  background: linear-gradient(135deg, #f0cfb8, #fff8e7);
+  color: #8b4513;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.25);
+  transition: all 0.25s ease;
+}
+
+.animal-card-actions button.adopt:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 69, 19, 0.35);
+  background: linear-gradient(135deg, #f5d8c0, #fff8e7);
+}
+
+.already-adopted {
+  flex: 0 0 auto;
+  text-align: center;
+  font-weight: 600;
+  color: #aaa;
+  font-size: 14px;
+  padding: 8px 12spx;
+  border-radius: 8px;
+  background: #e5e5e5;
+  display: inline-block;
+}
+
+.animal-card-actions button svg {
+  font-size: 16px;
+}
+
+.animal-card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  justify-content: center;
+}
+
 .like-button {
   position: absolute;
   top: 8px;
