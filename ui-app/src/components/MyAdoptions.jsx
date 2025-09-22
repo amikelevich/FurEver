@@ -6,7 +6,7 @@ import Pagination from "../components/Pagination";
 export default function MyAdoptions() {
   const [adoptions, setAdoptions] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [openSection, setOpenSection] = useState("approved");
   const [currentApprovedPage, setCurrentApprovedPage] = useState(1);
   const [currentPendingPage, setCurrentPendingPage] = useState(1);
   const ITEMS_PER_PAGE = 5;
@@ -93,37 +93,61 @@ export default function MyAdoptions() {
     <div className="my-adoptions">
       <h2>Moje adopcje</h2>
 
-      <h3>Zatwierdzone adopcje</h3>
-      {approvedAdoptions.length === 0 ? (
-        <p>Brak zatwierdzonych adopcji</p>
-      ) : (
+      <div className="adoptions-dropdown">
+        <button
+          className={openSection === "approved" ? "active" : ""}
+          onClick={() => setOpenSection("approved")}
+        >
+          Zatwierdzone
+        </button>
+        <button
+          className={openSection === "pending" ? "active" : ""}
+          onClick={() => setOpenSection("pending")}
+        >
+          Niezatwierdzone
+        </button>
+      </div>
+
+      {openSection === "approved" && (
         <>
-          <ul>
-            {paginate(approvedAdoptions, currentApprovedPage).map(
-              renderAdoption
-            )}
-          </ul>
-          <Pagination
-            currentPage={currentApprovedPage}
-            totalPages={Math.ceil(approvedAdoptions.length / ITEMS_PER_PAGE)}
-            onPageChange={setCurrentApprovedPage}
-          />
+          {approvedAdoptions.length === 0 ? (
+            <p>Brak zatwierdzonych adopcji</p>
+          ) : (
+            <>
+              <ul>
+                {paginate(approvedAdoptions, currentApprovedPage).map(
+                  renderAdoption
+                )}
+              </ul>
+              <Pagination
+                currentPage={currentApprovedPage}
+                totalPages={Math.ceil(
+                  approvedAdoptions.length / ITEMS_PER_PAGE
+                )}
+                onPageChange={setCurrentApprovedPage}
+              />
+            </>
+          )}
         </>
       )}
-
-      <h3>Niezatwierdzone adopcje</h3>
-      {pendingAdoptions.length === 0 ? (
-        <p>Brak niezatwierdzonych adopcji</p>
-      ) : (
+      {openSection === "pending" && (
         <>
-          <ul>
-            {paginate(pendingAdoptions, currentPendingPage).map(renderAdoption)}
-          </ul>
-          <Pagination
-            currentPage={currentPendingPage}
-            totalPages={Math.ceil(pendingAdoptions.length / ITEMS_PER_PAGE)}
-            onPageChange={setCurrentPendingPage}
-          />
+          {pendingAdoptions.length === 0 ? (
+            <p>Brak niezatwierdzonych adopcji</p>
+          ) : (
+            <>
+              <ul>
+                {paginate(pendingAdoptions, currentPendingPage).map(
+                  renderAdoption
+                )}
+              </ul>
+              <Pagination
+                currentPage={currentPendingPage}
+                totalPages={Math.ceil(pendingAdoptions.length / ITEMS_PER_PAGE)}
+                onPageChange={setCurrentPendingPage}
+              />
+            </>
+          )}
         </>
       )}
     </div>
