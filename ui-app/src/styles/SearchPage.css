@@ -64,11 +64,11 @@
   color: #556b2f;
 }
 
-.animal-list {
+.animal-list-search {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .pagination {

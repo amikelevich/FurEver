@@ -1,45 +1,70 @@
+:root {
+  --modal-bg: #fdfaf6;
+  --text-primary: #4e443c;
+  --text-secondary: #8a7f75;
+  --border-color: #eaddd7;
+  --input-bg: #fffdfa;
+  --accent-primary: #556b2f;
+  --accent-secondary: #8b4513;
+  --button-primary-bg: #8bb174;
+  --button-primary-hover: #6e9b5c;
+  --radius: 12px;
+}
+
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 40px;
   flex-wrap: wrap;
-  font-family: "Helvetica", sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 .pagination button {
-  padding: 8px 14px;
-  border: none;
-  background-color: #f5f5dc;
-  color: #556b2f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  min-width: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-secondary);
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(85, 107, 47, 0.2);
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.2s ease;
 }
 
 .pagination button:hover:not(:disabled) {
-  background-color: #556b2f;
-  color: #fff8e7;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(85, 107, 47, 0.4);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background-color: #f7f5f1;
 }
 
 .pagination button:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
 .pagination button.active {
-  background: linear-gradient(135deg, #556b2f, #8b4513);
-  color: #fff8e7;
-  box-shadow: 0 4px 12px rgba(85, 107, 47, 0.4);
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+  font-weight: 700;
   transform: translateY(-2px);
+  box-shadow: 0 4px 15px
+    color-mix(in srgb, var(--accent-primary) 30%, transparent);
 }
 
 .pagination .dots {
-  padding: 8px 10px;
-  color: #8b4513;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--text-secondary);
   user-select: none;
 }

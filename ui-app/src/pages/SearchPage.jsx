@@ -14,7 +14,7 @@ export default function SearchPage({ isAdmin, onEdit }) {
   const [animals, setAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = 12;
 
   const fetchAnimals = async () => {
     if (!queryParam) {
@@ -87,7 +87,7 @@ export default function SearchPage({ isAdmin, onEdit }) {
         <p>Ładowanie...</p>
       ) : animals.length > 0 ? (
         <>
-          <div className="animal-list">
+          <div className="animal-list-search">
             {paginatedAnimals.map((animal) => (
               <AnimalCard
                 key={animal.id}

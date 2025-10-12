@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
 import "../styles/AnimalFilters.css";
+import {
+  FaPaw,
+  FaBirthdayCake,
+  FaVenusMars,
+  FaMapMarkerAlt,
+  FaSmile,
+  FaTag,
+} from "react-icons/fa";
 
 export default function AnimalFilters({ onFilterChange }) {
   const [filters, setFilters] = useState({
@@ -54,13 +62,11 @@ export default function AnimalFilters({ onFilterChange }) {
       try {
         const res = await fetch("http://localhost:8000/api/animals/");
         const data = await res.json();
-
         setBreeds([...new Set(data.map((a) => a.breed).filter(Boolean))]);
       } catch (err) {
         console.error(err);
       }
     };
-
     fetchOptions();
   }, []);
 
@@ -84,87 +90,111 @@ export default function AnimalFilters({ onFilterChange }) {
       <h3>Filtry</h3>
 
       <div className="filter-group">
-        <p>Gatunek:</p>
-        {Object.entries(SPECIES_CHOICES).map(([value, label]) => (
-          <button
-            key={value}
-            className={filters.species === value ? "active" : ""}
-            onClick={() => handleClick("species", value)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      <div className="filter-group">
-        <p>Wiek:</p>
-        {Object.entries(AGE_GROUPS).map(([value, label]) => (
-          <button
-            key={value}
-            className={filters.age === value ? "active" : ""}
-            onClick={() => handleClick("age", value)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      <div className="filter-group">
-        <p>Płeć:</p>
-        {Object.entries(GENDER_CHOICES).map(([value, label]) => (
-          <button
-            key={value}
-            className={filters.gender === value ? "active" : ""}
-            onClick={() => handleClick("gender", value)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      <div className="filter-group">
-        <p>Miasto:</p>
-        <select
-          value={filters.location || ""}
-          onChange={(e) => handleSelect("location", e.target.value)}
-        >
-          <option value="">-- wybierz --</option>
-          {Object.entries(LOCATION_CHOICES).map(([value, label]) => (
-            <option key={value} value={value}>
+        <p>
+          <FaPaw /> Gatunek:
+        </p>
+        <div className="buttons-wrapper">
+          {Object.entries(SPECIES_CHOICES).map(([value, label]) => (
+            <button
+              key={value}
+              className={filters.species === value ? "active" : ""}
+              onClick={() => handleClick("species", value)}
+            >
               {label}
-            </option>
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
       <div className="filter-group">
-        <p>Temperament:</p>
-        <select
-          value={filters.short_trait || ""}
-          onChange={(e) => handleSelect("short_trait", e.target.value)}
-        >
-          <option value="">-- wybierz --</option>
-          {Object.entries(SHORT_TRAITS_CHOICES).map(([value, label]) => (
-            <option key={value} value={value}>
+        <p>
+          <FaBirthdayCake /> Wiek:
+        </p>
+        <div className="buttons-wrapper">
+          {Object.entries(AGE_GROUPS).map(([value, label]) => (
+            <button
+              key={value}
+              className={filters.age === value ? "active" : ""}
+              onClick={() => handleClick("age", value)}
+            >
               {label}
-            </option>
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
       <div className="filter-group">
-        <p>Rasa:</p>
-        <select
-          value={filters.breed || ""}
-          onChange={(e) => handleSelect("breed", e.target.value)}
-        >
-          <option value="">-- wybierz --</option>
-          {breeds.map((b) => (
-            <option key={b} value={b}>
-              {b}
-            </option>
+        <p>
+          <FaVenusMars /> Płeć:
+        </p>
+        <div className="buttons-wrapper">
+          {Object.entries(GENDER_CHOICES).map(([value, label]) => (
+            <button
+              key={value}
+              className={filters.gender === value ? "active" : ""}
+              onClick={() => handleClick("gender", value)}
+            >
+              {label}
+            </button>
           ))}
-        </select>
+        </div>
+      </div>
+
+      <div className="filter-group">
+        <p>
+          <FaMapMarkerAlt /> Miasto:
+        </p>
+        <div className="select-wrapper">
+          <select
+            value={filters.location || ""}
+            onChange={(e) => handleSelect("location", e.target.value)}
+          >
+            <option value="">-- wybierz --</option>
+            {Object.entries(LOCATION_CHOICES).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="filter-group">
+        <p>
+          <FaSmile /> Temperament:
+        </p>
+        <div className="select-wrapper">
+          <select
+            value={filters.short_trait || ""}
+            onChange={(e) => handleSelect("short_trait", e.target.value)}
+          >
+            <option value="">-- wybierz --</option>
+            {Object.entries(SHORT_TRAITS_CHOICES).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="filter-group">
+        <p>
+          <FaTag /> Rasa:
+        </p>
+        <div className="select-wrapper">
+          <select
+            value={filters.breed || ""}
+            onChange={(e) => handleSelect("breed", e.target.value)}
+          >
+            <option value="">-- wybierz --</option>
+            {breeds.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
   );

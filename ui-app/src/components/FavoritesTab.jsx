@@ -1,115 +1,75 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import AnimalCard from "../components/AnimalCard";
 import "../styles/FavoritesTab.css";
 import Pagination from "../components/Pagination";
 import Breadcrumbs from "../components/Breadcrumbs";
 import useAnimals from "../hooks/useAnimal";
+import { FaHeartBroken } from "react-icons/fa";
 
 export default function FavoritesTab({ isAdmin, onEdit }) {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 15;
-  const { animals, loading, toggleLike } = useAnimals({ favorites: true });
 
-  const fetchFavorites = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(
-        "http://localhost:8000/api/animals/?favorites=true",
-        {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        }
-      );
-      const data = await res.json();
+  const { animals, loading, toggleLike, setAnimals } = useAnimals({
+    favorites: true,
+  });
 
-      const today = new Date();
-      const availableAnimals = (data || []).filter(
-        (animal) =>
-          !animal.adoption_date || new Date(animal.adoption_date) >= today
-      );
-
-      setAnimals(availableAnimals);
-    } catch (err) {
-      console.error("Błąd przy pobieraniu ulubionych zwierząt:", err);
-      setAnimals([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
-
-  const onLikeToggle = async (animalId, liked) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Brak tokenu. Zaloguj się, aby polubić.");
-
-      const url = `http://localhost:8000/api/animals/${animalId}/${
-        liked ? "like" : "unlike"
-      }/`;
-
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) throw new Error("Błąd przy polubieniu zwierzęcia");
-
-      fetchFavorites();
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
+  const handleUnlike = async (animalId) => {
+    await toggleLike(animalId, false);
+    setAnimals((prevAnimals) => prevAnimals.filter((a) => a.id !== animalId));
   };
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedAnimals = animals.slice(startIndex, endIndex);
+  const paginatedAnimals = animals.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
-  console.log(isAdmin);
-
   return (
-    <div className={`animals-tab ${isAdmin ? "admin" : "user"}`}>
-      <div className={`main-content ${isAdmin ? "admin" : "user"}`}>
-        <Breadcrumbs user={user} currentPageName="Obserwowane zwierzęta" />
+    <div className={`favorites-page ${isAdmin ? "admin" : "user"}`}>
+      <Breadcrumbs user={user} currentPageName="Obserwowane zwierzęta" />
+      <h2>Twoje obserwowane zwierzęta</h2>
 
-        <p>Twoje obserwowane zwierzęta</p>
+      {loading ? (
+        <p>Ładowanie...</p>
+      ) : animals.length > 0 ? (
+        <>
+          <div className="favorites-grid">
+            {paginatedAnimals.map((animal) => (
+              <AnimalCard
+                key={animal.id}
+                animal={animal}
+                isAdmin={isAdmin}
+                onEdit={onEdit}
+                onLikeToggle={() => handleUnlike(animal.id)}
+                isLiked={true}
+                source="favorites"
+              />
+            ))}
+          </div>
 
-        {loading ? (
-          <p>Ładowanie...</p>
-        ) : animals.length > 0 ? (
-          <>
-            <div className="animal-list">
-              {paginatedAnimals.map((animal) => (
-                <AnimalCard
-                  key={animal.id}
-                  animal={animal}
-                  isAdmin={isAdmin}
-                  onEdit={onEdit}
-                  onLikeToggle={toggleLike}
-                  isLiked={animal.is_liked}
-                  source="favorites"
-                  onAnimalUpdated={fetchFavorites}
-                />
-              ))}
-            </div>
-
+          {animals.length > ITEMS_PER_PAGE && (
             <Pagination
               currentPage={currentPage}
               totalPages={Math.ceil(animals.length / ITEMS_PER_PAGE)}
               onPageChange={setCurrentPage}
             />
-          </>
-        ) : (
-          <p>Brak obserwowanych zwierząt dostępnych do adopcji</p>
-        )}
-      </div>
+          )}
+        </>
+      ) : (
+        <div className="empty-state">
+          <FaHeartBroken />
+          <h3>Nie masz jeszcze obserwowanych zwierząt</h3>
+          <p>Kliknij serce na karcie zwierzaka, aby dodać go do tej listy.</p>
+          <Link to="/animals" className="cta-button">
+            Przeglądaj zwierzęta
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

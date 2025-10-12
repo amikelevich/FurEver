@@ -77,7 +77,7 @@ export default function Hero() {
           />
           <div className="home-icon">
             <FaHome />
-            <span>Ostatnia adopcja</span>
+            <span>Ostatnio znaleziony dom</span>
           </div>
         </div>
       </div>

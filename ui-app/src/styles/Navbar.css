@@ -73,10 +73,11 @@
   align-items: center;
   margin-right: 20px;
   color: black;
+  margin: 20px 20px;
 }
 
 .search-bar {
-  padding: 6px 12px;
+  padding: 10px 20px;
   border-radius: 12px 0 0 12px;
   border: 1px solid #f0cfb8;
   outline: none;

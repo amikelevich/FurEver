@@ -1,216 +1,180 @@
+:root {
+  --card-bg: #fdfcf8;
+  --primary-text: #2c3e50;
+  --secondary-text: #7f8c8d;
+  --accent-color: #588157;
+  --accent-color-hover: #4a6d49;
+  --action-color: #bc6c25;
+  --action-color-hover: #a55f21;
+  --border-color: #eeebe2;
+  --shadow-light: rgba(60, 64, 67, 0.1);
+  --shadow-dark: rgba(85, 107, 47, 0.15);
+  --radius: 12px;
+}
+
 .animal-card {
-  position: relative;
-  width: 220px;
-  background: #fffbf3;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(85, 107, 47, 0.2);
-  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 5px var(--shadow-light), 0 5px 15px var(--shadow-dark);
   display: flex;
   flex-direction: column;
-  margin: 10px;
-  transition: transform 0.2s;
+  margin: 16px;
+  width: 220px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .animal-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 4px 8px var(--shadow-light), 0 8px 25px var(--shadow-dark);
 }
 
-.animal-images {
-  display: flex;
-  overflow-x: auto;
-  gap: 5px;
-  padding: 5px;
-  height: 120px;
-  align-items: center;
-}
-
-.animal-card img {
+.animal-image-wrapper {
+  position: relative;
   width: 100%;
-  height: 150px;
-  object-fit: contain;
-  background: #f5f5dc;
-  border-radius: 8px;
+  height: 180px;
 }
 
-.animal-card-placeholder {
+.animal-image-wrapper img {
   width: 100%;
-  height: 120px;
-  background: #f0cfb8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #8b4513;
-  font-size: 14px;
-  border-radius: 8px;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease-out;
 }
 
-.animal-card h3 {
-  margin: 10px 10px 5px 10px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #556b2f;
-}
-
-.animal-card p {
-  margin: 2px 10px;
-  font-size: 14px;
-  color: #8b4513;
-}
-
-.animal-card-actions {
-  display: flex;
-  gap: 5px;
-  padding: 10px;
-  justify-content: center;
-}
-
-.animal-card-actions button {
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s;
-}
-
-.animal-card-actions button:hover {
-  opacity: 0.9;
-}
-
-.animal-card-actions button:first-child {
-  background-color: #556b2f;
-  color: #fff;
-}
-
-.animal-card-actions button:last-child {
-  background-color: #8b4513;
-  color: #fff;
-}
-
-.animal-card-actions button.details {
-  background: linear-gradient(135deg, #556b2f, #8b4513);
-  color: #fff;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  justify-content: center;
-  padding: 8px 12px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(85, 107, 47, 0.3);
-  transition: all 0.25s ease;
-}
-
-.animal-card-actions button.details:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(85, 107, 47, 0.45);
-  background: linear-gradient(135deg, #445826, #6e3310);
-}
-
-.animal-card-actions button.details svg {
-  font-size: 16px;
-}
-
-.animal-card-actions button.edit {
-  background: linear-gradient(135deg, #556b2f, #8b4513);
-  color: #fff;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  justify-content: center;
-  padding: 8px 12px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(85, 107, 47, 0.3);
-  transition: all 0.25s ease;
-}
-
-.animal-card-actions button.edit:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(85, 107, 47, 0.45);
-  background: linear-gradient(135deg, #445826, #6e3310);
-}
-
-.animal-card-actions button.adopt {
-  background: linear-gradient(135deg, #f0cfb8, #fff8e7);
-  color: #8b4513;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  justify-content: center;
-  padding: 8px 12px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.25);
-  transition: all 0.25s ease;
-}
-
-.animal-card-actions button.adopt:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(139, 69, 19, 0.35);
-  background: linear-gradient(135deg, #f5d8c0, #fff8e7);
-}
-
-.already-adopted {
-  flex: 0 0 auto;
-  text-align: center;
-  font-weight: 600;
-  color: #aaa;
-  font-size: 14px;
-  padding: 8px 12spx;
-  border-radius: 8px;
-  background: #e5e5e5;
-  display: inline-block;
-}
-
-.animal-card-actions button svg {
-  font-size: 16px;
-}
-
-.animal-card-actions {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
-  justify-content: center;
+.animal-card:hover .animal-image-wrapper img {
+  transform: scale(1.05);
 }
 
 .like-button {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: transparent;
-  border: none;
+  top: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
   cursor: pointer;
-  font-size: 18px;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+  background: transparent;
+}
+
+.like-button:hover {
+  transform: scale(1.1);
 }
 
 .heart-icon {
-  color: #e6002375;
-  transition: color 0.2s ease;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #ff8f8f;
 }
 
 .heart-icon.liked {
-  color: #e60023;
+  color: #ff002b;
 }
 
-.heart-icon:hover {
-  color: #ff4d4d;
+.animal-info {
+  padding: 16px;
+  text-align: left;
 }
 
-.animal-card.arrow-card {
+.animal-info h3 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary-text);
+}
+
+.animal-info .breed,
+.animal-info .age {
+  margin: 0;
+  font-size: 14px;
+  color: var(--secondary-text);
+  font-weight: 400;
+}
+
+.animal-info .breed {
+  font-style: italic;
+  margin-bottom: 2px;
+}
+
+.animal-card-actions {
+  display: flex;
+  gap: 12px;
+  padding: 0 16px 16px;
+  margin-top: auto;
+}
+
+.animal-card-actions .action-btn {
+  flex-grow: 1;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  background: #f5f5dc;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.2s;
-  min-height: 220px;
+  gap: 8px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.animal-card.arrow-card:hover {
-  background: #f0cfb8;
+.animal-card-actions .action-btn:hover {
+  transform: translateY(-2px);
+}
+
+.animal-card-actions .details,
+.animal-card-actions .edit {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.animal-card-actions .details:hover,
+.animal-card-actions .edit:hover {
+  background-color: var(--accent-color-hover);
+}
+
+.animal-card-actions .adopt {
+  background-color: var(--action-color);
+  color: white;
+}
+
+.animal-card-actions .adopt:hover {
+  background-color: var(--action-color-hover);
+}
+
+.already-adopted {
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+  color: var(--secondary-text);
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f0f0f0;
+}
+
+.animal-card-actions svg {
+  font-size: 16px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .modal-overlay {
@@ -219,7 +183,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(85, 107, 47, 0.6);
+  background: rgba(44, 62, 80, 0.6);
+  backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -227,110 +192,13 @@
 }
 
 .modal-content {
-  background: #fffbf3;
-  border-radius: 12px;
-  padding: 20px;
-  max-width: 600px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 24px;
   width: 90%;
+  max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 5px 15px rgba(85, 107, 47, 0.3);
-}
-
-.animal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.animal-form input,
-.animal-form select,
-.animal-form textarea {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #8b4513;
-  font-size: 14px;
-  background: #fffbf3;
-}
-
-.animal-form textarea {
-  resize: vertical;
-  min-height: 60px;
-}
-
-.checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.checkbox-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 14px;
-  color: #556b2f;
-}
-
-.form-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.form-buttons button {
-  padding: 8px 15px;
-  border-radius: 6px;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.form-buttons button[type="submit"] {
-  background-color: #556b2f;
-  color: #fff;
-}
-
-.form-buttons button[type="submit"]:hover {
-  background-color: #3e4d20;
-}
-
-.form-buttons button[type="button"] {
-  background-color: #f0cfb8;
-  color: #8b4513;
-}
-
-.form-buttons button[type="button"]:hover {
-  background-color: #e4bfa4;
-}
-
-.animal-info {
-  padding: 16px 14px;
-  text-align: left;
-  background: transparent;
-}
-
-.animal-info h3 {
-  margin: 0 0 6px;
-  font-size: 18px;
-  font-weight: 700;
-  color: #24360e;
-}
-
-.animal-info .breed {
-  margin: 0 0 4px;
-  font-size: 14px;
-  color: #55606a;
-  font-weight: 400;
-  font-style: italic;
-}
-
-.animal-info .age {
-  margin: 0;
-  font-size: 14px;
-  color: #8b4513;
-  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 }

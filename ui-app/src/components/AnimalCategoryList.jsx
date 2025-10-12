@@ -1,5 +1,9 @@
+import { useMemo } from "react";
 import AnimalCard from "./AnimalCard";
 import "../styles/AnimalCategoryList.css";
+
+const ADMIN_PREVIEW_COUNT = 4;
+const USER_PREVIEW_COUNT = 2;
 
 const AnimalCategoryList = ({
   animals,
@@ -10,9 +14,17 @@ const AnimalCategoryList = ({
   categoryKey,
   navigate,
 }) => {
-  if (!animals || animals.length === 0) return null;
+  const displayedAnimals = useMemo(() => {
+    if (!animals || animals.length === 0) {
+      return [];
+    }
+    const count = isAdmin ? ADMIN_PREVIEW_COUNT : USER_PREVIEW_COUNT;
+    return animals.slice(0, count);
+  }, [animals, isAdmin]);
 
-  const displayedAnimals = isAdmin ? animals.slice(0, 4) : animals.slice(0, 2);
+  if (displayedAnimals.length === 0) {
+    return null;
+  }
 
   const handleSeeMoreClick = () => {
     navigate(`/animals/full`, {
@@ -21,7 +33,12 @@ const AnimalCategoryList = ({
         categoryKey,
       },
     });
-    console.log(animals), console.log(categoryKey);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      handleSeeMoreClick();
+    }
   };
 
   return (
@@ -40,24 +57,32 @@ const AnimalCategoryList = ({
           />
         ))}
         {animals.length > displayedAnimals.length && (
-          <div className="see-more-card" onClick={handleSeeMoreClick}>
+          <div
+            className="see-more-card"
+            onClick={handleSeeMoreClick}
+            onKeyDown={handleKeyDown}
+            tabIndex="0"
+            role="button"
+          >
             <div className="arrow-card modern-arrow">
-              <span className="extra-count">
-                +{animals.length - displayedAnimals.length}
-              </span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="36"
                 height="36"
-                viewBox="0 0 36 36"
+                viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <polyline points="9 18 15 12 9 6"></polyline>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
+              <p>Zobacz więcej</p>
+              <span className="extra-count">
+                +{animals.length - displayedAnimals.length}
+              </span>
             </div>
           </div>
         )}

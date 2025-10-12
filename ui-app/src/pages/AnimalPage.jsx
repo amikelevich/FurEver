@@ -13,12 +13,14 @@ export default function AnimalPage() {
   const [showForm, setShowForm] = useState(false);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
+  const [mainImageUrl, setMainImageUrl] = useState(null);
 
   useEffect(() => {
     fetch(`http://localhost:8000/api/animals/${id}/`)
       .then((res) => res.json())
       .then((data) => {
         setAnimal(data);
+        setMainImageUrl(data.images?.[0]?.image || catShadow);
         setLoading(false);
       })
       .catch((err) => {
@@ -36,14 +38,17 @@ export default function AnimalPage() {
   return (
     <div className="animal-page">
       <Breadcrumbs user={user} currentPageName={animal.name} />
-      <h2>{animal.name}</h2>
-      <p className="animal-age">{animal.age} lat</p>
-      <div className="animal-traits">
-        {animal.short_traits_display?.map((trait) => (
-          <span key={trait} className="trait-badge">
-            {trait}
-          </span>
-        ))}
+
+      <div className="animal-header">
+        <h2>{animal.name}</h2>
+        <p className="animal-age">{animal.age} lat</p>
+        <div className="animal-traits">
+          {animal.short_traits_display?.map((trait) => (
+            <span key={trait} className="trait-badge">
+              {trait}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div className="animal-content">
@@ -115,35 +120,46 @@ export default function AnimalPage() {
             </p>
           </div>
         </div>
-
         <div className="animal-images-wrapper">
           {animal.images?.length > 0 ? (
-            <div className="animal-images">
-              {animal.images.slice(0, 3).map((img, index) => (
-                <div
-                  key={index}
-                  className="animal-thumb"
-                  style={{ zIndex: 3 - index }}
-                  onClick={() => setShowGallery(true)}
-                >
-                  <img src={img.image} alt={`${animal.name} ${index + 1}`} />
-                </div>
-              ))}
+            <>
+              <div
+                className="main-animal-image"
+                onClick={() => setShowGallery(true)}
+              >
+                <img
+                  src={mainImageUrl}
+                  alt={`Główne zdjęcie: ${animal.name}`}
+                />
+              </div>
+
               {animal.images.length > 1 && (
-                <div
-                  className="animal-thumb more"
-                  onClick={() => setShowGallery(true)}
-                  style={{ zIndex: 0 }}
-                >
-                  +{animal.images.length - 3}
+                <div className="animal-thumb-list">
+                  {animal.images.map((img, index) => (
+                    <div
+                      key={index}
+                      className={`animal-thumb ${
+                        mainImageUrl === img.image ? "active" : ""
+                      }`}
+                      onClick={() => setMainImageUrl(img.image)}
+                    >
+                      <img
+                        src={img.image}
+                        alt={`${animal.name} ${index + 1}`}
+                      />
+                    </div>
+                  ))}
                 </div>
               )}
-            </div>
+            </>
           ) : (
-            <img src={catShadow} alt="Kot" className="animal-thumb-single" />
+            <div className="main-animal-image">
+              <img src={catShadow} alt="Brak zdjęcia" />
+            </div>
           )}
         </div>
       </div>
+
       {showGallery && (
         <div className="gallery-modal" onClick={() => setShowGallery(false)}>
           <div className="gallery-content" onClick={(e) => e.stopPropagation()}>
@@ -153,7 +169,6 @@ export default function AnimalPage() {
             >
               &times;
             </button>
-
             <div className="gallery-images">
               {animal.images.map((img, idx) => (
                 <img

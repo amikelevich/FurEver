@@ -9,19 +9,19 @@ export default function Steps() {
         icon={<FaUserPlus />}
         number="1"
         title="Utwórz konto"
-        description="Zarejestruj się w naszym systemie i wypełnij podstawowe informacje o sobie."
+        description="Zarejestruj się i wypełnij podstawowe informacje o sobie."
       />
       <Step
         icon={<FaSearch />}
         number="2"
         title="Dołącz do nas"
-        description="Przeglądaj profile zwierząt, filtruj według swoich preferencji i znajdź idealnego towarzysza."
+        description="Poznaj naszych podopiecznych, wybierz według swoich preferencji i odnajdź swojego przyjaciela."
       />
       <Step
         icon={<FaPaperPlane />}
         number="3"
         title="Wyślij zgłoszenie"
-        description="Wypełnij formularz adopcyjny i wyślij go do schroniska. Wkrótce skontaktujemy się z Tobą!"
+        description="Wypełnij zgłoszenie adopcyjne — skontaktujemy się z Tobą, by omówić kolejne kroki."
       />
     </div>
   );

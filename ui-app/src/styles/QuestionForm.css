@@ -1,14 +1,14 @@
-.question-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  z-index: 9999;
-  backdrop-filter: blur(5px);
-  animation: fadeInOverlay 0.3s ease;
+:root {
+  --modal-bg: #fdfaf6;
+  --text-primary: #4e443c;
+  --text-secondary: #8a7f75;
+  --border-color: #eaddd7;
+  --input-bg: #fffdfa;
+  --accent-primary: #556b2f;
+  --accent-secondary: #8b4513;
+  --button-primary-bg: #8bb174;
+  --button-primary-hover: #6e9b5c;
+  --radius: 12px;
 }
 
 @keyframes fadeInOverlay {
@@ -18,22 +18,6 @@
   to {
     opacity: 1;
   }
-}
-
-.question-modal {
-  background: #fffbf3;
-  padding: 25px 30px;
-  width: 400px;
-  max-width: 100%;
-  border-radius: 20px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  transform: translateY(-20px);
-  animation: modalPop 0.35s forwards;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 @keyframes modalPop {
@@ -50,32 +34,59 @@
   }
 }
 
+.question-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 9999;
+  animation: fadeInOverlay 0.3s ease-out;
+}
+
+.question-modal {
+  background: var(--modal-bg);
+  padding: 25px 30px;
+  width: 400px;
+  max-width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+  font-family: system-ui, -apple-system, sans-serif;
+  animation: modalPop 0.35s forwards;
+}
+
 .question-modal h3 {
   margin: 0 0 20px 0;
   font-size: 20px;
   font-weight: 700;
   text-align: center;
-  color: #556b2f;
+  color: var(--text-primary);
 }
 
 .question-modal input,
 .question-modal textarea {
-  width: 95%;
+  width: 100%;
+  box-sizing: border-box;
   padding: 10px 14px;
   margin-bottom: 15px;
-  border-radius: 12px;
-  border: 1px solid #f0cfb8;
-  background: #f5f5dc;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
   font-size: 14px;
-  color: #2c2c2c;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  color: var(--text-primary);
+  transition: all 0.2s ease-out;
 }
 
 .question-modal input:focus,
 .question-modal textarea:focus {
   outline: none;
-  border-color: #556b2f;
-  box-shadow: 0 0 8px rgba(85, 107, 47, 0.4);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--accent-primary) 15%, transparent);
 }
 
 .question-modal textarea {
@@ -90,40 +101,44 @@
   margin-top: 15px;
 }
 
-.question-modal button[type="submit"] {
-  width: 100%;
+.question-modal button {
   padding: 12px;
-  background: #8bb174;
-  color: #fff;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius);
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 15px;
-  transition: background 0.25s, transform 0.2s;
+  transition: all 0.2s ease;
+}
+
+.question-modal button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.question-modal button[type="submit"] {
+  background: var(--button-primary-bg);
+  color: #fff;
+  flex-grow: 1;
+  box-shadow: 0 4px 15px
+    color-mix(in srgb, var(--button-primary-bg) 30%, transparent);
 }
 
 .question-modal button[type="submit"]:hover {
-  background: #6e9b5c;
-  transform: translateY(-3px) scale(1.02);
+  background: var(--button-primary-hover);
+  box-shadow: 0 6px 20px
+    color-mix(in srgb, var(--button-primary-bg) 40%, transparent);
 }
 
 .question-modal button[type="button"] {
-  width: 100%;
-  padding: 12px;
-  background: #f0cfb8;
-  color: #8b4513;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 15px;
-  transition: background 0.25s, transform 0.2s;
+  background: transparent;
+  color: var(--accent-secondary);
+  border: 1px solid var(--border-color);
 }
 
 .question-modal button[type="button"]:hover {
-  background: #e4bfa4;
-  transform: translateY(-3px) scale(1.02);
+  background: color-mix(in srgb, var(--accent-secondary) 8%, transparent);
+  border-color: var(--accent-secondary);
 }
 
 .close-btn {
@@ -132,12 +147,15 @@
   right: 12px;
   background: transparent;
   border: none;
-  font-size: 24px;
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: color 0.2s, transform 0.2s;
+  transition: all 0.2s;
 }
 
 .close-btn:hover {
-  color: #7b5cd6;
-  transform: scale(1.1);
+  color: var(--accent-primary);
+  transform: rotate(90deg);
 }

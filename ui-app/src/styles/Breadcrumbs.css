@@ -1,34 +1,52 @@
+:root {
+  --primary-text: #1a202c;
+  --secondary-text: #718096;
+  --accent-color: #5a67d8;
+  --border-color: #e2e8f0;
+}
+
 .breadcrumbs {
   display: flex;
   align-items: center;
-  font-family: "Helvetica", sans-serif;
-  font-size: 14px;
-  gap: 5px;
   flex-wrap: wrap;
-  color: #556b2f;
-}
-
-.breadcrumbs a {
-  color: #8b4513;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.breadcrumbs a:hover {
-  color: #556b2f;
-  text-decoration: underline;
-}
-
-.breadcrumbs span {
-  color: #556b2f;
-}
-
-.breadcrumbs span:last-child {
-  font-weight: 600;
-  color: #24360e;
+  gap: 8px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  padding: 8px 0;
 }
 
 .breadcrumbs a,
 .breadcrumbs span {
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.breadcrumbs > *:not(:first-child)::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.breadcrumbs a {
+  color: var(--secondary-text);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumbs a:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+.breadcrumbs span.current-page {
+  color: var(--primary-text);
+  font-weight: 600;
 }
