@@ -1,16 +1,71 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import "../../styles/ApplicationsTab.css";
 import Pagination from "../../components/Pagination";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import Toast from "../../components/Toast";
-import { useLocation } from "react-router-dom";
+import { FaInbox } from "react-icons/fa";
+
+const ApplicationItem = ({ application, onApprove, onReject }) => {
+  const {
+    id,
+    user_first_name,
+    user_last_name,
+    user_email,
+    phone_number,
+    address,
+    animal_name,
+    submitted_at,
+    decision,
+  } = application;
+
+  const statusMap = {
+    approved: "Zatwierdzony",
+    pending: "Oczekujący",
+    rejected: "Odrzucony",
+  };
+  const status = statusMap[decision] || "Nieznany";
+
+  return (
+    <div className="application-item">
+      <div className="item-header">
+        <h4>
+          {user_first_name} {user_last_name}
+        </h4>
+        <span className={`status-badge ${decision}`}>{status}</span>
+      </div>
+      <div className="item-details">
+        <p>
+          <strong>Zwierzę:</strong> {animal_name}
+        </p>
+        <p>
+          <strong>Email:</strong> {user_email}
+        </p>
+        <p>
+          <strong>Telefon:</strong> {phone_number}
+        </p>
+        <p>
+          <strong>Adres:</strong> {address}
+        </p>
+        <p>
+          <strong>Złożono:</strong> {new Date(submitted_at).toLocaleString()}
+        </p>
+      </div>
+      {decision === "pending" && (
+        <div className="item-actions">
+          <button className="approve-btn" onClick={() => onApprove(id)}>
+            Zatwierdź wniosek
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function ApplicationsTab() {
   const [applications, setApplications] = useState([]);
-  const [archivedApplications, setArchivedApplications] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentArchivedPage, setCurrentArchivedPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const [openSection, setOpenSection] = useState("current");
+  const [currentPage, setCurrentPage] = useState(1);
   const [toast, setToast] = useState(null);
   const ITEMS_PER_PAGE = 5;
 
@@ -23,29 +78,13 @@ export default function ApplicationsTab() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       if (!res.ok) throw new Error("Błąd podczas pobierania wniosków");
-
       const data = await res.json();
-      const today = new Date();
-      const current = [];
-      const archived = [];
-
-      data.forEach((app) => {
-        const adoptionDate = app.adoption_date
-          ? new Date(app.adoption_date)
-          : null;
-        if (adoptionDate && adoptionDate < today) {
-          archived.push(app);
-        } else {
-          current.push(app);
-        }
-      });
-
-      setApplications(current);
-      setArchivedApplications(archived);
+      setApplications(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,6 +92,7 @@ export default function ApplicationsTab() {
     fetchApplications();
   }, []);
 
+  // --- POCZĄTEK ZMIAN ---
   const approveApplication = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -62,148 +102,115 @@ export default function ApplicationsTab() {
       );
 
       const data = await res.json();
-      if (!res.ok)
+      if (!res.ok) {
         throw new Error(data.error || "Błąd podczas zatwierdzania wniosku");
+      }
+
+      etApplications((prevApplications) =>
+        prevApplications.map((app) =>
+          app.id === id ? { ...app, decision: "approved" } : app
+        )
+      );
 
       setToast({
         message: data.success || "Wniosek zatwierdzony!",
         type: "success",
       });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      await fetchApplications();
     } catch (err) {
       console.error(err);
       setToast({ message: err.message, type: "error" });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   };
 
-  const renderApplication = (app) => (
-    <div className="application-item" key={app.id}>
-      <strong>
-        {app.user_first_name} {app.user_last_name}
-      </strong>{" "}
-      ({app.user_email}) <br />
-      Zwierzak: {app.animal_name} ({app.animal_breed}, {app.animal_location}){" "}
-      <br />
-      Telefon: {app.phone_number} <br />
-      Adres: {app.address} <br />
-      Data złożenia: {new Date(app.submitted_at).toLocaleString()} <br />
-      Decyzja: {app.decision || "oczekuje"} <br />
-      {app.adoption_date && (
-        <>
-          Data adopcji: {new Date(app.adoption_date).toLocaleDateString()}{" "}
-          <br />
-        </>
-      )}
-      {app.decision === "approved" && (
-        <p className="approved-message">Wniosek został zatwierdzony</p>
-      )}
-      {app.decision === "pending" && (
-        <button
-          className="approve-btn"
-          onClick={() => approveApplication(app.id)}
-        >
-          Zatwierdź
-        </button>
-      )}
-      <hr />
-    </div>
-  );
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [openSection]);
 
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedApplications = applications.slice(startIndex, endIndex);
+  const { currentApps, archivedApps } = useMemo(() => {
+    const current = [],
+      archived = [];
+    const today = new Date();
+    applications.forEach((app) => {
+      const adoptionDate = app.adoption_date
+        ? new Date(app.adoption_date)
+        : null;
+      if (adoptionDate && adoptionDate < today) {
+        archived.push(app);
+      } else {
+        current.push(app);
+      }
+    });
+    return { currentApps: current, archivedApps: archived };
+  }, [applications]);
 
-  const archivedStartIndex = (currentArchivedPage - 1) * ITEMS_PER_PAGE;
-  const archivedEndIndex = archivedStartIndex + ITEMS_PER_PAGE;
-  const paginatedArchivedApplications = archivedApplications.slice(
-    archivedStartIndex,
-    archivedEndIndex
+  const activeList = openSection === "current" ? currentApps : archivedApps;
+  const paginatedList = activeList.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
   );
+  const totalPages = Math.ceil(activeList.length / ITEMS_PER_PAGE);
 
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
-  const location = useLocation();
-  const pathnames = location.pathname.split("/").filter((x) => x);
-  const topMargin = pathnames.includes("adoptions") ? 70 : 0;
 
   return (
-    <div
-      className="applications-container"
-      style={{ marginTop: `${topMargin}px` }}
-    >
+    <div className="applications-page">
       {toast && (
         <Toast
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}
-          duration={1000} // 1 sekunda
+          duration={3000}
         />
       )}
-      <Breadcrumbs user={user} currentPageName={"wnioski o adopcje"} />
+      <Breadcrumbs user={user} currentPageName="Wnioski o adopcje" />
       <h2>Wnioski o adopcję</h2>
 
-      <div className="applications-section">
-        <div
-          className="section-header"
-          onClick={() =>
-            setOpenSection(openSection === "current" ? null : "current")
-          }
+      <div className="application-tabs">
+        <button
+          className={openSection === "current" ? "active" : ""}
+          onClick={() => setOpenSection("current")}
         >
-          <h3>Aktualne wnioski</h3>
-          <span className={`arrow ${openSection === "current" ? "open" : ""}`}>
-            ▼
-          </span>
-        </div>
-        {openSection === "current" && (
-          <div className="section-content">
-            {applications.length === 0 ? (
-              <p>Brak wniosków</p>
-            ) : (
-              <>
-                {paginatedApplications.map(renderApplication)}
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(applications.length / ITEMS_PER_PAGE)}
-                  onPageChange={setCurrentPage}
+          Aktualne ({currentApps.length})
+        </button>
+        <button
+          className={openSection === "archived" ? "active" : ""}
+          onClick={() => setOpenSection("archived")}
+        >
+          Archiwalne ({archivedApps.length})
+        </button>
+      </div>
+
+      <div className="applications-content">
+        {loading ? (
+          <p>Ładowanie...</p>
+        ) : paginatedList.length > 0 ? (
+          <>
+            <div className="applications-grid">
+              {paginatedList.map((app) => (
+                <ApplicationItem
+                  key={app.id}
+                  application={app}
+                  onApprove={approveApplication}
                 />
-              </>
+              ))}
+            </div>
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
             )}
+          </>
+        ) : (
+          <div className="empty-state">
+            <FaInbox />
+            <h3>Brak wniosków w tej kategorii</h3>
+            <p>Gdy pojawią się nowe wnioski, znajdziesz je tutaj.</p>
           </div>
         )}
       </div>
-
-      {archivedApplications.length > 0 && (
-        <div className="applications-section">
-          <div
-            className="section-header"
-            onClick={() =>
-              setOpenSection(openSection === "archived" ? null : "archived")
-            }
-          >
-            <h3>Archiwalne wnioski</h3>
-            <span
-              className={`arrow ${openSection === "archived" ? "open" : ""}`}
-            >
-              ▼
-            </span>
-          </div>
-          {openSection === "archived" && (
-            <div className="section-content">
-              {paginatedArchivedApplications.map(renderApplication)}
-              <Pagination
-                currentPage={currentArchivedPage}
-                totalPages={Math.ceil(
-                  archivedApplications.length / ITEMS_PER_PAGE
-                )}
-                onPageChange={setCurrentArchivedPage}
-              />
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }

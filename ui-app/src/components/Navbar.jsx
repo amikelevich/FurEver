@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./../styles/Navbar.css";
 import logoImage from "../assets/logo.png";
 import NavbarLogo from "./NavbarLogo";
@@ -21,13 +21,6 @@ export default function Navbar({ user, onLogout }) {
       setSearchQuery("");
     }
   };
-
-  useEffect(() => {
-    const storedUser = sessionStorage.getItem("user");
-    if (storedUser && !user) {
-      console.log("Znaleziono usera w sessionStorage:", JSON.parse(storedUser));
-    }
-  }, [user]);
 
   return (
     <nav className="navbar">
@@ -51,27 +44,29 @@ export default function Navbar({ user, onLogout }) {
               </button>
             </form>
 
-            <div className="dropdown">
-              <button className="dropdown-btn">
-                Cześć, {user.first_name || "Użytkowniku"} ▼
-              </button>
-              <div className="dropdown-content">
-                {user.is_superuser ? (
-                  <>
-                    <Link to="/animals">Zwierzęta</Link>
-                    <Link to="/adoptions/admin">Adopcje</Link>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/favorites">Obserwowane zwierzęta</Link>
-                    <Link to="/adoptions">Moje adopcje</Link>
-                  </>
-                )}
-                <button onClick={handleLogoutClick} className="logout-btn">
+            {user.is_superuser ? (
+              <div className="admin-nav-links">
+                <button
+                  onClick={handleLogoutClick}
+                  className="logout-btn-inline"
+                >
                   Wyloguj się
                 </button>
               </div>
-            </div>
+            ) : (
+              <div className="dropdown">
+                <button className="dropdown-btn">
+                  Cześć, {user.first_name || "Użytkowniku"} ▼
+                </button>
+                <div className="dropdown-content">
+                  <Link to="/favorites">Obserwowane zwierzęta</Link>
+                  <Link to="/adoptions">Moje adopcje</Link>
+                  <button onClick={handleLogoutClick} className="logout-btn">
+                    Wyloguj się
+                  </button>
+                </div>
+              </div>
+            )}
           </>
         ) : (
           <>

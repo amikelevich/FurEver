@@ -14,7 +14,7 @@ export default function SearchPage({ isAdmin, onEdit }) {
   const [animals, setAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 12;
+  const ITEMS_PER_PAGE = 10;
 
   const fetchAnimals = async () => {
     if (!queryParam) {

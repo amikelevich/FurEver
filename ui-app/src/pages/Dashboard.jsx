@@ -1,10 +1,10 @@
 import "../styles/Dashboard.css";
-import AnimalsTab from "./DashboardAdmin/AnimalsTab";
+import AnimalsTabUser from "../components/AnimalsTabUser";
 
 export default function Dashboard() {
   return (
     <div>
-      <AnimalsTab
+      <AnimalsTabUser
         isAdmin={false}
         onDetails={(animal) => alert(`Szczegóły zwierzęcia: ${animal.name}`)}
       />

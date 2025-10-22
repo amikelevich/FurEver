@@ -1,0 +1,41 @@
+:root {
+  --modal-bg: #fdfaf6;
+  --text-primary: #4e443c;
+  --text-secondary: #8a7f75;
+  --border-color: #eaddd7;
+  --input-bg: #fffdfa;
+  --accent-primary: #556b2f;
+  --accent-secondary: #8b4513;
+  --button-primary-bg: #8bb174;
+  --button-primary-hover: #6e9b5c;
+  --radius: 12px;
+}
+
+.animals-tab-layout.user {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  margin: 70px 20px 0 20px;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.filters-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 100px;
+}
+
+@media (max-width: 1024px) {
+  .animals-tab-layout.user {
+    flex-direction: column;
+  }
+  .filters-sidebar {
+    width: 100%;
+    position: static;
+  }
+}

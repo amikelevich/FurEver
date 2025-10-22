@@ -7,7 +7,8 @@ import Registration from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import DashboardAdmin from "./pages/DashboardAdmin/DashboardAdmin";
-import AnimalsTab from "./pages/DashboardAdmin/AnimalsTab";
+import AnimalsTabAdmin from "./pages/DashboardAdmin/AnimalsTabAdmin";
+import AnimalsTabUser from "./components/AnimalsTabUser";
 import AnimalPage from "./pages/AnimalPage";
 import MyAdoptions from "./components/MyAdoptions";
 import FavoritesTab from "./components/FavoritesTab";
@@ -49,7 +50,8 @@ export default function App() {
         <Route path="/login" element={<Login onLogin={handleLogin} />} />{" "}
         <Route path="/dashboard" element={<Dashboard />} />{" "}
         <Route path="/dashboard_admin" element={<DashboardAdmin />} />{" "}
-        <Route path="/animals" element={<AnimalsTab />} />
+        <Route path="/animals/admin" element={<AnimalsTabAdmin />} />
+        <Route path="/animals/user" element={<AnimalsTabUser />} />
         <Route path="/animals/:id" element={<AnimalPage />} />
         <Route path="/animals/full" element={<AnimalsFullPage />} />
         <Route path="/adoptions/admin" element={<ApplicationsTab />} />

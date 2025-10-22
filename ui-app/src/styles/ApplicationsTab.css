@@ -1,131 +1,184 @@
-.applications-container {
-  width: 80%;
+:root {
+  --modal-bg: #fdfaf6;
+  --text-primary: #4e443c;
+  --text-secondary: #8a7f75;
+  --border-color: #eaddd7;
+  --input-bg: #fffdfa;
+  --accent-primary: #556b2f;
+  --accent-secondary: #8b4513;
+  --button-primary-bg: #8bb174;
+  --button-primary-hover: #6e9b5c;
+  --radius: 12px;
+}
+
+.applications-page {
+  width: 100%;
   max-width: 1200px;
-  margin: 0px auto;
-  padding: 40px;
-  font-family: Helvetica, sans-serif;
-  color: #2c2c2c;
-  background: #fff8e779;
-  border-radius: 20px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-.applications-container h2 {
-  margin-bottom: 30px;
-  color: #556b2f;
-  font-size: 28px;
+.applications-page h2 {
+  font-size: 32px;
   font-weight: 700;
-  text-align: center;
-  letter-spacing: 0.5px;
-}
-
-.applications-section {
+  color: var(--text-primary);
   margin-bottom: 30px;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #f5f5dc;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 16px;
 }
 
-.section-header {
+.application-tabs {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 24px;
-  cursor: pointer;
-  background: linear-gradient(135deg, #556b2f, #8b4513);
-  color: #fff8e7;
-  font-size: 18px;
+  background-color: var(--border-color);
+  padding: 4px;
+  border-radius: var(--radius);
+  margin-bottom: 30px;
+  width: fit-content;
+}
+
+.application-tabs button {
+  padding: 10px 24px;
+  font-size: 15px;
   font-weight: 600;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  transition: background 0.3s ease;
-  height: fit-content;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-secondary);
+  transition: all 0.25s ease;
 }
 
-.section-header:hover {
-  background: linear-gradient(135deg, #445826, #6e3310);
+.application-tabs button:hover:not(.active) {
+  background: color-mix(in srgb, var(--modal-bg) 50%, transparent);
 }
 
-.section-header .arrow {
-  font-size: 16px;
-  background: rgba(255, 248, 231, 0.2);
-  border-radius: 50%;
-  padding: 4px 8px;
-  transition: transform 0.3s ease;
+.application-tabs button.active {
+  background: var(--input-bg);
+  color: var(--text-primary);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-.section-header .arrow.open {
-  transform: rotate(180deg);
-}
-
-.section-content {
-  padding: 22px;
-  background: #fff8e7;
-  animation: fadeIn 0.35s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.applications-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
 }
 
 .application-item {
-  background: linear-gradient(135deg, #fff8e7b9, #f5f5dca3);
-  border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background: var(--input-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
   padding: 20px 24px;
-  margin-bottom: 18px;
-  line-height: 1.65;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: all 0.2s ease-out;
 }
 
 .application-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  border-color: color-mix(in srgb, var(--border-color) 0%, #d8c9c1);
 }
 
-.application-item strong {
-  color: #8b4513;
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.item-header h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
   font-weight: 600;
+  color: #fff;
+}
+.status-badge.pending {
+  background-color: var(--accent-secondary);
+}
+.status-badge.approved {
+  background-color: var(--accent-primary);
+}
+.status-badge.rejected {
+  background-color: #718096;
 }
 
-.application-item hr {
-  border: none;
-  border-top: 1px solid #ddd;
-  margin: 14px 0 0 0;
+.item-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 8px 20px;
+  font-size: 14px;
+}
+
+.item-details p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.item-details p strong {
+  color: var(--text-primary);
+}
+
+.item-actions {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
 }
 
 .approve-btn {
-  margin-top: 15px;
+  background-color: var(--button-primary-bg);
+  color: #fff;
   padding: 10px 20px;
   border: none;
-  background: linear-gradient(135deg, #556b2f, #8b4513);
-  color: #fff8e7;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 600;
-  font-size: 15px;
-  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(85, 107, 47, 0.25);
+  transition: all 0.2s ease;
 }
 
 .approve-btn:hover {
-  background: linear-gradient(135deg, #445826, #6e3310);
+  background-color: var(--button-primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(85, 107, 47, 0.35);
+  box-shadow: 0 4px 15px
+    color-mix(in srgb, var(--button-primary-bg) 40%, transparent);
 }
 
-.approved-message {
-  color: #556b2f;
-  font-weight: 600;
-  margin-top: 10px;
-  font-size: 15px;
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px;
+  background-color: var(--input-bg);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius);
+}
+
+.empty-state svg {
+  font-size: 48px;
+  color: var(--accent-primary);
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-size: 22px;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  max-width: 400px;
+  margin: 0 0 24px 0;
 }

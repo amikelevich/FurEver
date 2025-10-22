@@ -1,53 +1,66 @@
-import { useState, useRef } from "react";
-import TabBar from "./TabBar";
-import AnimalsTab from "./AnimalsTab";
+import { useState } from "react";
+import AnimalsTabAdmin from "./AnimalsTabAdmin";
 import ApplicationsTab from "./ApplicationsTab";
 import AnimalForm from "./AnimalForm";
 import useAnimals from "../../hooks/useAnimal";
 import "../../styles/DashboardAdmin.css";
+import { FaPaw, FaFileAlt, FaPlus } from "react-icons/fa";
 
 export default function DashboardAdmin() {
   const [activeTab, setActiveTab] = useState("animals");
   const [showForm, setShowForm] = useState(false);
-  const animalsTabRef = useRef(null);
   const { fetchAnimals } = useAnimals();
-
-  const handleEdit = (animal) => {
-    console.log("Edytuj zwierzę:", animal);
-  };
 
   const handleAnimalAdded = () => {
     setShowForm(false);
     fetchAnimals();
   };
 
+  const PageTitle = {
+    animals: "Zwierzęta",
+    applications: "Wnioski Adopcyjne",
+  };
+
   return (
     <div className="admin-dashboard">
-      <div className="header-space" />
+      <aside className="dashboard-sidebar">
+        <div>
+          <div className="sidebar-header">
+            <h1>Panel Admina</h1>
+          </div>
+          <nav className="sidebar-nav">
+            <button
+              className={`nav-link ${activeTab === "animals" ? "active" : ""}`}
+              onClick={() => setActiveTab("animals")}
+            >
+              <FaPaw /> Zwierzęta
+            </button>
+            <button
+              className={`nav-link ${
+                activeTab === "applications" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("applications")}
+            >
+              <FaFileAlt /> Wnioski
+            </button>
+          </nav>
+        </div>
+      </aside>
 
-      <TabBar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <div
-        className={`tab-content ${
-          activeTab === "animals" ? "animals" : "applications"
-        }`}
-      >
+      <main className="dashboard-content">
         {activeTab === "animals" ? (
-          <AnimalsTab
-            ref={animalsTabRef}
-            onAddClick={() => setShowForm(true)}
-            isAdmin={true}
-            onEdit={handleEdit}
-          />
+          <AnimalsTabAdmin isAdmin={true} />
         ) : (
           <ApplicationsTab />
         )}
-      </div>
+      </main>
 
       {showForm && (
-        <div className="modal">
-          <div className="modal-overlay"></div>
+        <div className="modal-overlay">
           <div className="modal-content">
-            <button className="close-btn">×</button>
+            <button className="close-btn" onClick={() => setShowForm(false)}>
+              &times;
+            </button>
             <AnimalForm
               onClose={() => setShowForm(false)}
               onAdded={handleAnimalAdded}

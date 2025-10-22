@@ -1,39 +1,40 @@
 :root {
-  --card-bg: #fdfcf8;
-  --primary-text: #2c3e50;
-  --secondary-text: #7f8c8d;
-  --accent-color: #588157;
-  --accent-color-hover: #4a6d49;
-  --action-color: #bc6c25;
-  --action-color-hover: #a55f21;
-  --border-color: #eeebe2;
-  --shadow-light: rgba(60, 64, 67, 0.1);
-  --shadow-dark: rgba(85, 107, 47, 0.15);
+  --modal-bg: #fdfaf6;
+  --text-primary: #4e443c;
+  --text-secondary: #8a7f75;
+  --border-color: #eaddd7;
+  --input-bg: #fffdfa;
+  --accent-primary: #556b2f;
+  --accent-secondary: #8b4513;
+  --button-primary-bg: #8bb174;
+  --button-primary-hover: #6e9b5c;
   --radius: 12px;
 }
 
 .animal-card {
-  background: var(--card-bg);
+  background: var(--input-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
-  box-shadow: 0 2px 5px var(--shadow-light), 0 5px 15px var(--shadow-dark);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   margin: 16px;
-  width: 220px;
+  width: 260px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.animal-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 4px 8px var(--shadow-light), 0 8px 25px var(--shadow-dark);
+.animal-card.clickable:hover {
+  cursor: pointer;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .animal-image-wrapper {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 190px;
+  background-color: var(--modal-bg);
 }
 
 .animal-image-wrapper img {
@@ -51,33 +52,35 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 38px;
-  height: 38px;
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   cursor: pointer;
-  display: grid;
-  place-items: center;
-  transition: background 0.2s ease, transform 0.2s ease;
-  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .like-button:hover {
   transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .heart-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   font-size: 18px;
-  color: #ff8f8f;
+  color: rgba(220, 38, 38, 0.6);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 .heart-icon.liked {
-  color: #ff002b;
+  color: #dc2626;
 }
 
 .animal-info {
@@ -89,15 +92,14 @@
   margin: 0 0 4px;
   font-size: 20px;
   font-weight: 700;
-  color: var(--primary-text);
+  color: var(--text-primary);
 }
 
 .animal-info .breed,
 .animal-info .age {
   margin: 0;
   font-size: 14px;
-  color: var(--secondary-text);
-  font-weight: 400;
+  color: var(--text-secondary);
 }
 
 .animal-info .breed {
@@ -107,15 +109,14 @@
 
 .animal-card-actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   padding: 0 16px 16px;
   margin-top: auto;
 }
 
 .animal-card-actions .action-btn {
-  flex-grow: 1;
+  flex: 1;
   padding: 10px 12px;
-  border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
@@ -124,81 +125,53 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .animal-card-actions .action-btn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.animal-card-actions .details,
-.animal-card-actions .edit {
-  background-color: var(--accent-color);
+.details {
+  background-color: var(--button-primary-bg);
   color: white;
+  border: none;
+  box-shadow: 0 4px 15px
+    color-mix(in srgb, var(--button-primary-bg) 30%, transparent);
+}
+.details:hover {
+  background-color: var(--button-primary-hover);
+  box-shadow: 0 6px 20px
+    color-mix(in srgb, var(--button-primary-bg) 40%, transparent);
 }
 
-.animal-card-actions .details:hover,
-.animal-card-actions .edit:hover {
-  background-color: var(--accent-color-hover);
-}
-
-.animal-card-actions .adopt {
-  background-color: var(--action-color);
+.adopt {
+  background-color: var(--accent-primary);
   color: white;
+  border: 1px solid var(--accent-primary);
+}
+.adopt:hover {
+  background-color: color-mix(in srgb, var(--accent-primary) 85%, black);
 }
 
-.animal-card-actions .adopt:hover {
-  background-color: var(--action-color-hover);
+.edit {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.edit:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }
 
 .already-adopted {
-  width: 100%;
+  flex: 1;
   text-align: center;
   font-weight: 600;
-  color: var(--secondary-text);
+  color: var(--text-secondary);
   font-size: 14px;
   padding: 10px 12px;
   border-radius: 8px;
-  background: #f0f0f0;
-}
-
-.animal-card-actions svg {
-  font-size: 16px;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(44, 62, 80, 0.6);
-  backdrop-filter: blur(5px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-.modal-content {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  padding: 24px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  background: var(--border-color);
 }
