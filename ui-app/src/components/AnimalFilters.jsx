@@ -9,16 +9,7 @@ import {
   FaTag,
 } from "react-icons/fa";
 
-export default function AnimalFilters({ onFilterChange }) {
-  const [filters, setFilters] = useState({
-    species: null,
-    age: null,
-    gender: null,
-    location: null,
-    short_trait: null,
-    breed: null,
-  });
-
+export default function AnimalFilters({ filters, onFilterChange }) {
   const [breeds, setBreeds] = useState([]);
 
   const SPECIES_CHOICES = {
@@ -75,16 +66,13 @@ export default function AnimalFilters({ onFilterChange }) {
       ...filters,
       [type]: filters[type] === value ? null : value,
     };
-    setFilters(newFilters);
     onFilterChange(newFilters);
   };
 
   const handleSelect = (type, value) => {
     const newFilters = { ...filters, [type]: value || null };
-    setFilters(newFilters);
     onFilterChange(newFilters);
   };
-
   return (
     <div className="animal-filters">
       <h3>Filtry</h3>

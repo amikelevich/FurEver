@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 
-export default function useAnimals(initialFilters = {}) {
+export default function useAnimals(filters) {
   const [animals, setAnimals] = useState([]);
   const [archivedAnimals, setArchivedAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState(initialFilters);
 
   const fetchAnimals = async (activeFilters = filters) => {
     setLoading(true);
@@ -85,7 +84,6 @@ export default function useAnimals(initialFilters = {}) {
       alert(err.message);
     }
   };
-
   useEffect(() => {
     fetchAnimals(filters);
   }, [filters]);
@@ -95,8 +93,6 @@ export default function useAnimals(initialFilters = {}) {
     archivedAnimals,
     loading,
     error,
-    filters,
-    setFilters,
     fetchAnimals,
     approveAdoption,
   };

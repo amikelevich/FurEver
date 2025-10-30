@@ -1,10 +1,14 @@
 :root {
   --filter-bg: #fdfaf6;
+  --input-bg: #fffdfa;
   --primary-text: #4e443c;
   --secondary-text: #8a7f75;
+  --border-color: #eaddd7;
   --accent-color: #556b2f;
   --accent-color-light: rgba(85, 107, 47, 0.15);
-  --border-color: #eaddd7;
+  --accent-secondary: #8b4513;
+  --button-accent-bg: #8bb174;
+  --button-accent-hover: #6e9b5c;
   --radius: 12px;
 }
 
@@ -12,36 +16,39 @@
   background-color: var(--filter-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
-  padding: 10px;
+  padding: 24px;
   color: var(--primary-text);
   font-family: system-ui, -apple-system, sans-serif;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
   position: fixed;
   top: 80px;
   right: 30px;
-  width: 430px;
+  width: 450px;
   max-height: calc(100vh - 40px);
   overflow-y: auto;
 }
 
 .animal-filters h3 {
   color: var(--primary-text);
-  margin: 0 0 20px 0;
-  font-size: 22px;
+  margin: 0 0 24px 0;
+  font-size: 24px;
   font-weight: 700;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 12px;
+  border-bottom: 2px solid var(--accent-secondary);
+  padding-bottom: 16px;
 }
 
 .filter-group {
-  margin-bottom: 20px;
+  margin-bottom: 6px;
 }
 
 .filter-group p {
   font-weight: 600;
   color: var(--primary-text);
-  margin: 0 0 10px 0;
-  font-size: 16px;
+  margin: 0 0 12px 0;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .filter-group .buttons-wrapper {
@@ -53,8 +60,8 @@
 .filter-group button {
   background-color: var(--filter-bg);
   border: 1px solid var(--border-color);
-  border-radius: 999px;
-  padding: 6px 14px;
+  border-radius: var(--radius);
+  padding: 8px 16px;
   font-size: 14px;
   font-weight: 500;
   color: var(--secondary-text);
@@ -65,13 +72,22 @@
 .filter-group button:hover {
   border-color: var(--accent-color);
   color: var(--accent-color);
+  background-color: var(--accent-color-light);
 }
 
 .filter-group button.active {
-  background-color: var(--accent-color);
-  border-color: var(--accent-color);
+  background-color: var(--button-accent-bg);
+  border-color: var(--button-accent-bg);
   color: white;
   font-weight: 600;
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.filter-group button.active:hover {
+  background-color: var(--button-accent-hover);
+  border-color: var(--button-accent-hover);
+  color: white;
 }
 
 .select-wrapper {
@@ -80,10 +96,10 @@
 
 .filter-group select {
   width: 100%;
-  padding: 10px 36px 10px 14px;
+  padding: 12px 36px 12px 14px;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background-color: var(--filter-bg);
+  border-radius: var(--radius);
+  background-color: var(--input-bg);
   color: var(--primary-text);
   font-size: 14px;
   cursor: pointer;
@@ -91,6 +107,10 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   transition: all 0.2s ease-out;
+}
+
+.filter-group select:hover {
+  border-color: var(--secondary-text);
 }
 
 .filter-group select:focus {
@@ -105,10 +125,16 @@
   top: 50%;
   right: 14px;
   transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238a7f75' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
   pointer-events: none;
+  color: var(--secondary-text);
+  transition: color 0.2s ease-out;
+}
+
+.select-wrapper:hover::after {
+  color: var(--primary-text);
 }

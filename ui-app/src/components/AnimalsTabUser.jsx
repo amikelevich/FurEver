@@ -1,14 +1,37 @@
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import AnimalFilters from "./AnimalFilters";
 import AnimalCategoryList from "./AnimalCategoryList";
 import useAnimals from "../hooks/useAnimal";
 import "../styles/AnimalsTabUser.css";
 
+const paramsToFilters = (params) => {
+  return {
+    species: params.get("species") || null,
+    age: params.get("age") || null,
+    gender: params.get("gender") || null,
+    location: params.get("location") || null,
+    short_trait: params.get("short_trait") || null,
+    breed: params.get("breed") || null,
+  };
+};
+
 export default function AnimalsTabUser() {
   const navigate = useNavigate();
-  const { animals, loading, error, setFilters, approveAdoption, toggleLike } =
-    useAnimals();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filters = useMemo(() => paramsToFilters(searchParams), [searchParams]);
+  const { animals, loading, error, approveAdoption, toggleLike } =
+    useAnimals(filters);
+
+  const handleFilterChange = (newFilters) => {
+    const cleanParams = {};
+    Object.entries(newFilters).forEach(([key, value]) => {
+      if (value) {
+        cleanParams[key] = value;
+      }
+    });
+    setSearchParams(cleanParams);
+  };
 
   const categories = useMemo(() => {
     const dogs = [],
@@ -56,7 +79,7 @@ export default function AnimalsTabUser() {
         ))}
       </div>
       <aside className="filters-sidebar">
-        <AnimalFilters onFilterChange={setFilters} />
+        <AnimalFilters filters={filters} onFilterChange={handleFilterChange} />
       </aside>
     </div>
   );
