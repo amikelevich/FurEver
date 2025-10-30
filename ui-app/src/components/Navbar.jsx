@@ -3,6 +3,7 @@ import { useState } from "react";
 import "./../styles/Navbar.css";
 import logoImage from "../assets/logo.png";
 import NavbarLogo from "./NavbarLogo";
+import { FaSearch } from "react-icons/fa";
 
 export default function Navbar({ user, onLogout }) {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export default function Navbar({ user, onLogout }) {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button type="submit" className="search-btn">
-                Szukaj
+                <FaSearch />
               </button>
             </form>
 

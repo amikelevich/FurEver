@@ -68,15 +68,15 @@ export default function SearchPage({ isAdmin, onEdit }) {
         previousPageName="Wyszukane zwierzęta"
       />
 
-      <form onSubmit={handleSearchSubmit} className="search-form">
+      <form onSubmit={handleSearchSubmit} className="search-form-page">
         <input
           type="text"
           placeholder="Szukaj zwierząt..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-bar"
+          className="search-bar-page"
         />
-        <button type="submit" className="search-btn">
+        <button type="submit" className="search-btn-page">
           Szukaj
         </button>
       </form>

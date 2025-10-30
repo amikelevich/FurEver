@@ -6,10 +6,11 @@
   --input-bg: #fffdfa;
   --accent-primary: #556b2f;
   --accent-secondary: #8b4513;
-  --button-hover: #6e9b5c;
+  --button-primary-hover: #6e9b5c;
   --radius: 12px;
   --danger-text: #c84949;
   --danger-hover-bg: #fbe9e9;
+  --button-primary-bg: #8bb174;
 }
 
 .navbar {
@@ -85,13 +86,11 @@
 }
 
 .search-form {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
+  position: relative;
+  display: inline-block;
 }
 
 .search-bar {
-  margin-top: 20px;
   border-radius: var(--radius) 0 0 var(--radius);
   border: 1px solid var(--border-color);
   border-right: none;
@@ -101,6 +100,8 @@
   color: var(--text-primary);
   background-color: var(--input-bg);
   transition: all 0.3s ease-in-out;
+  padding: 9px 20px;
+  vertical-align: middle;
 }
 
 .search-bar:focus {
@@ -110,19 +111,27 @@
 }
 
 .search-btn {
-  margin-top: 20px;
   border: 1px solid var(--accent-primary);
-  border-radius: 0 var(--radius) var(--radius) 0;
   background-color: var(--accent-primary);
+  border-radius: 0 var(--radius) var(--radius) 0;
   color: var(--modal-bg);
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s ease;
+  padding: 9px 20px;
+  vertical-align: middle;
+  margin: 0;
 }
 
 .search-btn:hover {
   background-color: var(--accent-secondary);
   border-color: var(--accent-secondary);
+}
+
+.search-btn svg {
+  font-size: 18px;
+  color: var(--modal-bg);
+  vertical-align: middle;
 }
 
 .dropdown {
@@ -213,7 +222,6 @@
   background: none;
   border: none;
   padding: 8px 0;
-
   color: var(--text-secondary);
   cursor: pointer;
   font-size: 15px;
