@@ -2,25 +2,28 @@ import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AnimalCategoryList from "../../components/AnimalCategoryList";
 import useAnimals from "../../hooks/useAnimal";
-import Breadcrumbs from "../../components/Breadcrumbs";
 import AnimalForm from "./AnimalForm";
 import "../../styles/AnimalsTabAdmin.css";
 import { FaPlus } from "react-icons/fa";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
-const AnimalsTabAdmin = forwardRef(({ onEdit }, ref) => {
+const AnimalsTabAdmin = forwardRef((props, ref) => {
   const navigate = useNavigate();
+  const filters = useMemo(() => ({}), []);
   const {
     animals,
     archivedAnimals,
     loading,
     error,
-    filters,
     approveAdoption,
     fetchAnimals,
     toggleLike,
-  } = useAnimals();
+    addAnimalManually,
+    updateAnimalManually,
+  } = useAnimals(filters);
 
   const [showForm, setShowForm] = useState(false);
+  const [animalToEdit, setAnimalToEdit] = useState(null);
 
   let user = null;
   try {
@@ -29,14 +32,31 @@ const AnimalsTabAdmin = forwardRef(({ onEdit }, ref) => {
   } catch (e) {
     console.error("Failed to parse user from sessionStorage", e);
   }
-
   useImperativeHandle(ref, () => ({
-    refreshAnimals: () => fetchAnimals(filters),
+    refreshAnimals: () => fetchAnimals(),
   }));
 
-  const handleAnimalAdded = () => {
+  const handleShowAddForm = () => {
+    setAnimalToEdit(null);
+    setShowForm(true);
+  };
+
+  const handleStartEdit = (animal) => {
+    setAnimalToEdit(animal);
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
     setShowForm(false);
-    fetchAnimals(filters);
+    setAnimalToEdit(null);
+  };
+
+  const handleAnimalAdded = (newAnimal) => {
+    addAnimalManually(newAnimal);
+  };
+
+  const handleAnimalUpdated = (updatedAnimal) => {
+    updateAnimalManually(updatedAnimal);
   };
 
   const uniqueAnimalsForAdmin = useMemo(
@@ -58,17 +78,16 @@ const AnimalsTabAdmin = forwardRef(({ onEdit }, ref) => {
         <div className="main-content">
           <div className="content-header">
             <Breadcrumbs user={user} currentPageName="Zwierzęta w schronisku" />
-            <button className="btn-primary" onClick={() => setShowForm(true)}>
+            <button className="btn-primary" onClick={handleShowAddForm}>
               <FaPlus /> Dodaj podopiecznego
             </button>
           </div>
-
           {categoriesConfig.map(({ key, data }) => (
             <AnimalCategoryList
               key={key}
               animals={data}
               isAdmin={true}
-              onEdit={onEdit}
+              onEdit={handleStartEdit}
               onApprove={approveAdoption}
               onLikeToggle={toggleLike}
               categoryKey={key}
@@ -77,16 +96,17 @@ const AnimalsTabAdmin = forwardRef(({ onEdit }, ref) => {
           ))}
         </div>
       </div>
-
       {showForm && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="close-btn" onClick={() => setShowForm(false)}>
+            <button className="close-btn" onClick={handleCloseForm}>
               &times;
             </button>
             <AnimalForm
-              onClose={() => setShowForm(false)}
+              onClose={handleCloseForm}
               onAdded={handleAnimalAdded}
+              animalToEdit={animalToEdit}
+              onAnimalUpdated={handleAnimalUpdated}
             />
           </div>
         </div>

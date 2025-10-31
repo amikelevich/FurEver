@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import AnimalCard from "./AnimalCard";
 import "../styles/AnimalCategoryList.css";
 
-const ADMIN_PREVIEW_COUNT = 4;
+const ADMIN_PREVIEW_COUNT = 3;
 const USER_PREVIEW_COUNT = 2;
 
 const AnimalCategoryList = ({

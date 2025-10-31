@@ -11,6 +11,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
+import json
 
 
 User = get_user_model()
@@ -92,7 +93,35 @@ class AnimalViewSet(viewsets.ModelViewSet):
             AnimalImage.objects.create(animal=animal, image_data=img.read())
 
         response_serializer = self.get_serializer(animal)
-        return Response(response_serializer.data, status=201)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+
+        partial = kwargs.pop('partial', True) 
+        instance = self.get_object() 
+        
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        animal = serializer.save()
+
+        images = request.FILES.getlist("images")
+        for img in images:
+            AnimalImage.objects.create(animal=animal, image_data=img.read())
+
+        images_to_delete_str = request.data.get("images_to_delete")
+        if images_to_delete_str:
+            try:
+                image_ids = json.loads(images_to_delete_str)
+                if isinstance(image_ids, list):
+                    AnimalImage.objects.filter(
+                        id__in=image_ids,
+                        animal=animal 
+                    ).delete()
+            except json.JSONDecodeError:
+                pass 
+
+        response_serializer = self.get_serializer(animal)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=True, methods=["post"], permission_classes=[IsAdminUser])
     def admin_approve(self, request, pk=None):
@@ -103,8 +132,9 @@ class AnimalViewSet(viewsets.ModelViewSet):
 
             animal.adoption_date = timezone.now().date()
             animal.save()
-
-            return Response({"message": "Adopcja zatwierdzona przez admina"}, status=status.HTTP_200_OK)
+            
+            response_serializer = self.get_serializer(animal)
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 

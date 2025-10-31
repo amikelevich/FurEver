@@ -38,7 +38,7 @@
 .modal-content {
   position: relative;
   background: var(--modal-bg);
-  padding: 16px;
+  padding: 32px;
   border-radius: var(--radius);
   width: 100%;
   max-width: 720px;
@@ -72,9 +72,9 @@
 }
 
 .animal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px 20px;
   font-family: system-ui, -apple-system, sans-serif;
 }
 
@@ -83,6 +83,10 @@
   color: var(--text-primary);
   font-weight: 600;
   margin-bottom: -12px;
+}
+
+.animal-form label.no-margin {
+  margin-bottom: 0;
 }
 
 .animal-form input,
@@ -184,4 +188,86 @@
 .form-buttons button[type="button"]:hover {
   background-color: var(--border-color);
   color: var(--text-primary);
+}
+
+.existing-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.existing-images-grid small {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+
+.image-preview-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.delete-image-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: color-mix(in srgb, var(--accent-secondary) 85%, transparent);
+  color: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.delete-image-btn:hover {
+  background: var(--accent-secondary);
+  transform: scale(1.1);
+}
+
+.animal-form input[type="file"] {
+  border: 2px dashed var(--border-color);
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.animal-form input[type="file"]:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.animal-form input[type="file"]::file-selector-button {
+  background: var(--button-primary-bg);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.animal-form input[type="file"]:hover::file-selector-button {
+  background: var(--button-primary-hover);
 }

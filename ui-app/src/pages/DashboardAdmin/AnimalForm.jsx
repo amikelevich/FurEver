@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import "../../styles/AnimalForm.css";
 import Toast from "../../components/Toast";
 
+const API_BASE_URL = "http://localhost:8000";
+
 export default function AnimalForm({
   onClose,
   onAdded = () => {},
@@ -30,7 +32,9 @@ export default function AnimalForm({
     adoption_date: "",
   });
 
-  const [images, setImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const [imageIDsToDelete, setImageIDsToDelete] = useState([]);
   const [toast, setToast] = useState(null);
   const formRef = useRef(null);
 
@@ -57,6 +61,9 @@ export default function AnimalForm({
         last_vet_visit: animalToEdit.last_vet_visit || "",
         adoption_date: animalToEdit.adoption_date || "",
       });
+      setExistingImages(animalToEdit.images || []);
+      setNewImages([]);
+      setImageIDsToDelete([]);
     }
   }, [animalToEdit]);
 
@@ -70,10 +77,22 @@ export default function AnimalForm({
 
   const showToast = (message, type = "success") => {
     setToast({ message, type });
+
     if (formRef.current) {
-      formRef.current.scrollTop = 0;
+      const scrollableOverlay = formRef.current.closest(".modal-overlay");
+
+      if (scrollableOverlay) {
+        scrollableOverlay.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
     }
-    setTimeout(() => setToast(null), 1000);
+  };
+
+  const handleDeleteExistingImage = (imageId) => {
+    setExistingImages(existingImages.filter((img) => img.id !== imageId));
+    setImageIDsToDelete([...imageIDsToDelete, imageId]);
   };
 
   const handleSubmit = async (e) => {
@@ -87,23 +106,46 @@ export default function AnimalForm({
         else data.append(key, formData[key]);
       }
 
-      images.forEach((img) => data.append("images", img));
+      newImages.forEach((img) => data.append("images", img));
+
+      if (imageIDsToDelete.length > 0) {
+        data.append("images_to_delete", JSON.stringify(imageIDsToDelete));
+      }
 
       const url = animalToEdit
-        ? `http://localhost:8000/api/animals/${animalToEdit.id}/`
-        : "http://localhost:8000/api/animals/";
+        ? `${API_BASE_URL}/api/animals/${animalToEdit.id}/`
+        : `${API_BASE_URL}/api/animals/`;
 
       const method = animalToEdit ? "PUT" : "POST";
+      const token = localStorage.getItem("token");
+      const headers = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
 
-      const response = await fetch(url, { method, body: data });
+      const response = await fetch(url, {
+        method,
+        body: data,
+        headers: headers,
+      });
 
       if (response.ok) {
+        const updatedAnimalData = await response.json();
+        console.log(
+          "KROK 1 (Formularz): Otrzymałem z serwera:",
+          updatedAnimalData
+        );
+
         showToast(animalToEdit ? "Zaktualizowano dane" : "Dodano", "success");
 
+        if (animalToEdit) {
+          if (onAnimalUpdated) onAnimalUpdated(updatedAnimalData);
+        } else {
+          if (onAdded) onAdded(updatedAnimalData);
+        }
+
         setTimeout(() => {
-          onAdded();
           onClose();
-          if (onAnimalUpdated) onAnimalUpdated();
         }, 1000);
       } else {
         showToast("Błąd przy zapisywaniu", "error");
@@ -169,12 +211,34 @@ export default function AnimalForm({
             <option value="other">Inne</option>
           </select>
 
-          <small>Dodaj zdjęcia zwierzęcia.</small>
+          {existingImages.length > 0 && (
+            <div className="existing-images-grid">
+              <small>Istniejące zdjęcia:</small>
+              {existingImages.map((img) => (
+                <div key={img.id} className="image-preview-container">
+                  <img
+                    src={img.image}
+                    alt={`Zdjęcie ${img.id}`}
+                    className="image-preview"
+                  />
+                  <button
+                    type="button"
+                    className="delete-image-btn"
+                    onClick={() => handleDeleteExistingImage(img.id)}
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <small>Dodaj nowe zdjęcia zwierzęcia.</small>
           <input
             type="file"
             accept="image/*"
             multiple
-            onChange={(e) => setImages([...e.target.files])}
+            onChange={(e) => setNewImages([...e.target.files])}
           />
 
           <div className="checkbox-group">

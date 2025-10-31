@@ -106,7 +106,7 @@ export default function ApplicationsTab() {
         throw new Error(data.error || "Błąd podczas zatwierdzania wniosku");
       }
 
-      etApplications((prevApplications) =>
+      setApplications((prevApplications) =>
         prevApplications.map((app) =>
           app.id === id ? { ...app, decision: "approved" } : app
         )

@@ -9,7 +9,7 @@ import {
   FaTag,
 } from "react-icons/fa";
 
-export default function AnimalFilters({ filters, onFilterChange }) {
+export default function AnimalFilters({ filters = {}, onFilterChange }) {
   const [breeds, setBreeds] = useState([]);
 
   const SPECIES_CHOICES = {
