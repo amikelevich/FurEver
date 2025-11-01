@@ -49,15 +49,14 @@
 
 .adoption-modal {
   background: var(--modal-bg);
-  padding: 25px 30px;
-  padding-right: 45px;
+  padding: 25px 45px 25px 30px;
   border-radius: var(--radius);
   box-shadow: 0 10px 30px rgba(139, 69, 19, 0.2);
   width: 420px;
   max-width: 100%;
   position: relative;
   font-family: system-ui, -apple-system, sans-serif;
-  animation: modalPop 0.35s forwards;
+  animation: modalPop 0.35s ease-out forwards;
 }
 
 .adoption-modal h2 {
@@ -66,6 +65,14 @@
   color: var(--accent-secondary);
   font-size: 22px;
   font-weight: 700;
+}
+
+.adoption-modal label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .adoption-modal input,
@@ -95,20 +102,21 @@
 }
 
 .adoption-modal input:disabled {
-  background: #f5f5f0;
-  color: #a8a8a8;
-  border-color: #e0e0e0;
+  background: var(--modal-bg);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
   cursor: not-allowed;
 }
 
 .animal-info-box {
-  background: var(--input-bg);
+  background: color-mix(in srgb, var(--accent-primary) 8%, var(--modal-bg));
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 18px;
   font-size: 14px;
+  font-weight: 500;
   color: var(--accent-primary);
-  border: 1px solid var(--border-color);
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 25%, transparent);
   text-align: center;
 }
 
@@ -123,6 +131,7 @@
   font-weight: 600;
   font-size: 16px;
   transition: all 0.2s ease;
+  margin-top: 8px;
 }
 
 .adoption-modal button[type="submit"]:hover {
@@ -134,19 +143,33 @@
 
 .close-btn {
   position: absolute;
-  top: 12px;
-  right: 14px;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--accent-secondary);
+  line-height: 1;
   background: transparent;
   border: none;
-  font-size: 28px;
-  line-height: 1;
-  font-weight: 300;
   cursor: pointer;
-  color: var(--accent-secondary);
-  transition: color 0.2s, transform 0.2s;
+  padding: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease-out;
 }
 
 .close-btn:hover {
   color: var(--accent-primary);
-  transform: rotate(90deg);
+  background: color-mix(in srgb, var(--border-color) 60%, transparent);
+}
+
+.close-btn:focus-visible {
+  outline: none;
+  color: var(--accent-primary);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--accent-primary) 30%, transparent);
 }

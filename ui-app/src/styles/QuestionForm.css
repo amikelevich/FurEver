@@ -52,18 +52,27 @@
   padding: 25px 30px;
   width: 400px;
   max-width: 100%;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px
+    color-mix(in srgb, var(--accent-secondary) 20%, transparent);
   position: relative;
   font-family: system-ui, -apple-system, sans-serif;
-  animation: modalPop 0.35s forwards;
+  animation: modalPop 0.35s ease-out forwards;
 }
 
-.question-modal h3 {
-  margin: 0 0 20px 0;
+.question-modal h2 {
+  margin: 0 40px 20px 0;
   font-size: 20px;
   font-weight: 700;
-  text-align: center;
+  text-align: left;
+  color: var(--accent-primary);
+}
+
+.question-modal label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
@@ -91,7 +100,7 @@
 
 .question-modal textarea {
   resize: vertical;
-  min-height: 60px;
+  min-height: 80px;
 }
 
 .question-modal .form-buttons {
@@ -113,7 +122,6 @@
 
 .question-modal button:hover {
   transform: translateY(-2px);
-  filter: brightness(1.05);
 }
 
 .question-modal button[type="submit"] {
@@ -130,6 +138,13 @@
     color-mix(in srgb, var(--button-primary-bg) 40%, transparent);
 }
 
+.question-modal button[type="submit"]:focus-visible {
+  outline: none;
+  background: var(--button-primary-hover);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--accent-primary) 30%, transparent);
+}
+
 .question-modal button[type="button"] {
   background: transparent;
   color: var(--accent-secondary);
@@ -141,21 +156,48 @@
   border-color: var(--accent-secondary);
 }
 
+.question-modal button[type="button"]:focus-visible {
+  outline: none;
+  background: color-mix(in srgb, var(--accent-secondary) 8%, transparent);
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--accent-secondary) 30%, transparent);
+}
+
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 12px;
+  top: 15px;
+  right: 15px;
+
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1;
+
   background: transparent;
   border: none;
-  font-size: 28px;
-  font-weight: 300;
-  line-height: 1;
-  color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s;
+  padding: 0;
+
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: all 0.2s ease-out;
 }
 
 .close-btn:hover {
   color: var(--accent-primary);
+  background: color-mix(in srgb, var(--border-color) 60%, transparent);
   transform: rotate(90deg);
+}
+
+.close-btn:focus-visible {
+  outline: none;
+  color: var(--accent-primary);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--accent-primary) 30%, transparent);
 }

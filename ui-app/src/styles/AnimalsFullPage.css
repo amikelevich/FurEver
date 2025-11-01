@@ -3,15 +3,20 @@
   --primary-text: #3d352e;
   --secondary-text: #8a7f75;
   --accent-green: #609966;
-  --accent-orange: #d97706;
+  --accent-orange: #556b2f;
   --border-color: #edeae6;
   --radius: 12px;
-  --sidebar-width: 280px;
+  --sidebar-width: 270px;
+
+  --shadow-color: rgba(61, 53, 46, 0.1);
+  --shadow-sm: 0 2px 8px var(--shadow-color);
+  --shadow-md: 0 4px 12px var(--shadow-color);
+  --transition-ease: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .animals-full-page {
-  padding: 80px 0px;
-  max-width: 1400px;
+  padding: 32px 24px;
+  max-width: 1300px;
   margin: 0;
 }
 
@@ -19,14 +24,16 @@
   font-size: 32px;
   font-weight: 700;
   color: var(--primary-text);
-  margin-bottom: 30px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .content-wrapper {
   display: flex;
   flex-direction: row-reverse;
   align-items: flex-start;
-  gap: 90px;
+  gap: 32px;
 }
 
 .filters {
@@ -34,6 +41,12 @@
   flex-shrink: 0;
   position: sticky;
   top: 100px;
+
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
 }
 
 .animal-list-wrapper {
@@ -44,15 +57,19 @@
 .animal-list-inner {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 5px;
+  gap: 16px;
 }
 
 .animal-list-inner > p {
   color: var(--secondary-text);
   font-size: 18px;
   text-align: center;
-  padding: 40px;
+  padding: 48px 32px;
   grid-column: 1 / -1;
+  background-color: var(--card-bg);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius);
+  font-weight: 500;
 }
 
 .pagination {
@@ -60,12 +77,12 @@
   justify-content: center;
   align-items: center;
   gap: 8px;
-  margin-top: 40px;
+  margin-top: 48px;
   width: 100%;
 }
 
 .pagination button {
-  background-color: #fff;
+  background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   color: var(--secondary-text);
@@ -74,39 +91,62 @@
   min-width: 40px;
   height: 40px;
   padding: 0 8px;
-  transition: all 0.2s ease;
+  transition: var(--transition-ease);
+  box-shadow: var(--shadow-sm);
 }
 
 .pagination button:hover {
   border-color: var(--accent-orange);
   color: var(--accent-orange);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(217, 119, 6, 0.2);
 }
 
 .pagination button:disabled {
-  opacity: 0.5;
+  opacity: 0.7;
   cursor: not-allowed;
+  background-color: var(--border-color);
+  color: var(--secondary-text);
+  transform: none;
+  box-shadow: none;
 }
 
 .pagination button.active {
   background-color: var(--accent-orange);
   border-color: var(--accent-orange);
   color: white;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+  transform: translateY(-2px);
 }
 
 @media (max-width: 900px) {
+  .animals-full-page {
+    padding: 24px 16px;
+  }
+
+  .category-name-full-page {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
   .content-wrapper {
     flex-direction: column;
-    gap: 10px;
+    gap: 24px;
   }
 
   .filters {
     width: 100%;
     position: static;
     top: auto;
+    margin-bottom: 12px;
   }
 
   .animal-list-inner {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0px;
+  }
+
+  .pagination {
+    margin-top: 32px;
   }
 }

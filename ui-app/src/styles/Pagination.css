@@ -2,10 +2,10 @@
   --modal-bg: #fdfaf6;
   --text-primary: #4e443c;
   --text-secondary: #8a7f75;
-  --border-color: #eaddd7;
+  --border-color: #eadad7;
   --input-bg: #fffdfa;
-  --accent-primary: #556b2f;
-  --accent-secondary: #8b4513;
+  --accent-primary: #84a09c;
+  --accent-secondary: #84a09c;
   --button-primary-bg: #8bb174;
   --button-primary-hover: #6e9b5c;
   --radius: 12px;
@@ -39,9 +39,9 @@
 }
 
 .pagination button:hover:not(:disabled) {
-  border-color: var(--accent-primary);
-  color: var(--accent-primary);
-  background-color: #f7f5f1;
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
+  background-color: var(--modal-bg);
 }
 
 .pagination button:disabled {
@@ -52,7 +52,7 @@
 .pagination button.active {
   background-color: var(--accent-primary);
   border-color: var(--accent-primary);
-  color: #ffffff;
+  color: var(--input-bg);
   font-weight: 700;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px

@@ -3,7 +3,7 @@
   --primary-text: #3d352e;
   --secondary-text: #8a7f75;
   --accent-green: #609966;
-  --accent-orange: #d97706;
+  --accent-orange: #84a09c;
   --border-color: #edeae6;
   --radius: 12px;
 }
@@ -21,32 +21,30 @@
 }
 
 .animal-page h2 {
-  font-size: 42px;
+  font-size: 36px;
   font-weight: 700;
   color: var(--primary-text);
-  margin: 0;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
 }
 
 .animal-age {
-  font-size: 18px;
+  font-size: 16px;
   color: var(--secondary-text);
-  margin-top: 4px;
 }
 
-.animal-traits {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 20px;
+.animal-box h3 {
+  margin: 0 0 10px 0;
+  color: var(--primary-text);
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
 }
 
 .trait-badge {
-  background-color: var(--accent-green);
-  color: white;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  padding: 6px 12px;
 }
 
 .animal-content {
@@ -142,46 +140,55 @@
 .animal-actions p {
   font-size: 18px;
   margin-bottom: 20px;
-  color: var(--primary-text);
+  color: var(--text-primary);
 }
 
 .buttons {
   display: flex;
   justify-content: center;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 .adopt-btn,
 .ask-btn {
-  padding: 14px 28px;
-  border: none;
-  border-radius: 8px;
+  padding: 12px 24px;
+  border: 1px solid transparent;
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
-  transition: all 0.2s ease;
+  border-radius: var(--radius);
+  transition: all 0.3s ease;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
 }
 
 .adopt-btn {
-  background-color: var(--accent-green);
+  background-color: var(--button-primary-bg);
   color: white;
+  box-shadow: 0 3px 10px rgba(78, 68, 60, 0.08);
 }
 
 .adopt-btn:hover {
-  background-color: #538357;
+  background-color: var(--button-primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(96, 153, 102, 0.3);
+  box-shadow: 0 6px 20px rgba(78, 68, 60, 0.12);
 }
 
 .ask-btn {
-  background-color: #fff;
-  color: var(--accent-green);
-  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--accent-primary);
+  border-color: var(--border-color);
 }
 
 .ask-btn:hover {
-  border-color: var(--accent-green);
-  background-color: #f0f5f2;
+  border-color: var(--accent-primary);
+  background-color: var(--border-color);
+  transform: translateY(-2px);
 }
 
 .gallery-modal {

@@ -9,36 +9,58 @@
   --button-primary-bg: #8bb174;
   --button-primary-hover: #6e9b5c;
   --radius: 12px;
+  --accent-primary-tint: color-mix(
+    in srgb,
+    var(--accent-primary) 8%,
+    var(--input-bg)
+  );
+  --shadow-sm: 0 2px 8px rgba(78, 68, 60, 0.08);
+  --shadow-md: 0 4px 15px rgba(78, 68, 60, 0.12);
+  --transition-ease: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .animal-category {
-  margin-bottom: -85px;
+  margin-bottom: 2px;
+  margin: 10px 50px;
 }
 
 .animal-category-header {
   font-size: 24px;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border-color);
   text-transform: capitalize;
+  position: relative;
 }
 
 .animal-list-container {
   position: relative;
 }
 
+.animal-list-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 60px;
+  background: linear-gradient(to left, var(--modal-bg), transparent);
+  z-index: 5;
+  pointer-events: none;
+}
+
 .animal-list {
   display: flex;
-  gap: 40px;
+  gap: 28px;
   overflow-x: auto;
-  padding: 4px 16px 52px 8px;
+  padding: 4px 60px 24px 24px;
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-snap-type: x mandatory;
-  scroll-padding: 8px;
-  mask-image: linear-gradient(to right, black 95%, transparent 100%);
+  scroll-padding: 24px;
+  scroll-behavior: smooth;
 }
 
 .animal-list::-webkit-scrollbar {
@@ -54,9 +76,10 @@
 .scroll-btn {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) scale(1);
   z-index: 10;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: color-mix(in srgb, var(--input-bg) 85%, transparent);
+  backdrop-filter: blur(4px);
   border: 1px solid var(--border-color);
   width: 44px;
   height: 44px;
@@ -65,10 +88,11 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   opacity: 0;
   pointer-events: none;
-  transition: all 0.3s ease;
+  transition: var(--transition-ease);
+  color: var(--text-secondary);
 }
 
 .animal-list-container:hover .scroll-btn {
@@ -77,9 +101,10 @@
 }
 
 .scroll-btn:hover {
-  background-color: white;
+  background-color: var(--input-bg);
   border-color: var(--accent-primary);
   color: var(--accent-primary);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .scroll-btn.prev {
@@ -99,11 +124,12 @@
 .see-more-card {
   cursor: pointer;
   border-radius: var(--radius);
-  height: 100%;
+  height: 350px;
+  min-height: 350px;
+  max-width: 250px;
   display: flex;
   align-items: stretch;
-  height: 350px;
-  max-width: 250px;
+  overflow: hidden;
 }
 
 .see-more-card .arrow-card {
@@ -112,18 +138,20 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   background-color: var(--input-bg);
   border: 2px dashed var(--border-color);
   border-radius: var(--radius);
   color: var(--text-secondary);
-  transition: all 0.3s ease;
+
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, transform 0.3s ease;
 }
 
 .see-more-card:hover .arrow-card {
   border-style: solid;
   border-color: var(--accent-primary);
-  background-color: #f7f9f6;
+  background-color: var(--accent-primary-tint);
   color: var(--accent-primary);
   transform: scale(1.03);
 }
@@ -132,7 +160,7 @@
   width: 48px;
   height: 48px;
   stroke-width: 2;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .see-more-card:hover .arrow-card svg {
@@ -147,33 +175,48 @@
 
 .extra-count {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 0;
+  right: 0;
   background-color: var(--accent-secondary);
   color: white;
   font-weight: 600;
-  font-size: 14px;
-  padding: 4px 12px;
+  font-size: 13px;
+  padding: 3px 10px;
   border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 @media (max-width: 768px) {
+  .animal-list-container::after {
+    display: none;
+  }
+
   .animal-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     overflow-x: hidden;
-    mask-image: none;
     padding: 0;
     margin: 0;
+    gap: 2px;
   }
+
   .animal-list > * {
+    flex-basis: auto;
+    width: 100%;
     scroll-snap-align: none;
   }
+
   .see-more-card {
-    min-height: 330px;
+    min-height: 350px;
+    max-width: none;
   }
+
   .scroll-btn {
     display: none;
+  }
+
+  .extra-count {
+    top: -4px;
+    font-size: 12px;
   }
 }

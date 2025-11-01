@@ -15,6 +15,19 @@ const AdoptionItem = ({ adoption }) => {
     rejected: "Odrzucona",
   };
   const status = statusMap[adoption.decision] || "Nieznany";
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return "Brak daty";
+    }
+
+    const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+      return "Nieprawidłowa data";
+    }
+
+    return date.toLocaleDateString();
+  };
 
   return (
     <li className="adoption-item">
@@ -29,8 +42,7 @@ const AdoptionItem = ({ adoption }) => {
           <strong>Status:</strong> {status}
         </p>
         <p>
-          <strong>Złożono wniosek:</strong>{" "}
-          {new Date(adoption.application_date).toLocaleDateString()}
+          <strong>Złożono wniosek:</strong> {formatDate(adoption.submitted_at)}
         </p>
       </div>
       <div className="adoption-actions">
