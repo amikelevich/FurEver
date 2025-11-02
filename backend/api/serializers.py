@@ -1,10 +1,11 @@
 import base64
+from datetime import timezone
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 
-from .models import AdoptionApplication, Animal, AnimalImage
+from .models import AdoptionApplication, Animal, AnimalImage, Interaction
 
 User = get_user_model()
 
@@ -142,3 +143,21 @@ class AdoptionApplicationSerializer(serializers.ModelSerializer):
             "adoption_date",
         ]
         read_only_fields = ["submitted_at"]
+
+class InteractionSerializer(serializers.ModelSerializer):
+    animal = serializers.PrimaryKeyRelatedField(queryset=Animal.objects.all())
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Interaction
+        fields = ['user', 'animal', 'interaction_type']
+
+    def create(self, validated_data):
+        interaction, created = Interaction.objects.get_or_create(
+            user=validated_data.get('user'),
+            animal=validated_data.get('animal'),
+            interaction_type=validated_data.get('interaction_type'),
+            timestamp__date=timezone.now().date(), 
+            defaults=validated_data
+        )
+        return interaction

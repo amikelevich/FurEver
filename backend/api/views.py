@@ -1,9 +1,9 @@
 from rest_framework import generics, viewsets, status
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
-from .serializers import AdoptionApplicationSerializer, RegisterSerializer, LoginSerializer, AnimalSerializer
+from .serializers import AdoptionApplicationSerializer, RegisterSerializer, LoginSerializer, AnimalSerializer, InteractionSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import AdoptionApplication, Animal, AnimalImage
+from .models import AdoptionApplication, Animal, AnimalImage, Interaction
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
@@ -12,6 +12,11 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 import json
+from django.core.cache import cache
+from .recommendations import get_content_based_recommendations
+from django.db import models
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
 
 
 User = get_user_model()
@@ -78,6 +83,13 @@ class LoginView(generics.GenericAPIView):
             }
         })
     
+class LogInteractionView(generics.CreateAPIView):
+    serializer_class = InteractionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save()
+    
 class AnimalViewSet(viewsets.ModelViewSet):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
@@ -86,7 +98,7 @@ class AnimalViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        animal = serializer.save()
+        animal = self.perform_create(serializer)
 
         images = request.FILES.getlist("images")
         for img in images:
@@ -102,7 +114,7 @@ class AnimalViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        animal = serializer.save()
+        animal = self.perform_update(serializer)
 
         images = request.FILES.getlist("images")
         for img in images:
@@ -199,7 +211,64 @@ class AnimalViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset().filter(name__icontains=query)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def perform_create(self, serializer):
+        animal = serializer.save()
+        images = self.request.FILES.getlist("images")
+        for img in images:
+            AnimalImage.objects.create(animal=animal, image_data=img.read())
+        
+        cache.delete('all_pet_vectors_df')
+        return animal
 
+    def perform_update(self, serializer):
+        animal = serializer.save()
+        images = self.request.FILES.getlist("images")
+        for img in images:
+            AnimalImage.objects.create(animal=animal, image_data=img.read())
+        
+        images_to_delete_str = self.request.data.get("images_to_delete")
+        if images_to_delete_str:
+             try:
+                image_ids = json.loads(images_to_delete_str)
+                if isinstance(image_ids, list):
+                    AnimalImage.objects.filter(
+                        id__in=image_ids,
+                        animal=animal 
+                    ).delete()
+             except json.JSONDecodeError:
+                pass 
+        
+        cache.delete('all_pet_vectors_df')
+        return animal
+
+class RecommendationView(APIView):
+    """
+    Zwraca spersonalizowane rekomendacje "Dla Ciebie" 
+    dla zalogowanego użytkownika.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @method_decorator(never_cache)
+    def get(self, request):
+        user = request.user
+        
+        recommended_pets = get_content_based_recommendations(user, top_n=12)
+        
+        serializer_context = {'request': request}
+        serializer = AnimalSerializer(recommended_pets, many=True, context=serializer_context)
+        
+        return Response(serializer.data)
+
+    def get(self, request):
+        user = request.user
+        
+        recommended_pets = get_content_based_recommendations(user, top_n=12)
+        
+        serializer_context = {'request': request}
+        serializer = AnimalSerializer(recommended_pets, many=True, context=serializer_context)
+        
+        return Response(serializer.data)
 
 class AdoptionApplicationViewSet(viewsets.ModelViewSet):
     serializer_class = AdoptionApplicationSerializer

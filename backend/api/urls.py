@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import AdoptionApplicationViewSet, CurrentUserView, LoginView, MyAdoptionsViewSet, RegisterView, AnimalViewSet, send_question_email
+from .views import AdoptionApplicationViewSet, CurrentUserView, LoginView, MyAdoptionsViewSet, RegisterView, AnimalViewSet, send_question_email, LogInteractionView, RecommendationView
 
 router = DefaultRouter()
 router.register(r'animals', AnimalViewSet)
@@ -12,5 +12,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('users/me/', CurrentUserView.as_view(), name='current-user'),
     path('send-question-email/', send_question_email, name='send-question-email'),
+    path('log-interaction/', LogInteractionView.as_view(), name='log-interaction'),
+    path('recommendations/', RecommendationView.as_view(), name='recommendations'),
     path("", include(router.urls)),
 ]

@@ -204,3 +204,29 @@ class AdoptionApplication(models.Model):
 
     def __str__(self):
         return f"Wniosek: {self.user.email} -> {self.animal.name} ({self.get_decision_display()})"
+
+class Interaction(models.Model):
+    class InteractionType(models.TextChoices):
+        VIEW = 'VIEW', 'Wyświetlenie profilu'
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='interactions'
+    )
+    animal = models.ForeignKey(
+        Animal, 
+        on_delete=models.CASCADE, 
+        related_name='interactions'
+    )
+    interaction_type = models.CharField(
+        max_length=20, 
+        choices=InteractionType.choices, 
+        default=InteractionType.VIEW
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['user', 'animal']),
+        ]

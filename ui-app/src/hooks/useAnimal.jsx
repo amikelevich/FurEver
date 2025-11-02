@@ -1,12 +1,22 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function useAnimals(filters = {}) {
   const [animals, setAnimals] = useState([]);
   const [archivedAnimals, setArchivedAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const stableFilters = JSON.stringify(filters);
+
+  const handle401Error = useCallback(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
+    setError("Twoja sesja wygasła. Zaloguj się ponownie.");
+    navigate("/login");
+  }, [navigate]);
 
   const fetchAnimals = useCallback(
     async (filterString = stableFilters) => {
@@ -31,6 +41,10 @@ export default function useAnimals(filters = {}) {
           }
         );
 
+        if (res.status === 401) {
+          handle401Error();
+          return;
+        }
         if (!res.ok) throw new Error(`Błąd pobierania zwierząt: ${res.status}`);
 
         const data = await res.json();
@@ -57,14 +71,18 @@ export default function useAnimals(filters = {}) {
         setArchivedAnimals(archived);
       } catch (err) {
         console.error(err);
-        setError(err.message || "Nieoczekiwany błąd");
+        if (err.message.includes("401")) {
+          handle401Error();
+        } else {
+          setError(err.message || "Nieoczekiwany błąd");
+        }
         setAnimals([]);
         setArchivedAnimals([]);
       } finally {
         setLoading(false);
       }
     },
-    [stableFilters]
+    [stableFilters, handle401Error]
   );
 
   const approveAdoption = useCallback(
@@ -84,6 +102,11 @@ export default function useAnimals(filters = {}) {
           }
         );
 
+        if (res.status === 401) {
+          handle401Error();
+          return;
+        }
+
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(
@@ -97,11 +120,10 @@ export default function useAnimals(filters = {}) {
         alert(err.message);
       }
     },
-    [fetchAnimals, stableFilters]
+    [fetchAnimals, stableFilters, handle401Error]
   );
 
   const addAnimalManually = useCallback((newAnimal) => {
-    console.log("KROK 2 (useAnimals - DODAWANIE): Próbuję dodać:", newAnimal);
     const today = new Date();
     const adoptionDate = newAnimal.adoption_date
       ? new Date(newAnimal.adoption_date)
@@ -115,11 +137,6 @@ export default function useAnimals(filters = {}) {
   }, []);
 
   const updateAnimalManually = useCallback((updatedAnimal) => {
-    console.log(
-      "KROK 2 (useAnimals - EDYCJA/LIKE): Aktualizuję ręcznie:",
-      updatedAnimal
-    );
-
     const isMatchingAnimal = (animal) =>
       String(animal.id) === String(updatedAnimal.id);
 
@@ -143,7 +160,7 @@ export default function useAnimals(filters = {}) {
   }, []);
 
   const toggleLike = useCallback(
-    async (animalId) => {
+    async (animalId, shouldLike) => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -151,8 +168,9 @@ export default function useAnimals(filters = {}) {
           return;
         }
 
+        const endpoint = shouldLike ? "like" : "unlike";
         const res = await fetch(
-          `http://localhost:8000/api/animals/${animalId}/like/`,
+          `http://localhost:8000/api/animals/${animalId}/${endpoint}/`,
           {
             method: "POST",
             headers: {
@@ -161,10 +179,35 @@ export default function useAnimals(filters = {}) {
             },
           }
         );
+        if (res.status === 401) {
+          handle401Error();
+          return;
+        }
 
         if (res.ok) {
-          const updatedAnimal = await res.json();
-          updateAnimalManually(updatedAnimal);
+          const currentFilters = JSON.parse(stableFilters);
+          const isFavoritesPage = currentFilters.favorites === true;
+
+          if (isFavoritesPage && !shouldLike) {
+            setAnimals((prevAnimals) =>
+              prevAnimals.filter((animal) => animal.id !== animalId)
+            );
+          } else {
+            setAnimals((prevAnimals) =>
+              prevAnimals.map((animal) =>
+                animal.id === animalId
+                  ? { ...animal, is_liked: shouldLike }
+                  : animal
+              )
+            );
+            setArchivedAnimals((prevAnimals) =>
+              prevAnimals.map((animal) =>
+                animal.id === animalId
+                  ? { ...animal, is_liked: shouldLike }
+                  : animal
+              )
+            );
+          }
         } else {
           const errorData = await res.json();
           console.error("Błąd przy polubieniu:", errorData);
@@ -173,7 +216,7 @@ export default function useAnimals(filters = {}) {
         console.error("Błąd sieci przy toggleLike", err);
       }
     },
-    [updateAnimalManually]
+    [stableFilters, handle401Error]
   );
 
   useEffect(() => {

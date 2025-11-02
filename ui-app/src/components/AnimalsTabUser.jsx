@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import AnimalFilters from "./AnimalFilters";
 import AnimalCategoryList from "./AnimalCategoryList";
 import useAnimals from "../hooks/useAnimal";
+import RecommendedAnimals from "../components/RecommendedAnimals";
 import "../styles/AnimalsTabUser.css";
 
 const paramsToFilters = (params) => {
@@ -35,7 +36,6 @@ export default function AnimalsTabUser() {
 
   const categories = useMemo(() => {
     const dogs = [],
-      cats = [],
       longestSearching = [],
       sterilized = [];
     const today = new Date();
@@ -46,17 +46,15 @@ export default function AnimalsTabUser() {
 
       if (daysSinceAdded > 2) longestSearching.push(animal);
       if (animal.species?.toLowerCase() === "dog") dogs.push(animal);
-      if (animal.species?.toLowerCase() === "cat") cats.push(animal);
       if (animal.sterilized) sterilized.push(animal);
     });
 
-    return { longestSearching, dogs, cats, sterilized };
+    return { longestSearching, dogs, sterilized };
   }, [animals]);
 
   const categoriesConfig = [
     { key: "Szukają domu najdłużej", data: categories.longestSearching },
     { key: "Psy", data: categories.dogs },
-    { key: "Koty", data: categories.cats },
     { key: "Sterylizacja/kastracja", data: categories.sterilized },
   ];
 
@@ -66,6 +64,7 @@ export default function AnimalsTabUser() {
   return (
     <div className="animals-tab-layout user">
       <div className="main-content">
+        <RecommendedAnimals />
         {categoriesConfig.map(({ key, data }) => (
           <AnimalCategoryList
             key={key}

@@ -14,6 +14,7 @@ export default function AnimalPage() {
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
   const [mainImageUrl, setMainImageUrl] = useState(null);
+  const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     fetch(`http://localhost:8000/api/animals/${id}/`)
@@ -27,7 +28,30 @@ export default function AnimalPage() {
         console.error("Błąd przy pobieraniu zwierzaka:", err);
         setLoading(false);
       });
-  }, [id]);
+
+    const logAnimalView = async () => {
+      if (token) {
+        try {
+          await fetch("http://localhost:8000/api/log-interaction/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              animal: id,
+              interaction_type: "VIEW",
+            }),
+          });
+          console.log("Zalogowano wyświetlenie zwierzaka:", id);
+        } catch (error) {
+          console.error("Błąd logowania interakcji:", error);
+        }
+      }
+    };
+
+    logAnimalView();
+  }, [id, token]);
 
   if (loading) return <p>Ładowanie...</p>;
   if (!animal) return <p>Nie znaleziono zwierzaka</p>;

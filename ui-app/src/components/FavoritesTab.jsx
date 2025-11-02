@@ -14,20 +14,50 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
   const [imageError, setImageError] = useState(false);
   const ITEMS_PER_PAGE = 15;
 
-  const { animals, loading, toggleLike, setAnimals } = useAnimals({
+  const { animals, loading, toggleLike } = useAnimals({
     favorites: true,
   });
 
   const handleUnlike = async (animalId) => {
     await toggleLike(animalId, false);
-    setAnimals((prevAnimals) => prevAnimals.filter((a) => a.id !== animalId));
   };
 
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedAnimals = animals.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    (currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
   );
+
+  const [spotlightAnimal, setSpotlightAnimal] = useState(null);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token) {
+      return;
+    }
+
+    const fetchTopRecommendation = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/recommendations/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) {
+          throw new Error(
+            "Nie udało się pobrać rekomendacji dla panelu bocznego"
+          );
+        }
+        const data = await res.json();
+        if (data && data.length > 0) {
+          setSpotlightAnimal(data[0]);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchTopRecommendation();
+  }, [token]);
 
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
@@ -53,7 +83,6 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
   };
 
   const preference = getPreferenceProfile();
-  const spotlightAnimal = animals.length > 0 ? animals[0] : null;
 
   useEffect(() => {
     setImageError(false);
@@ -61,7 +90,6 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
 
   const finalImageSrc = useMemo(() => {
     if (imageError) return catShadow;
-
     if (!spotlightAnimal) return catShadow;
 
     const imageSrc =
@@ -71,7 +99,6 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
       spotlightAnimal.images?.[0]?.image_url?.trim() ||
       spotlightAnimal.photos?.[0]?.url?.trim() ||
       catShadow;
-
     return imageSrc;
   }, [spotlightAnimal, imageError]);
 
@@ -120,7 +147,7 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
       </div>
       <aside className="favorites-sidebar">
         {preference && spotlightAnimal && (
-          <div className="sidebar-widget profile-widget">
+          <div key="profile-widget" className="sidebar-widget profile-widget">
             <h3>
               <FaStar /> Twój Profil
             </h3>
@@ -133,7 +160,8 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
               przez Ciebie zwierzaków.
             </p>
             <hr className="profile-divider" />
-            <h4 className="spotlight-title">Gwiazda Twojej listy:</h4>
+
+            <h4 className="spotlight-title">Polecane dla Ciebie:</h4>
 
             <Link
               to={`/animals/${spotlightAnimal.id}`}
@@ -144,7 +172,6 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
                 alt={spotlightAnimal.name || "Zdjęcie zwierzaka"}
                 onError={() => setImageError(true)}
               />
-
               <div className="spotlight-info">
                 <strong>{spotlightAnimal.name || "Brak nazwy"}</strong>
                 <span>{spotlightAnimal.breed || "Brak rasy"}</span>
@@ -153,7 +180,7 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
           </div>
         )}
 
-        <div className="sidebar-widget">
+        <div key="info-widget" className="sidebar-widget">
           <h3>
             <FaInfoCircle /> Warto wiedzieć
           </h3>
