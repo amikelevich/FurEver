@@ -104,7 +104,7 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
 
     if (animals.length > 0) {
       return (
-        <div className="favorites-grid">
+        <div className="favorites-grid-recommendations">
           {animals.map((animal) => (
             <AnimalCard
               key={animal.id}
@@ -135,7 +135,9 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
   };
 
   return (
-    <div className={`favorites-page ${isAdmin ? "admin" : "user"}`}>
+    <div
+      className={`favorites-page-recommendations ${isAdmin ? "admin" : "user"}`}
+    >
       <Breadcrumbs user={user} currentPageName="Propozycje dla Ciebie" />
       <h2>Dla Ciebie</h2>
       <div className="favorites-main-content">{renderContent()}</div>
