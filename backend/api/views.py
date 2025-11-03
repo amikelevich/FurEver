@@ -15,6 +15,7 @@ import json
 from django.core.cache import cache
 from .recommendations import get_content_based_recommendations
 from django.db import models
+from django.db.models import Count
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 
@@ -269,6 +270,27 @@ class RecommendationView(APIView):
         serializer = AnimalSerializer(recommended_pets, many=True, context=serializer_context)
         
         return Response(serializer.data)
+    
+class AnimalViewCountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        animal_ids = request.data.get('animal_ids', [])
+        if not animal_ids:
+            return Response({})
+
+        user = request.user
+
+        view_counts = Interaction.objects.filter(
+            user=user,
+            animal_id__in=animal_ids,
+            interaction_type='VIEW'
+        ).values('animal_id') \
+         .annotate(view_count=Count('id'))
+
+        counts_dict = {item['animal_id']: item['view_count'] for item in view_counts}
+        
+        return Response(counts_dict)
 
 class AdoptionApplicationViewSet(viewsets.ModelViewSet):
     serializer_class = AdoptionApplicationSerializer

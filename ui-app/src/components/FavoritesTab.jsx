@@ -31,33 +31,61 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (!token) {
+    if (animals.length === 0 || !token) {
+      setSpotlightAnimal(null);
       return;
     }
 
-    const fetchTopRecommendation = async () => {
+    const findMostViewedFavorite = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/recommendations/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const animalIds = animals.map((a) => a.id);
+
+        const res = await fetch(
+          "http://localhost:8000/api/interactions/view-counts/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ animal_ids: animalIds }),
+          }
+        );
+
         if (!res.ok) {
-          throw new Error(
-            "Nie udało się pobrać rekomendacji dla panelu bocznego"
-          );
+          throw new Error("Nie udało się pobrać liczby wyświetleń");
         }
-        const data = await res.json();
-        if (data && data.length > 0) {
-          setSpotlightAnimal(data[0]);
+
+        const viewCounts = await res.json();
+
+        console.log("View counts fetched for favorites.", animals, viewCounts);
+
+        if (Object.keys(viewCounts).length === 0) {
+          setSpotlightAnimal(animals[0]);
+          return;
         }
+
+        let maxViews = -1;
+        let starAnimalId = -1;
+
+        for (const animalId in viewCounts) {
+          if (viewCounts[animalId] > maxViews) {
+            maxViews = viewCounts[animalId];
+            starAnimalId = parseInt(animalId);
+          }
+        }
+
+        const starAnimal = animals.find((a) => a.id === starAnimalId);
+
+        setSpotlightAnimal(starAnimal || animals[0]);
       } catch (err) {
         console.error(err);
+        setSpotlightAnimal(animals[0]);
       }
     };
 
-    fetchTopRecommendation();
-  }, [token]);
+    findMostViewedFavorite();
+  }, [animals, token]);
 
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
@@ -161,7 +189,7 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
             </p>
             <hr className="profile-divider" />
 
-            <h4 className="spotlight-title">Polecane dla Ciebie:</h4>
+            <h4 className="spotlight-title">Najczęściej oglądany:</h4>
 
             <Link
               to={`/animals/${spotlightAnimal.id}`}
