@@ -3,6 +3,9 @@ import Toast from "./Toast";
 import "../styles/AdoptionForm.css";
 
 export default function AdoptionForm({ animalId, onClose }) {
+  const [token] = useState(localStorage.getItem("token"));
+  const [isLoggedIn] = useState(!!token);
+
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -22,34 +25,34 @@ export default function AdoptionForm({ animalId, onClose }) {
   const handleCloseToast = () => setToast(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    fetch("http://localhost:8000/api/users/me/", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Nie udało się pobrać danych użytkownika");
-        return res.json();
-      })
-      .then((data) => {
-        setFormData((prev) => ({
-          ...prev,
-          first_name: data.first_name || "",
-          last_name: data.last_name || "",
-          email: data.email || "",
-        }));
-      })
-      .catch((err) => showToast(err.message, "error"));
-
     fetch(`http://localhost:8000/api/animals/${animalId}/`)
       .then((res) => res.json())
       .then((data) => setAnimal(data))
       .catch(() => showToast("Błąd przy pobieraniu danych", "error"));
-  }, [animalId]);
+
+    if (isLoggedIn) {
+      fetch("http://localhost:8000/api/users/me/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          if (!res.ok)
+            throw new Error("Nie udało się pobrać danych użytkownika");
+          return res.json();
+        })
+        .then((data) => {
+          setFormData((prev) => ({
+            ...prev,
+            first_name: data.first_name || "",
+            last_name: data.last_name || "",
+            email: data.email || "",
+          }));
+        })
+        .catch((err) => showToast(err.message, "error"));
+    }
+  }, [animalId, isLoggedIn, token]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,11 +60,20 @@ export default function AdoptionForm({ animalId, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const token = localStorage.getItem("token");
-    if (!token) {
-      showToast("Musisz być zalogowany, aby złożyć wniosek.", "error");
+    if (!formData.first_name.trim()) {
+      showToast("Podaj imię.", "error");
       return;
+    }
+    if (!formData.last_name.trim()) {
+      showToast("Podaj nazwisko.", "error");
+      return;
+    }
+    if (!isLoggedIn) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(formData.email)) {
+        showToast("Podaj poprawny adres e-mail.", "error");
+        return;
+      }
     }
 
     const phonePattern = /^[\d+\- ]{7,15}$/;
@@ -90,30 +102,48 @@ export default function AdoptionForm({ animalId, onClose }) {
 
     const fullAddress = `${formData.street}, ${formData.houseNumber}, ${formData.city}`;
 
-    fetch("http://localhost:8000/api/adoption-applications/", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    let endpoint;
+    let headers = { "Content-Type": "application/json" };
+    let body;
+
+    if (isLoggedIn) {
+      endpoint = "http://localhost:8000/api/adoption-applications/";
+      headers["Authorization"] = `Bearer ${token}`;
+      body = {
         animal: animalId,
         phone_number: formData.phone_number,
         address: fullAddress,
-      }),
+      };
+    } else {
+      endpoint = "http://localhost:8000/api/adoption-applications/public/";
+      body = {
+        animal: animalId,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
+        phone_number: formData.phone_number,
+        address: fullAddress,
+      };
+    }
+
+    fetch(endpoint, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(body),
     })
       .then(async (res) => {
         if (res.ok) return res.json();
         const data = await res.json();
-        throw new Error(JSON.stringify(data));
+        const errorMessage =
+          Object.values(data).flat().join(" ") || "Błąd serwera";
+        throw new Error(errorMessage);
       })
       .then(() => {
         showToast("Wniosek został złożony!", "success");
         setTimeout(() => onClose(), 1000);
       })
-      .catch(() => {
-        showToast("Nie udało się złożyć wniosku.", "error");
-        setTimeout(() => onClose(), 1000);
+      .catch((err) => {
+        showToast(err.message || "Nie udało się złożyć wniosku.", "error");
       });
   };
 
@@ -141,18 +171,21 @@ export default function AdoptionForm({ animalId, onClose }) {
           value={formData.first_name}
           onChange={handleChange}
           placeholder="Imię"
+          disabled={false}
         />
         <input
           name="last_name"
           value={formData.last_name}
           onChange={handleChange}
           placeholder="Nazwisko"
+          disabled={false}
         />
         <input
           name="email"
           value={formData.email}
+          onChange={handleChange}
           placeholder="Email"
-          disabled
+          disabled={isLoggedIn}
         />
         <input
           name="phone_number"

@@ -12,7 +12,8 @@ export default function QuestionForm({ animalId, onClose }) {
   });
   const [toast, setToast] = useState(null);
 
-  const token = localStorage.getItem("token");
+  const [token] = useState(localStorage.getItem("token"));
+  const [isLoggedIn] = useState(!!token);
 
   const showToast = (message, type) => {
     setToast({ message, type });
@@ -21,7 +22,7 @@ export default function QuestionForm({ animalId, onClose }) {
   const handleCloseToast = () => setToast(null);
 
   useEffect(() => {
-    if (!token) return;
+    if (!isLoggedIn) return;
 
     fetch("http://localhost:8000/api/users/me/", {
       headers: {
@@ -42,7 +43,7 @@ export default function QuestionForm({ animalId, onClose }) {
         }));
       })
       .catch((err) => showToast(err.message, "error"));
-  }, [token]);
+  }, [isLoggedIn, token]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,12 +58,17 @@ export default function QuestionForm({ animalId, onClose }) {
       return;
     }
 
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    if (isLoggedIn) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     fetch("http://localhost:8000/api/send-question-email/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: headers,
       body: JSON.stringify({ ...formData, animal: animalId }),
     })
       .then((res) => {

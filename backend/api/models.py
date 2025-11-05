@@ -174,9 +174,11 @@ class AdoptionApplication(models.Model):
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="adoption_applications",
-        verbose_name="Użytkownik"
+        verbose_name="Użytkownik",
+        null=True,
+        blank=True
     )
     animal = models.ForeignKey(
         Animal,
@@ -201,6 +203,10 @@ class AdoptionApplication(models.Model):
         blank=True,
         null=True
     )
+
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return f"Wniosek: {self.user.email} -> {self.animal.name} ({self.get_decision_display()})"

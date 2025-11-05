@@ -110,7 +110,17 @@ class AnimalSerializer(serializers.ModelSerializer):
             return user in obj.liked_by.all()
         return False
 
-            
+class PublicAdoptionApplicationSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = AdoptionApplication
+        fields = [
+            'animal', 'phone_number', 'address', 
+            'first_name', 'last_name', 'email'
+        ]            
     
 class AdoptionApplicationSerializer(serializers.ModelSerializer):
     user_email = serializers.ReadOnlyField(source="user.email")

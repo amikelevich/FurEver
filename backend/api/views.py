@@ -7,7 +7,7 @@ from .models import AdoptionApplication, Animal, AnimalImage, Interaction
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.decorators import action, api_view, permission_classes, authentication_classes
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
@@ -23,6 +23,8 @@ from django.utils.decorators import method_decorator
 User = get_user_model()
 
 @api_view(['POST'])
+@authentication_classes([])
+@permission_classes([AllowAny])
 def send_question_email(request):
     data = request.data
     subject = f"Pytanie od {data.get('first_name')} {data.get('last_name')}"
@@ -320,7 +322,7 @@ class AdoptionApplicationViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ["list", "retrieve", "create"]:
             permission_classes = [IsAuthenticated]
-        elif self.action == "public_last_adoptions":
+        elif self.action in ["public_last_adoptions", "public"]:
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
@@ -343,6 +345,14 @@ class AdoptionApplicationViewSet(viewsets.ModelViewSet):
         last_apps = AdoptionApplication.objects.filter(decision="approved").order_by("-adoption_date")[:10]
         serializer = self.get_serializer(last_apps, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['post'])
+    def public(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save() 
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 class MyAdoptionsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = AdoptionApplicationSerializer
