@@ -202,6 +202,17 @@ class AnimalViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(breed=breed)
 
         return queryset
+    @action(detail=False, methods=["get"])
+    def public_random(self, request):
+        available_animals = Animal.objects.filter(adoption_date__isnull=True)
+        random_animals = available_animals.order_by('?')
+        three_random_animals = random_animals[:3]
+        serializer = AnimalSerializer(
+            three_random_animals, 
+            many=True, 
+            context={'request': request}
+        )
+        return Response(serializer.data)
     
     @action(detail=False, methods=["get"])
     def search(self, request):

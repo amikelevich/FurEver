@@ -17,6 +17,7 @@ import SearchPage from "./pages/SearchPage";
 import AnimalsFullPage from "./pages/AnimalsFullPage";
 import ApplicationsTab from "./pages/DashboardAdmin/ApplicationsTab";
 import "./styles/App.css";
+import MainPageAnimals from "./components/MainPageAnimals";
 export default function App() {
   const [user, setUser] = useState(() => {
     const stored = sessionStorage.getItem("user");
@@ -42,7 +43,7 @@ export default function App() {
           element={
             <>
               {" "}
-              <Hero /> <Steps />{" "}
+              <Hero /> <Steps /> <MainPageAnimals />{" "}
             </>
           }
         />{" "}
