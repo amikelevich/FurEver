@@ -31,7 +31,7 @@ export default function MainPageAnimals() {
   }, []);
 
   const handleSeeAllClick = () => {
-    navigate("/animals");
+    navigate("/animals/user");
   };
 
   if (!isLoading && animals.length === 0) {

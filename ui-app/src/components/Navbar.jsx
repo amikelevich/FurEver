@@ -10,6 +10,8 @@ export default function Navbar({ user, onLogout }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleLogoutClick = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("user");
     onLogout();
     navigate("/login");
   };

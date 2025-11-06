@@ -126,7 +126,9 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
       <div className="empty-state">
         <FaHeartBroken />
         <h3>Nie mamy jeszcze dla Ciebie rekomendacji</h3>
-        <p>Polub kilka zwierzaków, abyśmy mogli poznać Twój gust!</p>
+        <p>
+          Zaloguj się i polub kilka zwierzaków, abyśmy mogli poznać Twój gust!
+        </p>
         <Link to="/animals" className="cta-button">
           Przeglądaj zwierzęta
         </Link>

@@ -90,6 +90,10 @@ export default function AnimalPage() {
           <div className="animal-box">
             <h3>Informacje ogólne</h3>
             <p>
+              <strong>Gatunek:</strong>{" "}
+              {animal.species_display || animal.species || "Brak danych"}
+            </p>
+            <p>
               <strong>Płeć:</strong>{" "}
               {animal.gender === "male"
                 ? "Samiec"

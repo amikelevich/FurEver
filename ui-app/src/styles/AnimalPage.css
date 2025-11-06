@@ -1,10 +1,12 @@
 :root {
   --card-bg: #fdfaf6;
-  --primary-text: #3d352e;
+  --primary-text: #4e443c;
   --secondary-text: #8a7f75;
-  --accent-green: #609966;
-  --accent-orange: #84a09c;
-  --border-color: #edeae6;
+  --accent-green: #556b2f;
+  --accent-orange: #8b4513;
+  --border-color: #eaddd7;
+  --hover-bg: #f8f4ef;
+  --input-bg: #fffdfa;
   --radius: 12px;
 }
 
@@ -42,9 +44,28 @@
   padding-bottom: 6px;
 }
 
+.animal-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
 .trait-badge {
-  font-size: 13px;
-  padding: 6px 12px;
+  font-size: 14px;
+  padding: 8px 16px;
+  background-color: #e8f5e9;
+  color: var(--accent-green);
+  border-radius: 8px;
+  font-weight: 600;
+  text-transform: none;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.trait-badge:hover {
+  background-color: #dcedc8;
+  transform: translateY(-2px);
 }
 
 .animal-content {
