@@ -1,11 +1,12 @@
 import pandas as pd
 import numpy as np
+import math
 from sklearn.preprocessing import MultiLabelBinarizer, MinMaxScaler
 from sklearn.metrics.pairwise import cosine_similarity
 from django.core.cache import cache
-from .models import Animal, Interaction
-from django.conf import settings
+from django.utils import timezone
 from django.db import models
+from .models import Animal, Interaction 
 
 FEATURE_WEIGHTS = {
     'species': 2.0,
@@ -15,8 +16,14 @@ FEATURE_WEIGHTS = {
     'human_friendly': 1.5,
     'animal_friendly': 1.5,
     'best_home': 1.0,
-    'flags': 0.5
+    'flags': 0.5,
+    'time_decay': 0.8 
 }
+
+AGE_PREF_CENTER = 3.0 
+AGE_PREF_SPREAD = 5.0 
+INTERACTION_DECAY_RATE = 1 / 90 
+
 
 def get_pet_vectors_dataframe():
     cached_df = cache.get('all_pet_vectors_df')
@@ -27,8 +34,12 @@ def get_pet_vectors_dataframe():
     if not animals.exists():
         return pd.DataFrame()
 
+    today = timezone.now().date()
+    
     data = []
     for pet in animals:
+        days_since_addition = (today - pet.created_at.date()).days
+        
         pet_data = {
             'id': pet.id,
             'species': pet.species,
@@ -42,10 +53,22 @@ def get_pet_vectors_dataframe():
             'vaccinated': int(pet.vaccinated),
             'dewormed': int(pet.dewormed),
             'chipped': int(pet.chipped),
+            'days_since_addition': days_since_addition,
         }
         data.append(pet_data)
         
     df = pd.DataFrame(data).set_index('id')
+
+    df['days_since_addition'] = np.log1p(df['days_since_addition']) 
+    
+    scaler_time = MinMaxScaler()
+    df_temporal = pd.DataFrame(
+        scaler_time.fit_transform(df[['days_since_addition']]), 
+        columns=['days_since_addition_norm'], 
+        index=df.index
+    )
+    df_temporal['days_since_addition_norm'] *= FEATURE_WEIGHTS['time_decay']
+
 
     categorical_features = ['species', 'gender', 'human_friendly', 'animal_friendly', 'best_home']
     df_categorical = pd.get_dummies(df[categorical_features], columns=categorical_features, drop_first=True)
@@ -61,14 +84,18 @@ def get_pet_vectors_dataframe():
             df_categorical[col] *= FEATURE_WEIGHTS['animal_friendly']
         elif col.startswith('best_home_'):
             df_categorical[col] *= FEATURE_WEIGHTS['best_home']
-            
-    scaler = MinMaxScaler()
+
+    def gaussian_norm(age):
+        if pd.isna(age):
+             return 0
+        return math.exp(-((age - AGE_PREF_CENTER) ** 2) / (2 * AGE_PREF_SPREAD ** 2))
+
     df_numerical = pd.DataFrame(
-        scaler.fit_transform(df[['age']]), 
-        columns=['age'], 
+        df['age'].apply(gaussian_norm), 
+        columns=['age_gaussian_score'], 
         index=df.index
     )
-    df_numerical['age'] *= FEATURE_WEIGHTS['age']
+    df_numerical['age_gaussian_score'] *= FEATURE_WEIGHTS['age']
 
     flag_features = ['sterilized', 'vaccinated', 'dewormed', 'chipped']
     df_flags = df[flag_features] * FEATURE_WEIGHTS['flags']
@@ -81,7 +108,9 @@ def get_pet_vectors_dataframe():
     )
     traits_df *= FEATURE_WEIGHTS['short_traits']
 
-    final_df = pd.concat([df_categorical, df_numerical, df_flags, traits_df], axis=1)
+    final_df = pd.concat([df_categorical, df_numerical, df_flags, traits_df, df_temporal], axis=1)
+
+    final_df = final_df.fillna(0)
     
     cache.set('all_pet_vectors_df', final_df, timeout=3600)
     
@@ -89,26 +118,36 @@ def get_pet_vectors_dataframe():
 
 
 def get_user_profile_vector(user, all_pet_vectors):
+    today = timezone.now()
 
-    liked_pets_ids = list(user.liked_animals.all().values_list('id', flat=True))
-    
-    viewed_pets_ids = list(Interaction.objects.filter(user=user, interaction_type='VIEW')
-                           .values_list('animal_id', flat=True))
+    all_interactions = Interaction.objects.filter(user=user, interaction_type__in=['LIKE', 'VIEW']).order_by('-timestamp')
 
-    if not liked_pets_ids and not viewed_pets_ids:
+    if not all_interactions.exists():
         return None
 
     all_interactions_data = []
+    liked_ids = {int.animal_id for int in all_interactions.filter(interaction_type='LIKE')}
     
     interaction_weight_favorite = 5.0 
-    for pet_id in liked_pets_ids:
-        if pet_id in all_pet_vectors.index:
-            all_interactions_data.append({'id': pet_id, 'weight': interaction_weight_favorite})
-
     interaction_weight_view = 1.0
-    for pet_id in viewed_pets_ids:
-        if pet_id in all_pet_vectors.index and pet_id not in liked_pets_ids:
-            all_interactions_data.append({'id': pet_id, 'weight': interaction_weight_view})
+
+    for interaction in all_interactions:
+        pet_id = interaction.animal_id
+
+        time_diff = (today - interaction.timestamp).total_seconds() / (60 * 60 * 24) 
+
+        decay_factor = math.exp(-INTERACTION_DECAY_RATE * time_diff) 
+        
+        if pet_id in all_pet_vectors.index:
+            if interaction.interaction_type == 'LIKE':
+                weight = interaction_weight_favorite * decay_factor
+            else:
+                if pet_id not in liked_ids:
+                    weight = interaction_weight_view * decay_factor
+                else:
+                    continue 
+                    
+            all_interactions_data.append({'id': pet_id, 'weight': weight})
 
     if not all_interactions_data:
         return None
@@ -121,6 +160,8 @@ def get_user_profile_vector(user, all_pet_vectors):
     ordered_weights = interactions_df.loc[user_pet_vectors.index]['weight'].values
     
     user_profile_vector = np.average(user_pet_vectors, axis=0, weights=ordered_weights)
+
+    user_profile_vector = np.nan_to_num(user_profile_vector, nan=0.0)
     
     return user_profile_vector.reshape(1, -1)
 
@@ -148,9 +189,9 @@ def get_content_based_recommendations(user, top_n=10):
 
     if pets_to_recommend_vectors.empty:
         return Animal.objects.none()
-    
+
     similarity_scores = cosine_similarity(user_profile, pets_to_recommend_vectors)
-    \
+    
     scores_series = pd.Series(similarity_scores[0], index=pets_to_recommend_vectors.index)
     top_pet_ids = scores_series.nlargest(top_n).index
     
