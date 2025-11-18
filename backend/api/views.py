@@ -340,6 +340,24 @@ class AdoptionApplicationViewSet(viewsets.ModelViewSet):
         
         return Response({"success": "Wniosek zatwierdzony"}, status=status.HTTP_200_OK)
     
+    @action(detail=True, methods=["post"])
+    def reject(self, request, pk=None):
+        application = self.get_object()
+
+        if application.decision != "pending":
+            return Response(
+                {"error": "Wniosek już został rozpatrzony."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        application.decision = "rejected"
+        application.save()
+        
+        return Response(
+            {"success": "Wniosek odrzucony."}, 
+            status=status.HTTP_200_OK
+        )
+    
     @action(detail=False, methods=["get"], permission_classes=[AllowAny])
     def public_last_adoptions(self, request):
         last_apps = AdoptionApplication.objects.filter(decision="approved").order_by("-adoption_date")[:10]

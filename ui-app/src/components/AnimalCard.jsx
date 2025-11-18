@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useNavigate } from "react-router-dom";
 import "../styles/AnimalCard.css";
-import catShadow from "../assets/cat_shadow.png";
+import icon from "../assets/icon.jpg";
 import AnimalForm from "../pages/DashboardAdmin/AnimalForm";
 import { FaHeart, FaRegHeart, FaEdit, FaPaw } from "react-icons/fa";
 
@@ -40,7 +40,7 @@ export default function AnimalCard({
         {animal.images?.length > 0 ? (
           <img src={animal.images[0].image} alt={animal.name} />
         ) : (
-          <img src={catShadow} alt="Kot" />
+          <img src={icon} alt="Kot" />
         )}
 
         {!isAdmin && (

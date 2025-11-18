@@ -55,6 +55,9 @@ const ApplicationItem = ({ application, onApprove, onReject }) => {
           <button className="approve-btn" onClick={() => onApprove(id)}>
             Zatwierdź wniosek
           </button>
+          <button className="reject-btn" onClick={() => onReject(id)}>
+            Odrzuć wniosek
+          </button>
         </div>
       )}
     </div>
@@ -92,7 +95,34 @@ export default function ApplicationsTab() {
     fetchApplications();
   }, []);
 
-  // --- POCZĄTEK ZMIAN ---
+  const rejectApplication = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `http://localhost:8000/api/adoption-applications/${id}/reject/`,
+        { method: "POST", headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Błąd podczas odrzucania wniosku");
+      }
+
+      setApplications((prevApplications) =>
+        prevApplications.map((app) =>
+          app.id === id ? { ...app, decision: "rejected" } : app
+        )
+      );
+
+      setToast({
+        message: data.success || "Wniosek odrzucony.",
+        type: "warning",
+      });
+    } catch (err) {
+      console.error(err);
+      setToast({ message: err.message, type: "error" });
+    }
+  };
   const approveApplication = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -134,7 +164,10 @@ export default function ApplicationsTab() {
       const adoptionDate = app.adoption_date
         ? new Date(app.adoption_date)
         : null;
-      if (adoptionDate && adoptionDate < today) {
+      if (
+        app.decision === "rejected" ||
+        (adoptionDate && adoptionDate < today)
+      ) {
         archived.push(app);
       } else {
         current.push(app);
@@ -192,6 +225,7 @@ export default function ApplicationsTab() {
                   key={app.id}
                   application={app}
                   onApprove={approveApplication}
+                  onReject={rejectApplication}
                 />
               ))}
             </div>

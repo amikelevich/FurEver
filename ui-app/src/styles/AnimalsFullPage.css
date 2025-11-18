@@ -15,7 +15,7 @@
 }
 
 .animals-full-page {
-  padding: 32px 24px;
+  padding: 80px 24px;
   max-width: 1300px;
   margin: 0;
 }
@@ -121,7 +121,7 @@
 
 @media (max-width: 900px) {
   .animals-full-page {
-    padding: 24px 16px;
+    padding: 70px 16px;
   }
 
   .category-name-full-page {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../styles/AnimalPage.css";
-import catShadow from "../assets/cat_shadow.png";
+import icon from "../assets/icon.jpg";
 import AdoptionForm from "../components/AdoptionForm";
 import QuestionForm from "../components/QuestionForm";
 import Breadcrumbs from "../components/Breadcrumbs";
@@ -20,7 +20,7 @@ export default function AnimalPage() {
       .then((res) => res.json())
       .then((data) => {
         setAnimal(data);
-        setMainImageUrl(data.images?.[0]?.image || catShadow);
+        setMainImageUrl(data.images?.find((img) => img.image)?.image || icon);
         setLoading(false);
       })
       .catch((err) => {
@@ -166,26 +166,28 @@ export default function AnimalPage() {
 
               {animal.images.length > 1 && (
                 <div className="animal-thumb-list">
-                  {animal.images.map((img, index) => (
-                    <div
-                      key={index}
-                      className={`animal-thumb ${
-                        mainImageUrl === img.image ? "active" : ""
-                      }`}
-                      onClick={() => setMainImageUrl(img.image)}
-                    >
-                      <img
-                        src={img.image}
-                        alt={`${animal.name} ${index + 1}`}
-                      />
-                    </div>
-                  ))}
+                  {animal.images
+                    .filter((img) => img.image)
+                    .map((img, index) => (
+                      <div
+                        key={index}
+                        className={`animal-thumb ${
+                          mainImageUrl === img.image ? "active" : ""
+                        }`}
+                        onClick={() => setMainImageUrl(img.image)}
+                      >
+                        <img
+                          src={img.image}
+                          alt={`${animal.name} ${index + 1}`}
+                        />
+                      </div>
+                    ))}
                 </div>
               )}
             </>
           ) : (
             <div className="main-animal-image">
-              <img src={catShadow} alt="Brak zdjęcia" />
+              <img src={icon} alt="Brak zdjęcia" />
             </div>
           )}
         </div>
@@ -201,13 +203,15 @@ export default function AnimalPage() {
               &times;
             </button>
             <div className="gallery-images">
-              {animal.images.map((img, idx) => (
-                <img
-                  key={idx}
-                  src={img.image}
-                  alt={`${animal.name} ${idx + 1}`}
-                />
-              ))}
+              {animal.images
+                .filter((img) => img.image)
+                .map((img, idx) => (
+                  <img
+                    key={idx}
+                    src={img.image}
+                    alt={`${animal.name} ${idx + 1}`}
+                  />
+                ))}
             </div>
           </div>
         </div>

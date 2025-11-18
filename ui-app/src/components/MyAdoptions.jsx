@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import "./../styles/MyAdoptions.css";
-import catShadow from "../assets/cat_shadow.png";
+import icon from "../assets/icon.jpg";
 import Pagination from "../components/Pagination";
 import { FaPaw } from "react-icons/fa";
 
@@ -32,7 +32,7 @@ const AdoptionItem = ({ adoption }) => {
   return (
     <li className="adoption-item">
       <img
-        src={animal.images?.[0]?.image || catShadow}
+        src={animal.images?.[0]?.image || icon}
         alt={animalName}
         className="adoption-image"
       />
@@ -42,7 +42,8 @@ const AdoptionItem = ({ adoption }) => {
           <strong>Status:</strong> {status}
         </p>
         <p>
-          <strong>Złożono wniosek:</strong> {formatDate(adoption.submitted_at)}
+          <strong>Złożono wniosek:</strong>
+          {formatDate(adoption.submitted_at)}
         </p>
       </div>
       <div className="adoption-actions">
@@ -57,7 +58,7 @@ const AdoptionItem = ({ adoption }) => {
 export default function MyAdoptions() {
   const [adoptions, setAdoptions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [openSection, setOpenSection] = useState("approved");
+  const [openSection, setOpenSection] = useState("pending");
 
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 5;
@@ -85,17 +86,25 @@ export default function MyAdoptions() {
     setCurrentPage(1);
   }, [openSection]);
 
-  const approvedAdoptions = useMemo(
-    () => adoptions.filter((app) => app.decision === "approved"),
-    [adoptions]
-  );
-  const pendingAdoptions = useMemo(
-    () => adoptions.filter((app) => app.decision !== "approved"),
-    [adoptions]
-  );
+  const { approvedAdoptions, pendingAdoptions, rejectedAdoptions } =
+    useMemo(() => {
+      const approved = adoptions.filter((app) => app.decision === "approved");
+      const pending = adoptions.filter((app) => app.decision === "pending");
+      const rejected = adoptions.filter((app) => app.decision === "rejected");
+      return {
+        approvedAdoptions: approved,
+        pendingAdoptions: pending,
+        rejectedAdoptions: rejected,
+      };
+    }, [adoptions]);
 
-  const activeAdoptions =
-    openSection === "approved" ? approvedAdoptions : pendingAdoptions;
+  const activeAdoptions = useMemo(() => {
+    if (openSection === "approved") return approvedAdoptions;
+    if (openSection === "pending") return pendingAdoptions;
+    if (openSection === "rejected") return rejectedAdoptions;
+    return [];
+  }, [openSection, approvedAdoptions, pendingAdoptions, rejectedAdoptions]);
+
   const paginatedAdoptions = activeAdoptions.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
@@ -121,16 +130,22 @@ export default function MyAdoptions() {
     <div className="my-adoptions">
       <div className="adoption-tabs">
         <button
+          className={openSection === "pending" ? "active" : ""}
+          onClick={() => setOpenSection("pending")}
+        >
+          W trakcie ({pendingAdoptions.length})
+        </button>
+        <button
           className={openSection === "approved" ? "active" : ""}
           onClick={() => setOpenSection("approved")}
         >
           Zatwierdzone ({approvedAdoptions.length})
         </button>
         <button
-          className={openSection === "pending" ? "active" : ""}
-          onClick={() => setOpenSection("pending")}
+          className={openSection === "rejected" ? "active" : ""}
+          onClick={() => setOpenSection("rejected")}
         >
-          W trakcie ({pendingAdoptions.length})
+          Odrzucone ({rejectedAdoptions.length})
         </button>
       </div>
 

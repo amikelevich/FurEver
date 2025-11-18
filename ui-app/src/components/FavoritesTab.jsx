@@ -7,7 +7,7 @@ import Breadcrumbs from "../components/Breadcrumbs";
 import useAnimals from "../hooks/useAnimal";
 import { FaHeartBroken } from "react-icons/fa";
 import { FaInfoCircle, FaStar } from "react-icons/fa";
-import catShadow from "../assets/cat_shadow.png";
+import icon from "../assets/icon.jpg";
 
 export default function FavoritesTab({ isAdmin, onEdit }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -117,8 +117,8 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
   }, [spotlightAnimal]);
 
   const finalImageSrc = useMemo(() => {
-    if (imageError) return catShadow;
-    if (!spotlightAnimal) return catShadow;
+    if (imageError) return icon;
+    if (!spotlightAnimal) return icon;
 
     const imageSrc =
       spotlightAnimal.image?.trim() ||
@@ -126,7 +126,7 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
       spotlightAnimal.images?.[0]?.url?.trim() ||
       spotlightAnimal.images?.[0]?.image_url?.trim() ||
       spotlightAnimal.photos?.[0]?.url?.trim() ||
-      catShadow;
+      icon;
     return imageSrc;
   }, [spotlightAnimal, imageError]);
 
@@ -201,8 +201,8 @@ export default function FavoritesTab({ isAdmin, onEdit }) {
                 onError={() => setImageError(true)}
               />
               <div className="spotlight-info">
-                <strong>{spotlightAnimal.name || "Brak nazwy"}</strong>
-                <span>{spotlightAnimal.breed || "Brak rasy"}</span>
+                <strong>{spotlightAnimal.name || "Nieznane imię"}</strong>
+                <span>{spotlightAnimal.breed || "nieznana rasa"}</span>
               </div>
             </Link>
           </div>

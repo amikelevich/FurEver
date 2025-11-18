@@ -61,7 +61,10 @@ export default function AnimalForm({
         last_vet_visit: animalToEdit.last_vet_visit || "",
         adoption_date: animalToEdit.adoption_date || "",
       });
-      setExistingImages(animalToEdit.images || []);
+      const validImages = (animalToEdit.images || []).filter(
+        (img) => img.id && img.image
+      );
+      setExistingImages(validImages || []);
       setNewImages([]);
       setImageIDsToDelete([]);
     }

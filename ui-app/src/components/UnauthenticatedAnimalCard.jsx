@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/UnauthenticatedAnimalCard.css";
-import catShadow from "../assets/cat_shadow.png";
+import icon from "../assets/icon.jpg";
 
 export default function UnauthenticatedAnimalCard({ animal }) {
   const navigate = useNavigate();
@@ -9,8 +9,7 @@ export default function UnauthenticatedAnimalCard({ animal }) {
     navigate(`/animals/${animal.id}`);
   };
 
-  const imageUrl =
-    animal.images?.length > 0 ? animal.images[0].image : catShadow;
+  const imageUrl = animal.images?.length > 0 ? animal.images[0].image : icon;
   const firstTrait = animal.short_traits_display?.[0];
   const tagText = firstTrait || "Gotowy na dom";
 

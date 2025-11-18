@@ -132,6 +132,8 @@
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 15px;
 }
 
 .approve-btn {
@@ -151,6 +153,24 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 15px
     color-mix(in srgb, var(--button-primary-bg) 40%, transparent);
+}
+
+.reject-btn {
+  background-color: #718096;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reject-btn:hover {
+  background-color: #5c6776;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(113, 128, 150, 0.4);
 }
 
 .empty-state {
